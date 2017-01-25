@@ -4,6 +4,7 @@
 Temp/
 Library/
 ProjectSettings/
+*.meta
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
