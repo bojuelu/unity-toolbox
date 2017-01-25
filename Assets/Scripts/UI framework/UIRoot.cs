@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Unity UGUI based, use this class to manage UGUI elements.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 

@@ -1,10 +1,12 @@
+/// <summary>
+/// Use this class to do time counting.
+/// Author: BoJue.
+/// </summary>
+
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-/// <summary>
-/// Use this class to do time counting.
-/// </summary>
 public class Timer
 {
     private float current;

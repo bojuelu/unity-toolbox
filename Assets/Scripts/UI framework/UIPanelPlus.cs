@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Inherence from UIPanel, it use TweenBase as default BringIn and Dismiss behavior.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 

@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Tween move to. Powered by iTween.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System.Collections;
 
 public class TweenMoveTo : TweenBase

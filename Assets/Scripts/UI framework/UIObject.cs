@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Depend on UIRoot. The elements of UIRoot.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System.Collections;
 
 public class UIObject : MonoBehaviour

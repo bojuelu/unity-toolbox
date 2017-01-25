@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Tween rotate add. Powered by iTween.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System.Collections;
 
 public class TweenRotateAdd : TweenBase

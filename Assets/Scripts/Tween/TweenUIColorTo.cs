@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Tween user interface color to, only for UnityEngine.UI.Image. Powered by iTween.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 

@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Tween a lot of TweenUIColorTo. Powered by iTween.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 

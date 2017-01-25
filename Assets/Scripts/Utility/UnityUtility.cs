@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Unity utility.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System;
 using System.Text;
 using System.IO;

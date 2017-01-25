@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// A panel has BringIn(open) and Dismiss(close) behavior.
+/// Author: BoJue.
+/// </summary>
+
+using UnityEngine;
 using System.Collections;
 
 public abstract class UIPanel : UIObject
