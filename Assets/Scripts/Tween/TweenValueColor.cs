@@ -55,7 +55,7 @@ public class TweenValueColor : TweenBase
             )
         );
 
-        base.Callback.OnUpdateColorEvent = this.OnUpdate;
+        base.Callback.onUpdateColorEvent = this.OnUpdate;
     }
 
     private void OnUpdate(Color c)

@@ -55,7 +55,7 @@ public class TweenValueRect : TweenBase
             )
         );
 
-        base.Callback.OnUpdateRectEvent = this.OnUpdate;
+        base.Callback.onUpdateRectEvent = this.OnUpdate;
     }
 
     private void OnUpdate(Rect rect)

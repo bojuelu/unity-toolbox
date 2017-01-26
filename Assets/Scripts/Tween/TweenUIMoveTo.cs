@@ -37,7 +37,7 @@ public class TweenUIMoveTo : TweenValueVector3
 
     void Update()
     {
-        if (this.GetComponent<iTween>() != null)
+        if (isTweening == true)
         {
             ApplyPosition();
         }

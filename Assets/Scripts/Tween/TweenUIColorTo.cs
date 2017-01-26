@@ -26,7 +26,7 @@ public class TweenUIColorTo : TweenValueColor
 
     void Update()
     {
-        if (this.GetComponent<iTween>() != null)
+        if (isTweening == true)
         {
             this.tweenTarget.GetComponent<Image>().color = this.ColorNow;
         }

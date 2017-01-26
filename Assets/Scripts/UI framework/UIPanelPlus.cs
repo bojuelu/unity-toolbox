@@ -1,112 +1,93 @@
-﻿/// <summary>
-/// Inherence from UIPanel, it use TweenBase as default BringIn and Dismiss behavior.
-/// Author: BoJue.
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 
 public class UIPanelPlus : UIPanel
 {
     public bool defaultIsShow = true;
-    public TweenBase[] bringInTweens;
-    public TweenBase[] dismissTweens;
-    private bool isTweening = false;
-    public bool IsTweening { get { return isTweening; } }
-    private int totalTweenNum = 0;
-    private int completeTweenNum = 0;
+    public TweenBase[] bringInTweens = null;
+    public TweenBase[] dismissTweens = null;
 
-    public UnityEvent OnBringInEvent;
-    public UnityEvent OnDismissEvent;
-
-    void OnBringInTweenComplete()
-    {
-        completeTweenNum++;
-    }
-
-    void OnDismissTweenComplete()
-    {
-        completeTweenNum++;
-    }
+    public UnityEvent onBringInEvent;
+    public UnityEvent onDismissEvent;
 
     protected override void Start()
     {
-        base.isShow = defaultIsShow;
-
-        for (int i = 0; i < bringInTweens.Length; i++)
-        {
-            bringInTweens[i].Callback.OnCompleteEvent += this.OnBringInTweenComplete;
-        }
-        for (int i = 0; i < dismissTweens.Length; i++)
-        {
-            dismissTweens[i].Callback.OnCompleteEvent += this.OnDismissTweenComplete;
-        }
+        isShow = defaultIsShow;
 
         base.Start();
     }
 
     public override void BringIn()
     {
-        if (base.isShow || isTweening)
+        if (isShow == true || IsTweening())
             return;
 
-        totalTweenNum = bringInTweens.Length;
-        completeTweenNum = 0;
         for (int i = 0; i < bringInTweens.Length; i++)
         {
             bringInTweens[i].Run();
         }
-        isTweening = true;
-        if (OnBringInEvent != null)
-            OnBringInEvent.Invoke();
+
+        if (onBringInEvent != null)
+            onBringInEvent.Invoke();
         
         base.BringIn();
     }
 
     public override void Dismiss()
     {
-        if (!base.isShow || isTweening)
+        if (isShow == false || IsTweening())
             return;
 
-        totalTweenNum = dismissTweens.Length;
-        completeTweenNum = 0;
         for (int i = 0; i < dismissTweens.Length; i++)
         {
             dismissTweens[i].Run();
         }
-        isTweening = true;
-        if (OnDismissEvent != null)
-            OnDismissEvent.Invoke();
+
+        if (onDismissEvent != null)
+            onDismissEvent.Invoke();
         
         base.Dismiss();
     }
 
-    protected virtual void Update()
-    {
-        if (isTweening)
-        {
-            if (completeTweenNum >= totalTweenNum)
-                isTweening = false;
-        }
-    }
-
     protected override void OnDestroy()
     {
-        if (OnBringInEvent != null)
-            OnBringInEvent.RemoveAllListeners();
-        if (OnDismissEvent != null)
-            OnDismissEvent.RemoveAllListeners();
+        if (onBringInEvent != null)
+            onBringInEvent.RemoveAllListeners();
+        if (onDismissEvent != null)
+            onDismissEvent.RemoveAllListeners();
 
-        for (int i = 0; i < bringInTweens.Length; i++)
-        {
-            bringInTweens[i].Callback.OnCompleteEvent -= this.OnBringInTweenComplete;
-        }
-        for (int i = 0; i < dismissTweens.Length; i++)
-        {
-            dismissTweens[i].Callback.OnCompleteEvent -= this.OnDismissTweenComplete;
-        }
-        
         base.OnDestroy();
+    }
+
+    bool IsTweening()
+    {
+        if (bringInTweens != null)
+        {
+            for (int i = 0; i < bringInTweens.Length; i++)
+            {
+                if (bringInTweens[i].IsTweening)
+                    return true;
+            }
+        }
+        if (dismissTweens != null)
+        {
+            for (int i = 0; i < dismissTweens.Length; i++)
+            {
+                if (dismissTweens[i].IsTweening)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    // test
+    void OnGUI()
+    {
+        if (GUI.Button(new Rect(0, 0, 100, 100), "bringin"))
+            this.BringIn();
+        if (GUI.Button(new Rect(0, 100, 100, 100), "dismiss"))
+            this.Dismiss();
     }
 }

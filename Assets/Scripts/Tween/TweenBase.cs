@@ -23,7 +23,12 @@ public abstract class TweenBase : MonoBehaviour
     protected string tweenType = "";
     public string TweenType { get { return tweenType; } }
 
-    private bool isInited = false;
+    protected bool isInited = false;
+    public bool IsInited { get { return isInited; } }
+
+    protected bool isTweening = false;
+    public bool IsTweening { get { return isTweening; } }
+
     protected int onCompleteTimes = 0;
     public int OnCompleteTimes { get { return onCompleteTimes; } }
 
@@ -57,6 +62,8 @@ public abstract class TweenBase : MonoBehaviour
                 tweens[i] = null;
             }
         }
+
+        isTweening = true;
     }
 
     public virtual void Pause()
@@ -72,6 +79,8 @@ public abstract class TweenBase : MonoBehaviour
     public virtual void Stop()
     {
         iTween.Stop(this.tweenTarget, tweenType);
+
+        isTweening = false;
     }
 
     protected virtual void Awake()
@@ -86,9 +95,12 @@ public abstract class TweenBase : MonoBehaviour
         {
             GameObject recvObj = new GameObject();
             recvObj.transform.SetParent(this.transform);
-            recvObj.name = "_tween_callback";
+            recvObj.transform.localPosition = Vector3.zero;
+            recvObj.transform.localScale = Vector3.one;
+            recvObj.transform.localRotation = Quaternion.identity;
+            recvObj.name = this.name + "_tween_callback";
             recvCallback = recvObj.AddComponent<TweenCallback>();
-            recvCallback.OnCompleteEvent = this.OnComplete;
+            recvCallback.onCompleteEvent += this.OnComplete;
         }
     }
 
@@ -100,14 +112,38 @@ public abstract class TweenBase : MonoBehaviour
         }
     }
 
+    protected virtual void OnDestroy()
+    {
+        if (recvCallback != null)
+        {
+            recvCallback.onCompleteEvent -= this.OnComplete;
+        }
+    }
+
     protected virtual void OnComplete()
     {
         onCompleteTimes++;
 
-        if (pingPongOnlyOnce && onCompleteTimes >= 2)
+        switch (Loop)
         {
-            Debug.Log("PingPongOnlyOnce && _onCompleteTimes >= 2 established, Stop this tween");
-            this.Stop();
+            case iTween.LoopType.loop:
+                {
+                }
+                break;
+            case iTween.LoopType.none:
+                {
+                    isTweening = false;
+                }
+                break;
+            case iTween.LoopType.pingPong:
+                {
+                    if (pingPongOnlyOnce && onCompleteTimes >= 2)
+                    {
+                        Debug.Log("PingPongOnlyOnce && _onCompleteTimes >= 2 established, Stop this tween");
+                        this.Stop();
+                    }
+                }
+                break;
         }
     }
 }

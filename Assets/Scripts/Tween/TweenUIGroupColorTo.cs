@@ -51,7 +51,7 @@ public class TweenUIGroupColorTo : TweenValueColor
         if (CanApplyColor() == false)
             return;
         
-        if (this.GetComponent<iTween>() != null)
+        if (isTweening == true)
         {
             ApplyColor();
         }

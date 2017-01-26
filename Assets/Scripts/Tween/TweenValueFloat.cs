@@ -55,7 +55,7 @@ public class TweenValueFloat : TweenBase
             )
         );
 
-        base.Callback.OnUpdateFloatEvent = this.OnUpdate;
+        base.Callback.onUpdateFloatEvent = this.OnUpdate;
     }
 
     private void OnUpdate(float f)

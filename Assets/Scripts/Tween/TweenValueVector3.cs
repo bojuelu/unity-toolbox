@@ -55,7 +55,7 @@ public class TweenValueVector3 : TweenBase
             )
         );
 
-        base.Callback.OnUpdateVector3Event = this.OnUpdate;
+        base.Callback.onUpdateVector3Event = this.OnUpdate;
     }
 
     private void OnUpdate(Vector3 vec3)
