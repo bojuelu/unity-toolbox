@@ -81,13 +81,4 @@ public class UIPanelPlus : UIPanel
 
         return false;
     }
-
-    // test
-    void OnGUI()
-    {
-        if (GUI.Button(new Rect(0, 0, 100, 100), "bringin"))
-            this.BringIn();
-        if (GUI.Button(new Rect(0, 100, 100, 100), "dismiss"))
-            this.Dismiss();
-    }
 }
