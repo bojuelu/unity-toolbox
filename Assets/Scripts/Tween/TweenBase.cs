@@ -47,21 +47,21 @@ public abstract class TweenBase : MonoBehaviour
         // reset oncomplete counter
         onCompleteTimes = 0;
 
-        // remove the iTween with the same type
-        iTween[] tweens = this.tweenTarget.GetComponents<iTween>();
-        for (int i = 0; i < tweens.Length; i++)
-        {
-            if (tweens[i] == null)
-                continue;
-            
-            if (tweens[i]._name == tweenType)
-            {
-                Debug.LogWarning(string.Format("duplicate tween type: {0} ,id: {1} destroy it.", tweenType, tweens[i].id));
-                tweens[i].enabled = false;
-                GameObject.Destroy(tweens[i]);
-                tweens[i] = null;
-            }
-        }
+//        // remove the iTween with the same type
+//        iTween[] tweens = this.tweenTarget.GetComponents<iTween>();
+//        for (int i = 0; i < tweens.Length; i++)
+//        {
+//            if (tweens[i] == null)
+//                continue;
+//            
+//            if (tweens[i]._name == tweenType)
+//            {
+//                Debug.LogWarning(string.Format("duplicate tween type: {0} ,id: {1} destroy it.", tweenType, tweens[i].id));
+//                tweens[i].enabled = false;
+//                GameObject.Destroy(tweens[i]);
+//                tweens[i] = null;
+//            }
+//        }
 
         isTweening = true;
     }
