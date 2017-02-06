@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Tween image alpha to. Powered by iTween.
+/// Tween graphic alpha to. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
 
@@ -7,11 +7,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class TweenImageAlphaTo : TweenValueFloat
+public class TweenGraphicAlphaTo : TweenValueFloat
 {
+    private Graphic graphic;
+
     public override void Run()
     {
-        float nowAlpha = this.tweenTarget.GetComponent<Image>().color.a;
+        graphic = this.tweenTarget.GetComponent<Graphic>();
+
+        float nowAlpha = graphic.color.a;
 
         this.FloatNow = nowAlpha;  // avoid tweening first frame use wrong value
 
@@ -21,18 +25,17 @@ public class TweenImageAlphaTo : TweenValueFloat
     void Update()
     {
         if (isTweening == true)
-            ApplyAlpha();
+            ApplyColor();
     }
 
     protected override void OnComplete()
     {
-        ApplyAlpha();
+        ApplyColor();
         base.OnComplete();
     }
 
-    void ApplyAlpha()
+    void ApplyColor()
     {
-        Image image = this.tweenTarget.GetComponent<Image>();
-        image.color = new Color(image.color.r, image.color.g, image.color.b, this.FloatNow);
+        graphic.color = new Color(graphic.color.r, graphic.color.g, graphic.color.b, this.FloatNow);
     }
 }

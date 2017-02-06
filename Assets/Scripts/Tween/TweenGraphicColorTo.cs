@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Tween image color to. Powered by iTween.
+/// Tween graphic color to. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
 
@@ -7,12 +7,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class TweenImageColorTo : TweenValueColor
+public class TweenGraphicColorTo : TweenValueColor
 {
+    private Graphic graphic;
 
     public override void Run()
     {
-        Color nowColor = this.tweenTarget.GetComponent<Image>().color;
+        graphic = this.tweenTarget.GetComponent<Graphic>();
+
+        Color nowColor = graphic.color;
 
         this.ColorNow = nowColor;  // avoid tweening first frame use wrong value
 
@@ -33,6 +36,6 @@ public class TweenImageColorTo : TweenValueColor
 
     void ApplyColor()
     {
-        this.tweenTarget.GetComponent<Image>().color = this.ColorNow;
+        graphic.color = this.ColorNow;
     }
 }
