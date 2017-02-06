@@ -22,14 +22,21 @@ public class TweenGraphicsColorTo : TweenValueColor
 
     void Update()
     {
-        if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.ColorNow is not correct value
+        if (isTweening == false)
         {
-            skipFirstFrame = false;
             return;
         }
-        else if (isTweening)
+        else
         {
-            ApplyColor();
+            if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.ColorNow is not correct value
+            {
+                skipFirstFrame = false;
+                return;
+            }
+            else
+            {
+                ApplyColor();
+            }
         }
     }
 

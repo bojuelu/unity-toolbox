@@ -20,7 +20,7 @@ public class TweenValueFloat : TweenBase
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "value";
+        tweenType = "value";
     }
 
     public void Run(float floatFrom, float floatTo)
@@ -35,31 +35,28 @@ public class TweenValueFloat : TweenBase
     {
         base.Run();
 
-        iTween.ValueTo(base.tweenTarget,
+        iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "from", this.floatFrom,
-                "to", this.floatTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.Ease.ToString(),
-
-                "loopType", base.Loop,
-
-                "onupdate", base.Callback.OnUpdateFloatFuncName,
-                "onupdatetarget", base.Callback.gameObject,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject,
-
-                "ignoretimescale", base.ignoreTimeScale
+                "name", tweenType,
+                "from", floatFrom,
+                "to", floatTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", Ease.ToString(),
+                "loopType", Loop,
+                "onupdate", Callback.OnUpdateFloatFuncName,
+                "onupdatetarget", Callback.gameObject,
+                "oncomplete", Callback.OnCompleteFuncName,
+                "oncompletetarget", Callback.gameObject,
+                "ignoretimescale", ignoreTimeScale
             )
         );
 
-        base.Callback.onUpdateFloatEvent = this.OnUpdate;
+        Callback.onUpdateFloatEvent = this.OnUpdate;
     }
 
     private void OnUpdate(float f)
     {
-        this.floatNow = f;
+        floatNow = f;
     }
 }

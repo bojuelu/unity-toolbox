@@ -20,7 +20,7 @@ public class TweenValueColor : TweenBase
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "value";
+        tweenType = "value";
     }
 
     public void Run(Color colorFrom, Color colorTo)
@@ -35,31 +35,28 @@ public class TweenValueColor : TweenBase
     {
         base.Run();
 
-        iTween.ValueTo(base.tweenTarget,
+        iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "from", this.colorFrom,
-                "to", this.colorTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.Ease.ToString(),
-
-                "loopType", base.Loop,
-
-                "onupdate", base.Callback.OnUpdateColorFuncName,
-                "onupdatetarget", base.Callback.gameObject,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject,
-
-                "ignoretimescale", base.ignoreTimeScale
+                "name", tweenType,
+                "from", colorFrom,
+                "to", colorTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", Ease.ToString(),
+                "loopType", Loop,
+                "onupdate", Callback.OnUpdateColorFuncName,
+                "onupdatetarget", Callback.gameObject,
+                "oncomplete", Callback.OnCompleteFuncName,
+                "oncompletetarget", Callback.gameObject,
+                "ignoretimescale", ignoreTimeScale
             )
         );
 
-        base.Callback.onUpdateColorEvent = this.OnUpdate;
+        Callback.onUpdateColorEvent = this.OnUpdate;
     }
 
     private void OnUpdate(Color c)
     {
-        this.colorNow = c;
+        colorNow = c;
     }
 }

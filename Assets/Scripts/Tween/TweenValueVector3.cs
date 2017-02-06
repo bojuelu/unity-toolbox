@@ -20,13 +20,13 @@ public class TweenValueVector3 : TweenBase
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "value";
+        tweenType = "value";
     }
 
-    public void Run(Vector3 vecFrom, Vector3 vecTo)
+    public void Run(Vector3 vectorFrom, Vector3 vectorTo)
     {
-        this.vectorFrom = vecFrom;
-        this.vectorTo = vecTo;
+        this.vectorFrom = vectorFrom;
+        this.vectorTo = vectorTo;
 
         this.Run();
     }
@@ -35,31 +35,28 @@ public class TweenValueVector3 : TweenBase
     {
         base.Run();
 
-        iTween.ValueTo(base.tweenTarget,
+        iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "from", this.vectorFrom,
-                "to", this.vectorTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.Ease.ToString(),
-
-                "loopType", base.Loop,
-
-                "onupdate", base.Callback.OnUpdateVector3FuncName,
-                "onupdatetarget", base.Callback.gameObject,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject,
-
-                "ignoretimescale", base.ignoreTimeScale
+                "name", tweenType,
+                "from", vectorFrom,
+                "to", vectorTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", Ease.ToString(),
+                "loopType", Loop,
+                "onupdate", Callback.OnUpdateVector3FuncName,
+                "onupdatetarget", Callback.gameObject,
+                "oncomplete", Callback.OnCompleteFuncName,
+                "oncompletetarget", Callback.gameObject,
+                "ignoretimescale", ignoreTimeScale
             )
         );
 
-        base.Callback.onUpdateVector3Event = this.OnUpdate;
+        Callback.onUpdateVector3Event = this.OnUpdate;
     }
 
     private void OnUpdate(Vector3 vec3)
     {
-        this.vectorNow = vec3;
+        vectorNow = vec3;
     }
 }

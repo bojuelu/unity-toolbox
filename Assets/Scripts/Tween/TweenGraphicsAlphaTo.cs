@@ -22,14 +22,21 @@ public class TweenGraphicsAlphaTo : TweenValueFloat
 
     void Update()
     {
-        if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.FloatNow is not correct value
+        if (isTweening == false)
         {
-            skipFirstFrame = false;
             return;
         }
-        else if (isTweening)
+        else
         {
-            ApplyAlpha();
+            if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.FloatNow is not correct value
+            {
+                skipFirstFrame = false;
+                return;
+            }
+            else
+            {
+                ApplyAlpha();
+            }
         }
     }
 

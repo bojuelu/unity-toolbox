@@ -20,7 +20,7 @@ public class TweenValueRect : TweenBase
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "value";
+        tweenType = "value";
     }
 
     public void Run(Rect rectFrom, Rect rectTo)
@@ -35,31 +35,28 @@ public class TweenValueRect : TweenBase
     {
         base.Run();
 
-        iTween.ValueTo(base.tweenTarget,
+        iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "from", this.rectFrom,
-                "to", this.rectTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.Ease.ToString(),
-
-                "loopType", base.Loop,
-
-                "onupdate", base.Callback.OnUpdateRectFuncName,
-                "onupdatetarget", base.Callback.gameObject,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject,
-
-                "ignoretimescale", base.ignoreTimeScale
+                "name", tweenType,
+                "from", rectFrom,
+                "to", rectTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", Ease.ToString(),
+                "loopType", Loop,
+                "onupdate", Callback.OnUpdateRectFuncName,
+                "onupdatetarget", Callback.gameObject,
+                "oncomplete", Callback.OnCompleteFuncName,
+                "oncompletetarget", Callback.gameObject,
+                "ignoretimescale", ignoreTimeScale
             )
         );
 
-        base.Callback.onUpdateRectEvent = this.OnUpdate;
+        Callback.onUpdateRectEvent = this.OnUpdate;
     }
 
     private void OnUpdate(Rect rect)
     {
-        this.rectNow = rect;
+        rectNow = rect;
     }
 }
