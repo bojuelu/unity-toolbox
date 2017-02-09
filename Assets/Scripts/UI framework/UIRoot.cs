@@ -4,6 +4,7 @@
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,8 +14,12 @@ public class UIRoot : MonoBehaviour
     private static UIRoot instance = null;
     public static UIRoot Instance { get { return instance; } }
 
-    private Canvas mainCanvas;
-    public Canvas MainCanvas { get { return mainCanvas; } }
+    private Canvas canvasRef = null;
+    public Canvas CanvasRef { get { return canvasRef; } }
+
+    private CanvasScaler canvasScalerRef = null;
+    public CanvasScaler CanvasScalerRef { get { return canvasScalerRef; } }
+
     private List<UIObject> registeredObjs = null;
 
     public bool Register(UIObject u)
@@ -98,7 +103,8 @@ public class UIRoot : MonoBehaviour
             return;
         }
         instance = this;
-        mainCanvas = this.GetComponent<Canvas>();
+        canvasRef = this.GetComponent<Canvas>();
+        canvasScalerRef = this.GetComponent<CanvasScaler>();
         registeredObjs = new List<UIObject>();
     }
 

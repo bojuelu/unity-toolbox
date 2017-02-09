@@ -38,11 +38,10 @@ public class UIObject : MonoBehaviour
 
     protected virtual void Start()
     {
-        if (root == null)
-            root = UIRoot.Instance;
+        root = UIRoot.Instance;
         if (root == null)
         {
-            Debug.LogWarning("UIRoot not exist, destory itself");
+            Debug.LogError("UIRoot not exist, destory itself");
             GameObject.Destroy(this);
             return;
         }
