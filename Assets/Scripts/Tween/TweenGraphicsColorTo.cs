@@ -11,39 +11,23 @@ public class TweenGraphicsColorTo : TweenValueColor
 {
     private Graphic[] graphics;
 
-    private bool skipFirstFrame = true;
-
     public override void Run()
     {
         graphics = this.tweenTarget.GetComponentsInChildren<Graphic>();
-
         base.Run();
     }
 
     void Update()
     {
-        if (isTweening == false)
+        if (isTweening)
         {
-            return;
-        }
-        else
-        {
-            if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.ColorNow is not correct value
-            {
-                skipFirstFrame = false;
-                return;
-            }
-            else
-            {
-                ApplyColor();
-            }
+            ApplyColor();
         }
     }
 
     protected override void OnComplete()
     {
         ApplyColor();
-        skipFirstFrame = true;
 
         base.OnComplete();
     }

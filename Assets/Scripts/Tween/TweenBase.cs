@@ -37,13 +37,6 @@ public abstract class TweenBase : MonoBehaviour
 
     public virtual void Run()
     {
-        // init iTween
-        if (!isInited)
-        {
-            iTween.Init(this.tweenTarget);
-            isInited = true;
-        }
-
         // reset oncomplete counter
         onCompleteTimes = 0;
 
@@ -106,6 +99,13 @@ public abstract class TweenBase : MonoBehaviour
 
     protected virtual void Start()
     {
+        // init iTween
+        if (!isInited)
+        {
+            iTween.Init(this.tweenTarget);
+            isInited = true;
+        }
+
         if (autoStart)
         {
             this.Run();

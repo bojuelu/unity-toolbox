@@ -11,39 +11,23 @@ public class TweenGraphicsAlphaTo : TweenValueFloat
 {
     private Graphic[] graphics;
 
-    private bool skipFirstFrame = true;
-
     public override void Run()
     {
         graphics = this.tweenTarget.GetComponentsInChildren<Graphic>();
-
         base.Run();
     }
 
     void Update()
     {
-        if (isTweening == false)
+        if (isTweening)
         {
-            return;
-        }
-        else
-        {
-            if (skipFirstFrame)  // skip the first frame, bcz at the first frame, this.FloatNow is not correct value
-            {
-                skipFirstFrame = false;
-                return;
-            }
-            else
-            {
-                ApplyAlpha();
-            }
+            ApplyAlpha();
         }
     }
 
     protected override void OnComplete()
     {
         ApplyAlpha();
-        skipFirstFrame = true;
 
         base.OnComplete();
     }

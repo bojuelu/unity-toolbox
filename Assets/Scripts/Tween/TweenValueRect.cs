@@ -25,6 +25,7 @@ public class TweenValueRect : TweenBase
 
     public void Run(Rect rectFrom, Rect rectTo)
     {
+        this.rectNow = rectFrom;
         this.rectFrom = rectFrom;
         this.rectTo = rectTo;
 

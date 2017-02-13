@@ -25,6 +25,7 @@ public class TweenValueColor : TweenBase
 
     public void Run(Color colorFrom, Color colorTo)
     {
+        this.colorNow = colorFrom;
         this.colorFrom = colorFrom;
         this.colorTo = colorTo;
 

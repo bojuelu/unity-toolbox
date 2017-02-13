@@ -25,6 +25,7 @@ public class TweenValueVector3 : TweenBase
 
     public void Run(Vector3 vectorFrom, Vector3 vectorTo)
     {
+        this.vectorNow = vectorFrom;
         this.vectorFrom = vectorFrom;
         this.vectorTo = vectorTo;
 

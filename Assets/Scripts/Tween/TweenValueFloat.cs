@@ -10,7 +10,7 @@ public class TweenValueFloat : TweenBase
 {
     public float floatFrom = 0f;
     public float floatTo = 1f;
-    private float floatNow = 0f;
+    private float floatNow = 1f;
     public float FloatNow
     {
         get { return floatNow; }
@@ -25,6 +25,7 @@ public class TweenValueFloat : TweenBase
 
     public void Run(float floatFrom, float floatTo)
     {
+        this.floatNow = floatFrom;
         this.floatFrom = floatFrom;
         this.floatTo = floatTo;
 
