@@ -17,6 +17,8 @@ public class TweenValueVector3 : TweenBase
         set { vectorNow = value; }
     }
 
+    protected int onUpdateInvokeTimes = 0;
+
     protected override void Awake()
     {
         base.Awake();
@@ -25,9 +27,10 @@ public class TweenValueVector3 : TweenBase
 
     public void Run(Vector3 vectorFrom, Vector3 vectorTo)
     {
-        this.vectorNow = vectorFrom;
         this.vectorFrom = vectorFrom;
         this.vectorTo = vectorTo;
+
+        onUpdateInvokeTimes = 0;
 
         this.Run();
     }
@@ -35,6 +38,8 @@ public class TweenValueVector3 : TweenBase
     public override void Run()
     {
         base.Run();
+
+        this.vectorNow = vectorFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
@@ -59,5 +64,6 @@ public class TweenValueVector3 : TweenBase
     private void OnUpdate(Vector3 vec3)
     {
         vectorNow = vec3;
+        onUpdateInvokeTimes++;
     }
 }

@@ -24,14 +24,15 @@ public class TweenGraphicAlphaTo : TweenValueFloat
 
     void Update()
     {
-        if (isTweening == true)
+        if (isTweening && onUpdateInvokeTimes > 0)
             ApplyColor();
     }
 
     protected override void OnComplete()
     {
-        ApplyColor();
         base.OnComplete();
+
+        ApplyColor();
     }
 
     void ApplyColor()

@@ -12,21 +12,20 @@ public class TweenRectTransformMoveTo : TweenValueVector3
     {
         Vector3 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition;
 
-        this.VectorNow = nowPos;  // avoid tweening first frame use wrong value
-
         base.Run();
     }
 
     void Update()
     {
-        if (isTweening == true)
+        if (isTweening && onUpdateInvokeTimes > 0)
             ApplyPosition();
     }
 
     protected override void OnComplete()
     {
-        ApplyPosition();
         base.OnComplete();
+
+        ApplyPosition();
     }
 
     void ApplyPosition()

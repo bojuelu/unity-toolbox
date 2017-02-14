@@ -17,6 +17,8 @@ public class TweenValueFloat : TweenBase
         set { floatNow = value; }
     }
 
+    protected int onUpdateInvokeTimes = 0;
+
     protected override void Awake()
     {
         base.Awake();
@@ -25,9 +27,10 @@ public class TweenValueFloat : TweenBase
 
     public void Run(float floatFrom, float floatTo)
     {
-        this.floatNow = floatFrom;
         this.floatFrom = floatFrom;
         this.floatTo = floatTo;
+
+        onUpdateInvokeTimes = 0;
 
         this.Run();
     }
@@ -35,6 +38,8 @@ public class TweenValueFloat : TweenBase
     public override void Run()
     {
         base.Run();
+
+        this.floatNow = floatFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
@@ -59,5 +64,6 @@ public class TweenValueFloat : TweenBase
     private void OnUpdate(float f)
     {
         floatNow = f;
+        onUpdateInvokeTimes++;
     }
 }

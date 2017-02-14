@@ -19,17 +19,15 @@ public class TweenGraphicsAlphaTo : TweenValueFloat
 
     void Update()
     {
-        if (isTweening)
-        {
+        if (isTweening && onUpdateInvokeTimes > 0)
             ApplyAlpha();
-        }
     }
 
     protected override void OnComplete()
     {
-        ApplyAlpha();
-
         base.OnComplete();
+
+        ApplyAlpha();
     }
 
     void ApplyAlpha()

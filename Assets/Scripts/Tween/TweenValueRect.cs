@@ -17,6 +17,8 @@ public class TweenValueRect : TweenBase
         set { rectNow = value; }
     }
 
+    protected int onUpdateInvokeTimes = 0;
+
     protected override void Awake()
     {
         base.Awake();
@@ -25,9 +27,10 @@ public class TweenValueRect : TweenBase
 
     public void Run(Rect rectFrom, Rect rectTo)
     {
-        this.rectNow = rectFrom;
         this.rectFrom = rectFrom;
         this.rectTo = rectTo;
+
+        onUpdateInvokeTimes = 0;
 
         this.Run();
     }
@@ -35,6 +38,8 @@ public class TweenValueRect : TweenBase
     public override void Run()
     {
         base.Run();
+
+        this.rectNow = rectFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
@@ -59,5 +64,6 @@ public class TweenValueRect : TweenBase
     private void OnUpdate(Rect rect)
     {
         rectNow = rect;
+        onUpdateInvokeTimes++;
     }
 }

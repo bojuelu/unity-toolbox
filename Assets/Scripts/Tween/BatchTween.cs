@@ -10,8 +10,8 @@ using System.Collections.Generic;
 public class BatchTween : MonoBehaviour
 {
     public bool autoStart = true;
-    public GameObject objectWithTweens;
     private TweenBase[] tweens = null;
+    public TweenBase[] Tweens { get { return tweens; } }
 
     public void Run()
     {
@@ -59,7 +59,7 @@ public class BatchTween : MonoBehaviour
 
     void Awake()
     {
-        tweens = objectWithTweens.GetComponents<TweenBase>();
+        tweens = this.gameObject.GetComponents<TweenBase>();
         for (int i = 0; i < tweens.Length; i++)
         {
             tweens[i].autoStart = false;

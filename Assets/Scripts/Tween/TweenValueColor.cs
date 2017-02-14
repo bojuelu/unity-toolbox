@@ -17,6 +17,8 @@ public class TweenValueColor : TweenBase
         set { colorNow = value; }
     }
 
+    protected int onUpdateInvokeTimes = 0;
+
     protected override void Awake()
     {
         base.Awake();
@@ -25,9 +27,10 @@ public class TweenValueColor : TweenBase
 
     public void Run(Color colorFrom, Color colorTo)
     {
-        this.colorNow = colorFrom;
         this.colorFrom = colorFrom;
         this.colorTo = colorTo;
+
+        onUpdateInvokeTimes = 0;
 
         this.Run();
     }
@@ -35,6 +38,8 @@ public class TweenValueColor : TweenBase
     public override void Run()
     {
         base.Run();
+
+        this.colorNow = colorFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
@@ -59,5 +64,6 @@ public class TweenValueColor : TweenBase
     private void OnUpdate(Color c)
     {
         colorNow = c;
+        onUpdateInvokeTimes++;
     }
 }

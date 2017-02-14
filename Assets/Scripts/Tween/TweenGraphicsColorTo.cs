@@ -19,17 +19,15 @@ public class TweenGraphicsColorTo : TweenValueColor
 
     void Update()
     {
-        if (isTweening)
-        {
+        if (isTweening && onUpdateInvokeTimes > 0)
             ApplyColor();
-        }
     }
 
     protected override void OnComplete()
     {
-        ApplyColor();
-
         base.OnComplete();
+
+        ApplyColor();
     }
 
     void ApplyColor()
