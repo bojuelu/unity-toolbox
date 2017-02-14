@@ -8,9 +8,15 @@ using System.Collections;
 
 public class TweenRectTransformMoveTo : TweenValueVector3
 {
+    public bool useNowAsFrom = false;
+
     public override void Run()
     {
-        Vector3 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition;
+        if (useNowAsFrom)
+        {
+            Vector2 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition;
+            this.vectorFrom = nowPos;
+        }
 
         base.Run();
     }
