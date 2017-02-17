@@ -16,6 +16,10 @@ public class TweenCallback : MonoBehaviour
     public iTweenUpdateFloatDelegate onUpdateFloatEvent;
     public string OnUpdateFloatFuncName { get { return "OnITweenUpdateFloat"; } }
 
+    public delegate void iTweenUpdateVector2(Vector2 vec2);
+    public iTweenUpdateVector2 onUpdateVector2Event;
+    public string OnUpdateVector2FuncName { get { return "OnITweenUpdateVector2"; } }
+
     public delegate void iTweenUpdateVector3(Vector3 vec3);
     public iTweenUpdateVector3 onUpdateVector3Event;
     public string OnUpdateVector3FuncName { get { return "OnITweenUpdateVector3"; } }
@@ -38,6 +42,12 @@ public class TweenCallback : MonoBehaviour
     {
         if (onUpdateFloatEvent != null)
             onUpdateFloatEvent.Invoke(f);
+    }
+
+    private void OnITweenUpdateVector2(Vector2 vec2)
+    {
+        if (onUpdateVector2Event != null)
+            onUpdateVector2Event.Invoke(vec2);
     }
 
     private void OnITweenUpdateVector3(Vector3 vec3)

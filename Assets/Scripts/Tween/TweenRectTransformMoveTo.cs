@@ -6,7 +6,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class TweenRectTransformMoveTo : TweenValueVector3
+public class TweenRectTransformMoveTo : TweenValueVector2
 {
     public bool useNowAsFrom = false;
 
