@@ -17,9 +17,9 @@ public class DataDownloader : MonoBehaviour
 
     public delegate void DownloadCompleteHandler(WWW www, string cacheFilePath);
 
-    private string cacheTableName = "cache_table.txt";
+    private static string cacheTableName = "cache_table.txt";
 
-    private string CacheDataLoc()
+    private static string CacheDataLoc()
     {
         return UnityUtility.PathFormat(Application.temporaryCachePath) + "data_downloader" + System.IO.Path.DirectorySeparatorChar;
     }
@@ -163,12 +163,12 @@ public class DataDownloader : MonoBehaviour
         }
     }
 
-    public Dictionary<string, string> GetCacheTable()
+    public static Dictionary<string, string> GetCacheTable()
     {
         return ReadCacheTable();
     }
 
-    public bool OverwriteCacheTable(Dictionary<string, string> dic)
+    public static bool OverwriteCacheTable(Dictionary<string, string> dic)
     {
         if (!UnityUtility.IsDirectoryExist(CacheDataLoc()))
             return false;
@@ -182,7 +182,7 @@ public class DataDownloader : MonoBehaviour
             return true;
     }
 
-    private Dictionary<string, string> ReadCacheTable()
+    private static Dictionary<string, string> ReadCacheTable()
     {
         if (!UnityUtility.IsDirectoryExist(CacheDataLoc()))
         {
@@ -201,7 +201,7 @@ public class DataDownloader : MonoBehaviour
         return json.ToDictionary();
     }
 
-    private string WriteCacheTable(Dictionary<string, string> dic)
+    private static string WriteCacheTable(Dictionary<string, string> dic)
     {
         JSONObject json = new JSONObject(dic);
         string strJson = json.Print(true);
@@ -211,7 +211,7 @@ public class DataDownloader : MonoBehaviour
         return UnityUtility.WriteFile(cacheTableName, byteData, CacheDataLoc());
     }
 
-    private string UniqueFileName()
+    private static string UniqueFileName()
     {
         string id = string.Format(
             "cache{0}{1}",
