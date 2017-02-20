@@ -76,7 +76,7 @@ public class DataDownloader : MonoBehaviour
         }
     }
 
-    IEnumerator DownloadCoroutine(string url, string saveFileName, string saveFileLoc, DownloadCompleteHandler callback)
+    private IEnumerator DownloadCoroutine(string url, string saveFileName, string saveFileLoc, DownloadCompleteHandler callback)
     {
         if (wwwObj != null)
         {
@@ -182,7 +182,7 @@ public class DataDownloader : MonoBehaviour
             return true;
     }
 
-    Dictionary<string, string> ReadCacheTable()
+    private Dictionary<string, string> ReadCacheTable()
     {
         if (!UnityUtility.IsDirectoryExist(CacheDataLoc()))
         {
@@ -201,7 +201,7 @@ public class DataDownloader : MonoBehaviour
         return json.ToDictionary();
     }
 
-    string WriteCacheTable(Dictionary<string, string> dic)
+    private string WriteCacheTable(Dictionary<string, string> dic)
     {
         JSONObject json = new JSONObject(dic);
         string strJson = json.Print(true);
@@ -211,7 +211,7 @@ public class DataDownloader : MonoBehaviour
         return UnityUtility.WriteFile(cacheTableName, byteData, CacheDataLoc());
     }
 
-    string UniqueFileName()
+    private string UniqueFileName()
     {
         string id = string.Format(
             "cache{0}{1}",
@@ -221,7 +221,7 @@ public class DataDownloader : MonoBehaviour
         return id;
     }
 
-    void Start()
+    private void Start()
     {
         if (autoStart)
         {
@@ -230,7 +230,7 @@ public class DataDownloader : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (isDownloading)
         {
