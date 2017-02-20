@@ -22,7 +22,8 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
 
     public ScrollRect scrollRect;
     public GridLayoutGroup gridLayoutGroup;
-    public TweenRectTransformMoveTo gridMover;
+
+    private TweenRectTransformMoveTo gridMover;
 
     public int gridIndex = 0;
     private int gridIndexLast = 0;
@@ -40,7 +41,6 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
     public void OnBeginDrag(PointerEventData data)
     {
         beginFingerDragPoint = data.position;
-        Debug.Log("beginDragPoint: " + beginFingerDragPoint);
     }
 
     /// <summary>
@@ -51,10 +51,8 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
     public void OnEndDrag(PointerEventData data)
     {
         endFingerDragPoint = data.position;
-        Debug.Log("endDragPoint: " + endFingerDragPoint);
 
         gridIndex = CalcGridIndex();
-        Debug.Log("gridIndex: " + gridIndex);
 
         if (statusNow == States.UserScrolling)
         {
@@ -175,20 +173,15 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
     private int CalcGridIndex()
     {
         int gridsCount = GetGridsCount();
-        Debug.Log("gridsCount: " + gridsCount);
 
         if (gridsCount > 0)
         {
             float oneGridLength = GetOneGridLength();
-            Debug.Log("oneGridLength: " + oneGridLength);
 
             float anchoredPosition = GetAnchoredPosition();
-            Debug.Log("anchoredPosition: " + anchoredPosition);
 
             float posFactor = 0f;
-            Debug.Log(string.Format("endDragPoint: {0} beginDragPoint: {1}", endFingerDragPoint, beginFingerDragPoint));
             Vector2 fingerVector = endFingerDragPoint - beginFingerDragPoint;
-            Debug.Log("fingerVector: " + fingerVector);
 
             switch (gridLayoutGroup.constraint)
             {
@@ -225,14 +218,12 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
             }
 
             float pos = Mathf.Abs(anchoredPosition) + posFactor;
-            Debug.Log("pos: " + pos);
 
             int index = 0;
             while (index < gridsCount)
             {
                 float leftVal = oneGridLength * (float)index;
                 float rightVal = oneGridLength * (float)(index + 1);
-                Debug.Log(string.Format("leftVal: {0} , rightVal: {1}", leftVal, rightVal));
 
                 if (pos >= leftVal && pos < rightVal)
                 {
@@ -345,8 +336,6 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
                         // calculate the position it should tween to
                         Vector2 tweenPosTo = CalcGridIndexToPosition(gridIndex);
 
-                        Debug.Log("tweenPosTo: " + tweenPosTo);
-
                         // setup the tween and run it
                         gridMover.useNowAsFrom = true;
                         gridMover.vectorTo = tweenPosTo;
@@ -402,9 +391,13 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
         rt.anchoredPosition = Vector2.zero;
 
         // setup tween (mover)
+        gridMover = this.gameObject.AddComponent<TweenRectTransformMoveTo>();
         gridMover.tweenTarget = scrollRect.content.gameObject;
         gridMover.autoStart = false;
         gridMover.Loop = iTween.LoopType.none;
+        gridMover.Ease = iTween.EaseType.easeOutCubic;
+        gridMover.delay = 0f;
+        gridMover.duration = 0.25f;
     }
 
     private void Update()
@@ -419,10 +412,4 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
 
         UpdateStatus();
     }
-//
-//    // test
-//    private void OnGUI()
-//    {
-//        GUI.Label(new Rect(0, 0, 400, 200), string.Format("status: {0}", statusNow));
-//    }
 }
