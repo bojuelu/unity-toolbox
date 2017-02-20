@@ -19,6 +19,11 @@ public class DataDownloader : MonoBehaviour
 
     private string cacheTableName = "cache_table.txt";
 
+    private string CacheDataLoc()
+    {
+        return UnityUtility.PathFormat(Application.temporaryCachePath) + "data_downloader" + System.IO.Path.DirectorySeparatorChar;
+    }
+
     /// <summary>
     /// Give a web url, download it and save to disk.
     /// Next time use the same url, it will download from local disk.
@@ -175,11 +180,6 @@ public class DataDownloader : MonoBehaviour
             return false;
         else
             return true;
-    }
-
-    string CacheDataLoc()
-    {
-        return UnityUtility.PathFormat(Application.persistentDataPath) + "persistent_cache" + System.IO.Path.DirectorySeparatorChar;
     }
 
     Dictionary<string, string> ReadCacheTable()
