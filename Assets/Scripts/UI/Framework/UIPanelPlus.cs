@@ -81,7 +81,8 @@ public class UIPanelPlus : UIPanel
 
         for (int i = 0; i < bringInTweens.Length; i++)
         {
-            bringInTweens[i].Run();
+            if (bringInTweens[i].gameObject.activeSelf && bringInTweens[i].enabled)
+                bringInTweens[i].Run();
         }
 
         base.BringIn();
@@ -94,7 +95,8 @@ public class UIPanelPlus : UIPanel
 
         for (int i = 0; i < dismissTweens.Length; i++)
         {
-            dismissTweens[i].Run();
+            if (dismissTweens[i].gameObject.activeSelf && dismissTweens[i].enabled)
+                dismissTweens[i].Run();
         }
 
         if (DestroyItselfWhenDismiss)
