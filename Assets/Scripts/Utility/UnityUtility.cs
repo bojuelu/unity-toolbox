@@ -734,6 +734,10 @@ public static class UnityUtility
         target.localPosition = source.localPosition;
         target.localRotation = source.localRotation;
         target.localScale = source.localScale;
+        target.anchoredPosition = source.anchoredPosition;
+        target.anchoredPosition3D = source.anchoredPosition3D;
+        target.anchorMax = source.anchorMax;
+        target.anchorMin = source.anchorMin;
     }
 
     public static string PrintExceptionDetails(System.Exception e)
