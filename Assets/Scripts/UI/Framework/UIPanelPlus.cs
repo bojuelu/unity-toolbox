@@ -23,6 +23,16 @@ public class UIPanelPlus : UIPanel
 
     private bool isFirstUpdate = true;
 
+    public float BringInNeedTime()
+    {
+        return CalcTweeningSpendTime(bringInTweens);
+    }
+
+    public float DismissNeedTime()
+    {
+        return CalcTweeningSpendTime(dismissTweens);
+    }
+
     public bool IsTweening()
     {
         if (bringInTweens != null)
@@ -91,6 +101,26 @@ public class UIPanelPlus : UIPanel
             this.StartCoroutine(this.WaitTweensDoneThenDestroyItself());
         
         base.Dismiss();
+    }
+
+    private float CalcTweeningSpendTime(TweenBase[] tweens)
+    {
+        float t = 0f;
+        for (int i = 0; i < tweens.Length; i++)
+        {
+            if (tweens[i] == null)
+                continue;
+            else if (tweens[i].gameObject.activeSelf == false)
+                continue;
+            else if (tweens[i].enabled == false)
+                continue;
+            else
+            {
+                t += tweens[i].delay;
+                t += tweens[i].duration;
+            }
+        }
+        return t;
     }
 
     private IEnumerator WaitTweensDoneThenDestroyItself()
