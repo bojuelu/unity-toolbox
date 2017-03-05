@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHandler
+public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler, IDragHandler
 {
     public enum States
     {
@@ -131,10 +131,10 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
         switch (gridLayoutGroup.constraint)
         {
             case GridLayoutGroup.Constraint.FixedColumnCount:
-                oneCellLegnth = gridLayoutGroup.cellSize.y;
+                oneCellLegnth = gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y;
                 break;
             case GridLayoutGroup.Constraint.FixedRowCount:
-                oneCellLegnth = gridLayoutGroup.cellSize.x;
+                oneCellLegnth = gridLayoutGroup.cellSize.x + gridLayoutGroup.spacing.x;
                 break;
             case GridLayoutGroup.Constraint.Flexible:
                 Debug.LogError("can not use GridLayoutGroup.Constraint.Flexible. Destroy itself.");
@@ -352,10 +352,8 @@ public class UIGridView : UIObject, IBeginDragHandler ,IEndDragHandler, IDragHan
         }
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-
         // setup ContentSizeFitter to minsize
         contentSizeFitter = gridLayoutGroup.gameObject.GetComponent<ContentSizeFitter>();
         if (contentSizeFitter == null)
