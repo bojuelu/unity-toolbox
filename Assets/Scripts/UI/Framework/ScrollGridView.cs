@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Base on UGUI ScrollView. Scroll it use "grid style".
+/// Base on UGUI ScrollView and GridLayoutGroup. Scroll it as "grid style".
 /// Author: BoJue.
 /// </summary>
 

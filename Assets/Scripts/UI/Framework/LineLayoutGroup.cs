@@ -1,5 +1,6 @@
 ﻿/// <summary>
-/// Base on UGUI ScrollView. Simular to GridLayoutGroup but, it allows every cells size are different.
+/// Simular to UGUI GridLayoutGroup, but it allows every cells size are different.
+/// Author: BoJue.
 /// </summary>
 using UnityEngine;
 using System.Collections;
