@@ -1,5 +1,6 @@
 ﻿/// <summary>
 /// Simular to UGUI GridLayoutGroup, but it allows every cells size are different.
+/// It alaways adjust sizeDelta itself, recommand use it with ScrollView together (add on ScrollView.Content)
 /// Author: BoJue.
 /// </summary>
 using UnityEngine;
