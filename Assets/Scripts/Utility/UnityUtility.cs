@@ -729,7 +729,7 @@ public static class UnityUtility
         target.localScale = source.localScale;
     }
 
-    public static void CopyRectTransform(RectTransform source, RectTransform target)
+    public static void CopyRectTransform(RectTransform target, RectTransform source)
     {
         target.sizeDelta = source.sizeDelta;
         target.anchorMax = source.anchorMax;
