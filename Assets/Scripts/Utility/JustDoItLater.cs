@@ -18,7 +18,7 @@
 ///         // play yawn directly.
 ///         PlayClip(snorlax, yawn);
 /// 
-///         // play lie down after 5 seconds.
+///         // just lie down! ...later. bcz you should wait for yawn action complete.
 ///         JustDoItLater justDoItLater = snorlax.gameObject.AddComponent<JustDoItLater>();
 ///         object[] things = new object[2];
 ///         things[0] = snorlax as object;
