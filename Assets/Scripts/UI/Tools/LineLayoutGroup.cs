@@ -43,13 +43,11 @@ public class LineLayoutGroup : MonoBehaviour
         {
             case Direction.Horizontal:
                 {
-                    allCellsSize = Vector2.zero;
                     LineCellsByHorizontalAndCalcAllCellSize();
                 }
                 break;
             case Direction.Vertical:
                 {
-                    allCellsSize = Vector2.zero;
                     LineCellsByVerticalAndCalcAllCellSize();
                 }
                 break;
@@ -58,6 +56,7 @@ public class LineLayoutGroup : MonoBehaviour
 
     private void LineCellsByHorizontalAndCalcAllCellSize()
     {
+        allCellsSize = Vector2.zero;
         Vector2 pos = Vector2.zero;
         for (int i = 0; i < thisRectTransform.childCount; i++)
         {
