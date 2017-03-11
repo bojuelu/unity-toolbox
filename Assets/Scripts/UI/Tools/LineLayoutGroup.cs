@@ -39,20 +39,24 @@ public class LineLayoutGroup : MonoBehaviour
             SetAnchorToLeftTop(rt);
         }
 
-        allCellsSize = Vector2.zero;
-
         switch (direction)
         {
             case Direction.Horizontal:
-                LineCellsByHorizontal();
+                {
+                    allCellsSize = Vector2.zero;
+                    LineCellsByHorizontalAndCalcAllCellSize();
+                }
                 break;
             case Direction.Vertical:
-                LineCellsByVertical();
+                {
+                    allCellsSize = Vector2.zero;
+                    LineCellsByVerticalAndCalcAllCellSize();
+                }
                 break;
         }
     }
 
-    private void LineCellsByHorizontal()
+    private void LineCellsByHorizontalAndCalcAllCellSize()
     {
         Vector2 pos = Vector2.zero;
         for (int i = 0; i < thisRectTransform.childCount; i++)
@@ -71,7 +75,7 @@ public class LineLayoutGroup : MonoBehaviour
         }
     }
 
-    private void LineCellsByVertical()
+    private void LineCellsByVerticalAndCalcAllCellSize()
     {
         Vector2 pos = Vector2.zero;
         for (int i = 0; i < thisRectTransform.childCount; i++)
