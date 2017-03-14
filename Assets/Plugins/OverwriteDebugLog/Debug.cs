@@ -1,6 +1,6 @@
 ﻿/// <summary>
 /// Hide Debug log when product release.
-/// Use Unity Build Settings -> Scripting Define Symbols (or define in your code), to decide what kind of log you want to filter.
+/// Use Unity: Build Settings / Scripting Define Symbols (or define in your code), to decide what kind of log you want to show.
 /// Define Symbols: LOG_VERBOSE, LOG_DEBUG, LOG_WARNING, LOG_ERROR, LOG_EXCEPTION .
 /// LOG_VERBOSE will show all kind of logs.
 /// Author: BoJue.
