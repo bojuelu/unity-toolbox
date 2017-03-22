@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class UIPanelPlusWithWidgets : UIPanelPlus
+public class UIPanelAndWidgets : UIPanelPlus
 {
     public Text[] texts;
     public Image[] images;
