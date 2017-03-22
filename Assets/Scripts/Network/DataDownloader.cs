@@ -216,7 +216,7 @@ public class DataDownloader : MonoBehaviour
         string id = string.Format(
             "cache{0}{1}",
             DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
-            UnityUtility.GenerateRandomString(10)
+            UnityUtility.GenerateRandomString(8)
         );
         return id;
     }

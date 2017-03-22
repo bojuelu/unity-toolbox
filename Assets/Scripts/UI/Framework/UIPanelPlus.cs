@@ -10,8 +10,8 @@ using System.Collections;
 public class UIPanelPlus : UIPanel
 {
     public bool defaultIsShow = true;
-    public TweenBase[] bringInTweens = null;
-    public TweenBase[] dismissTweens = null;
+    public BatchTweens bringInTweens = null;
+    public BatchTweens dismissTweens = null;
 
     public bool DestroyItselfWhenDismiss = false;
 
@@ -35,24 +35,7 @@ public class UIPanelPlus : UIPanel
 
     public bool IsTweening()
     {
-        if (bringInTweens != null)
-        {
-            for (int i = 0; i < bringInTweens.Length; i++)
-            {
-                if (bringInTweens[i].IsTweening)
-                    return true;
-            }
-        }
-        if (dismissTweens != null)
-        {
-            for (int i = 0; i < dismissTweens.Length; i++)
-            {
-                if (dismissTweens[i].IsTweening)
-                    return true;
-            }
-        }
-
-        return false;
+        return bringInTweens.IsRunning() || dismissTweens.IsRunning();
     }
 
     protected virtual void Awake()
@@ -79,11 +62,7 @@ public class UIPanelPlus : UIPanel
         if (isShow == true || IsTweening())
             return;
 
-        for (int i = 0; i < bringInTweens.Length; i++)
-        {
-            if (bringInTweens[i].gameObject.activeSelf && bringInTweens[i].enabled)
-                bringInTweens[i].Run();
-        }
+        bringInTweens.Run();
 
         base.BringIn();
     }
@@ -93,11 +72,7 @@ public class UIPanelPlus : UIPanel
         if (isShow == false || IsTweening())
             return;
 
-        for (int i = 0; i < dismissTweens.Length; i++)
-        {
-            if (dismissTweens[i].gameObject.activeSelf && dismissTweens[i].enabled)
-                dismissTweens[i].Run();
-        }
+        dismissTweens.Run();
 
         if (DestroyItselfWhenDismiss)
             this.StartCoroutine(this.WaitTweensDoneThenDestroyItself());
@@ -105,21 +80,21 @@ public class UIPanelPlus : UIPanel
         base.Dismiss();
     }
 
-    private float CalcTweeningSpendTime(TweenBase[] tweens)
+    private float CalcTweeningSpendTime(BatchTweens batchTween)
     {
         float t = 0f;
-        for (int i = 0; i < tweens.Length; i++)
+        TweenBase[] allTweens = batchTween.gameObject.GetComponents<TweenBase>();
+        for (int i = 0; i < allTweens.Length; i++)
         {
-            if (tweens[i] == null)
+            if (allTweens[i] == null)
                 continue;
-            else if (tweens[i].gameObject.activeSelf == false)
-                continue;
-            else if (tweens[i].enabled == false)
+            else if (allTweens[i].enabled == false)
                 continue;
             else
             {
-                t += tweens[i].delay;
-                t += tweens[i].duration;
+                float thisTweenNeedTime = allTweens[i].delay + allTweens[i].duration;
+                if (thisTweenNeedTime > t)
+                    t = thisTweenNeedTime;
             }
         }
         return t;

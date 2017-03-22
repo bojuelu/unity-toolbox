@@ -7,11 +7,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BatchTween : MonoBehaviour
+public class BatchTweens : MonoBehaviour
 {
     public bool autoStart = true;
     private TweenBase[] tweens = null;
-    public TweenBase[] Tweens { get { return tweens; } }
 
     public void Run()
     {
@@ -57,13 +56,28 @@ public class BatchTween : MonoBehaviour
         }
     }
 
-    void Awake()
+    public bool IsRunning()
+    {
+        bool isRunning = false;
+        for (int i = 0; i < tweens.Length; i++)
+        {
+            isRunning |= (tweens[i].IsTweening && tweens[i].enabled);
+        }
+        return isRunning;
+    }
+
+    public void ReloadTweens()
     {
         tweens = this.gameObject.GetComponents<TweenBase>();
         for (int i = 0; i < tweens.Length; i++)
         {
             tweens[i].autoStart = false;
         }
+    }
+
+    void Awake()
+    {
+        ReloadTweens();
     }
 
     void Start()
