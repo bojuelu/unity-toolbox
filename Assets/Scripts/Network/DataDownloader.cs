@@ -45,6 +45,8 @@ public class DataDownloader : MonoBehaviour
             return;
         }
 
+        url = downloadURL;
+
         // check if it can download from cache
         bool downloadFromCache = false;
         string cacheFilePath = "";
