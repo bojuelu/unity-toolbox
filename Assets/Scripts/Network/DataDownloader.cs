@@ -34,9 +34,6 @@ public class DataDownloader : MonoBehaviour
     /// <param name="md5CheckSum">Md5 check sum.</param>
     public void Download(string url, DownloadCompleteHandler callback, string md5Checksum = "")
     {
-        // Avoid double calling this function while the other MonoBehavior use AddComponent and call this function immediately
-        this.autoStart = false;
-
         if (isDownloading)
         {
             Debug.LogError("Download coroutine not complete yet, try again later");
@@ -47,18 +44,25 @@ public class DataDownloader : MonoBehaviour
         bool downloadFromCache = false;
         string cacheFilePath = "";
         Dictionary<string, string> cacheTable = ReadCacheTable();
+        // if url exist in the table, it might download from cache
         if (cacheTable.ContainsKey(url))
         {
+            // check if cache file is really existed
             cacheFilePath = cacheTable[url];
             if (UnityUtility.IsFileExist(cacheFilePath))
             {
+                // if this function caller give a md5 checksum code, go check it
                 if (!string.IsNullOrEmpty(md5Checksum))
                 {
                     if (EncryptionHelper.MD5ChecksumCode(cacheFilePath) == md5Checksum)
+                    {
+                        // pass checksum, download from cache
                         downloadFromCache = true;
+                    }
                 }
                 else
                 {
+                    // has no md5 checksum code, and cache file is really existed, download from cache
                     downloadFromCache = true;
                 }
             }
@@ -70,7 +74,7 @@ public class DataDownloader : MonoBehaviour
             this.StartCoroutine(this.DownloadCoroutine(UnityUtility.LocalURL(cacheFilePath), "", "", callback));
             isDownloading = true;
         }
-        // download from web and save to cache
+        // download from web and save to local cache
         else
         {
             this.StartCoroutine(this.DownloadCoroutine(url, UniqueFileName(), CacheDataLoc(), callback));
@@ -216,7 +220,7 @@ public class DataDownloader : MonoBehaviour
     {
         string id = string.Format(
             "cache{0}{1}",
-            DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
+            (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
             UnityUtility.GenerateRandomString(8)
         );
         return id;
@@ -224,7 +228,7 @@ public class DataDownloader : MonoBehaviour
 
     private void Start()
     {
-        if (autoStart)
+        if (autoStart && !isDownloading)
         {
             if (url.Contains("http://") || url.Contains("https://"))
                 Download(url, null, "");
