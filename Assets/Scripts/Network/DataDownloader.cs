@@ -68,11 +68,13 @@ public class DataDownloader : MonoBehaviour
         if (downloadFromCache)
         {
             this.StartCoroutine(this.DownloadCoroutine(UnityUtility.LocalURL(cacheFilePath), "", "", callback));
+            isDownloading = true;
         }
         // download from web and save to cache
         else
         {
             this.StartCoroutine(this.DownloadCoroutine(url, UniqueFileName(), CacheDataLoc(), callback));
+            isDownloading = true;
         }
     }
 
@@ -87,7 +89,6 @@ public class DataDownloader : MonoBehaviour
             "download data from:{0} saveFileName: {1} saveFileLoc: {2}", url, saveFileName, saveFileLoc)
         );
 
-        isDownloading = true;
         wwwObj = new WWW(url);
         while (!wwwObj.isDone)
         {
