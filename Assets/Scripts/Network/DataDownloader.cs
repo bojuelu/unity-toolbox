@@ -29,24 +29,19 @@ public class DataDownloader : MonoBehaviour
     /// Next time use the same url, it will download from local disk.
     /// Callback can get a WWW object, and save to local disk path
     /// </summary>
-    /// <param name="url">URL.</param>
-    /// <param name="callback">Callback.</param>
+    /// <param name="downloadURL">URL.</param>
+    /// <param name="callback">Callback function.</param>
     /// <param name="md5CheckSum">Md5 check sum.</param>
-    public void Download(string url, DownloadCompleteHandler callback, string md5Checksum = "")
+    public void Download(string downloadURL, DownloadCompleteHandler callback, string md5Checksum = "")
     {
-        if (string.IsNullOrEmpty(url))
+        if (isDownloading)
         {
-            Debug.LogError("Download URL is null or empty");
+            Debug.LogError("download coroutine not complete yet, try again later");
             return;
         }
-        else if (!url.Contains("http://") && !url.Contains("https://"))
+        else if (!IsValidURL(downloadURL))
         {
-            Debug.LogError("Download URL is not a valid  web URL :" + url);
-            return;
-        }
-        else if (isDownloading)
-        {
-            Debug.LogError("Download coroutine not complete yet, try again later");
+            Debug.LogError("download URL is invalid, the URL:" + downloadURL);
             return;
         }
 
@@ -55,10 +50,10 @@ public class DataDownloader : MonoBehaviour
         string cacheFilePath = "";
         Dictionary<string, string> cacheTable = ReadCacheTable();
         // if url exist in the table, it might download from cache
-        if (cacheTable.ContainsKey(url))
+        if (cacheTable.ContainsKey(downloadURL))
         {
             // check if cache file is really existed
-            cacheFilePath = cacheTable[url];
+            cacheFilePath = cacheTable[downloadURL];
             if (UnityUtility.IsFileExist(cacheFilePath))
             {
                 // if this function caller give a md5 checksum code, go check it
@@ -87,94 +82,8 @@ public class DataDownloader : MonoBehaviour
         // download from web and save to local cache
         else
         {
-            this.StartCoroutine(this.DownloadCoroutine(url, UniqueFileName(), CacheDataLoc(), callback));
+            this.StartCoroutine(this.DownloadCoroutine(downloadURL, UniqueFileName(), CacheDataLoc(), callback));
             isDownloading = true;
-        }
-    }
-
-    private IEnumerator DownloadCoroutine(string url, string saveFileName, string saveFileLoc, DownloadCompleteHandler callback)
-    {
-        if (wwwObj != null)
-        {
-            wwwObj.Dispose();
-            wwwObj = null;
-        }
-        Debug.Log(string.Format(
-            "download data from:{0} saveFileName: {1} saveFileLoc: {2}", url, saveFileName, saveFileLoc)
-        );
-
-        wwwObj = new WWW(url);
-        while (!wwwObj.isDone)
-        {
-            downloadProgress = wwwObj.progress;
-            yield return null;
-        }
-        yield return wwwObj;
-        downloadProgress = 1f;
-        isDownloading = false;
-
-        // if someting wrong, print error log and break this coroutine
-        if (!string.IsNullOrEmpty(wwwObj.error))
-        {
-            Debug.LogError(wwwObj.error);
-
-            if (callback != null)
-                callback.Invoke(wwwObj, "");
-            yield break;
-        }
-
-        // if it is not need to save file, means url is a local file path, callback and break this coroutine
-        if (string.IsNullOrEmpty(saveFileName))
-        {
-            if (callback != null)
-                callback.Invoke(wwwObj, UnityUtility.LocalURLToFilePath(url));
-            yield break;
-        }
-
-        // add file extention to file name
-        string extName = ".asset";
-        if (UnityUtility.IsJPG(wwwObj))
-            extName = ".jpg";
-        else if (UnityUtility.IsPNG(wwwObj))
-            extName = ".png";
-        else if (UnityUtility.IsGIF(wwwObj))
-            extName = ".gif";
-        else if (UnityUtility.IsMP4(wwwObj))
-            extName = ".mp4";
-        saveFileName += extName;
-
-        // check if saved before, if yes, delete old one
-        string saveFilePath = saveFileLoc + saveFileName;
-        if (UnityUtility.IsFileExist(saveFilePath))
-        {
-            Debug.LogWarning(saveFilePath + " existed, file will be delete");
-            UnityUtility.DeleteFile(saveFilePath);
-        }
-
-        // save file to local disk
-        string saveFileCompletedPath = UnityUtility.WriteFile(saveFilePath, wwwObj.bytes);
-        // file IO operation error occur, callback and break this coroutine
-        if (string.IsNullOrEmpty(saveFileCompletedPath))
-        {
-            Debug.LogError("save file " + saveFileCompletedPath + " failed");
-            if (callback != null)
-                callback.Invoke(wwwObj, "");
-            yield break;
-        }
-
-        // update cache table
-        Dictionary<string, string> cacheTable = ReadCacheTable();
-        if (cacheTable.ContainsKey(url))
-        {
-            cacheTable.Remove(url);
-        }
-        cacheTable.Add(url, saveFileCompletedPath);
-        WriteCacheTable(cacheTable);
-
-        // callback and end this coroutine
-        if (callback != null)
-        {
-            callback.Invoke(wwwObj, saveFileCompletedPath);
         }
     }
 
@@ -236,11 +145,107 @@ public class DataDownloader : MonoBehaviour
         return id;
     }
 
+    private IEnumerator DownloadCoroutine(string downloadURL, string saveFileName, string saveFileLoc, DownloadCompleteHandler callback)
+    {
+        if (wwwObj != null)
+        {
+            wwwObj.Dispose();
+            wwwObj = null;
+        }
+        Debug.Log(string.Format(
+            "download data from:{0} saveFileName: {1} saveFileLoc: {2}", downloadURL, saveFileName, saveFileLoc)
+        );
+
+        wwwObj = new WWW(downloadURL);
+        while (!wwwObj.isDone)
+        {
+            downloadProgress = wwwObj.progress;
+            yield return null;
+        }
+        yield return wwwObj;
+        downloadProgress = 1f;
+        isDownloading = false;
+
+        // if someting wrong, print error log and break this coroutine
+        if (!string.IsNullOrEmpty(wwwObj.error))
+        {
+            Debug.LogError(wwwObj.error);
+
+            if (callback != null)
+                callback.Invoke(wwwObj, "");
+            yield break;
+        }
+
+        // if it is not need to save file, means url is a local file path, callback and break this coroutine
+        if (string.IsNullOrEmpty(saveFileName))
+        {
+            if (callback != null)
+                callback.Invoke(wwwObj, UnityUtility.LocalURLToFilePath(downloadURL));
+            yield break;
+        }
+
+        // add file extention to file name
+        string extName = ".asset";
+        if (UnityUtility.IsJPG(wwwObj))
+            extName = ".jpg";
+        else if (UnityUtility.IsPNG(wwwObj))
+            extName = ".png";
+        else if (UnityUtility.IsGIF(wwwObj))
+            extName = ".gif";
+        else if (UnityUtility.IsMP4(wwwObj))
+            extName = ".mp4";
+        saveFileName += extName;
+
+        // check if saved before, if yes, delete old one
+        string saveFilePath = saveFileLoc + saveFileName;
+        if (UnityUtility.IsFileExist(saveFilePath))
+        {
+            Debug.LogWarning(saveFilePath + " existed, file will be delete");
+            UnityUtility.DeleteFile(saveFilePath);
+        }
+
+        // save file to local disk
+        string saveFileCompletedPath = UnityUtility.WriteFile(saveFilePath, wwwObj.bytes);
+        // file IO operation error occur, callback and break this coroutine
+        if (string.IsNullOrEmpty(saveFileCompletedPath))
+        {
+            Debug.LogError("save file " + saveFileCompletedPath + " failed");
+            if (callback != null)
+                callback.Invoke(wwwObj, "");
+            yield break;
+        }
+
+        // update cache table
+        Dictionary<string, string> cacheTable = ReadCacheTable();
+        if (cacheTable.ContainsKey(downloadURL))
+        {
+            cacheTable.Remove(downloadURL);
+        }
+        cacheTable.Add(downloadURL, saveFileCompletedPath);
+        WriteCacheTable(cacheTable);
+
+        // callback and end this coroutine
+        if (callback != null)
+        {
+            callback.Invoke(wwwObj, saveFileCompletedPath);
+        }
+    }
+
+    private bool IsValidURL(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+            return false;
+        else if (!s.Contains("http://") && !s.Contains("https://"))
+            return false;
+        else
+            return true;
+    }
+
     private void Start()
     {
         if (autoStart && !isDownloading)
         {
-            if (url.Contains("http://") || url.Contains("https://"))
+            if (IsValidURL(url))
                 Download(url, null, "");
         }
     }
