@@ -25,7 +25,18 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
 
     private TweenRectTransformMoveTo gridMover;
 
-    public int gridIndex = 0;
+    private int gridIndex = 0;
+    public int Index
+    {
+        set
+        {
+            gridIndex = value;
+        }
+        get
+        {
+            return gridIndex;
+        }
+    }
     private int gridIndexLast = 0;
 
     private ContentSizeFitter contentSizeFitter;
@@ -308,6 +319,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                     if (gridIndexLast != gridIndex)
                     {
                         statusNow = States.TweenToPosition;
+                        break;
                     }
                 }
                 break;
