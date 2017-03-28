@@ -30,14 +30,14 @@ public class TweenValueColor : TweenBase
         this.colorFrom = colorFrom;
         this.colorTo = colorTo;
 
-        onUpdateInvokeTimes = 0;
-
         this.Run();
     }
 
     public override void Run()
     {
         base.Run();
+
+        onUpdateInvokeTimes = 0;
 
         this.colorNow = colorFrom;
 

@@ -30,14 +30,14 @@ public class TweenValueRect : TweenBase
         this.rectFrom = rectFrom;
         this.rectTo = rectTo;
 
-        onUpdateInvokeTimes = 0;
-
         this.Run();
     }
 
     public override void Run()
     {
         base.Run();
+
+        onUpdateInvokeTimes = 0;
 
         this.rectNow = rectFrom;
 

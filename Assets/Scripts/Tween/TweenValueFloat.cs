@@ -30,14 +30,14 @@ public class TweenValueFloat : TweenBase
         this.floatFrom = floatFrom;
         this.floatTo = floatTo;
 
-        onUpdateInvokeTimes = 0;
-
         this.Run();
     }
 
     public override void Run()
     {
         base.Run();
+
+        onUpdateInvokeTimes = 0;
 
         this.floatNow = floatFrom;
 

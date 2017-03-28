@@ -30,14 +30,14 @@ public class TweenValueVector2 : TweenBase
         this.vectorFrom = vectorFrom;
         this.vectorTo = vectorTo;
 
-        onUpdateInvokeTimes = 0;
-
         this.Run();
     }
 
     public override void Run()
     {
         base.Run();
+
+        onUpdateInvokeTimes = 0;
 
         this.vectorNow = vectorFrom;
 
