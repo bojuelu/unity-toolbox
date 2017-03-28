@@ -34,7 +34,17 @@ public class DataDownloader : MonoBehaviour
     /// <param name="md5CheckSum">Md5 check sum.</param>
     public void Download(string url, DownloadCompleteHandler callback, string md5Checksum = "")
     {
-        if (isDownloading)
+        if (string.IsNullOrEmpty(url))
+        {
+            Debug.LogError("Download URL is null or empty");
+            return;
+        }
+        else if (!url.Contains("http://") && !url.Contains("https://"))
+        {
+            Debug.LogError("Download URL is not a valid  web URL :" + url);
+            return;
+        }
+        else if (isDownloading)
         {
             Debug.LogError("Download coroutine not complete yet, try again later");
             return;
