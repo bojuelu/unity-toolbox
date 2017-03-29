@@ -62,24 +62,27 @@ public class DataDownloader : MonoBehaviour
         {
             UnityUtility.CreateDirectory(CacheFileLocation());
         }
+
         if (!UnityUtility.IsFileExist(cacheTableName, CacheFileLocation()))
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
             Debug.Log("no cache table exist, will create a new one");
             WriteCacheTable(dic);
+            return dic;
         }
-
-        string strOrigData = UnityUtility.ReadTextFile(cacheTableName, CacheFileLocation(), EncryptionHelper.Encode);
-        string strJsonData = EncryptionHelper.Decrypt(strOrigData);
-        JSONObject json = new JSONObject(strJsonData);
-        return json.ToDictionary();
+        else
+        {
+            string strOrigData = UnityUtility.ReadTextFile(cacheTableName, CacheFileLocation(), EncryptionHelper.Encode);
+            string strJsonData = EncryptionHelper.Decrypt(strOrigData);
+            JSONObject json = new JSONObject(strJsonData);
+            return json.ToDictionary();
+        }
     }
 
     private static string WriteCacheTable(Dictionary<string, string> dic)
     {
         JSONObject json = new JSONObject(dic);
         string strJson = json.Print();
-        Debug.Log("will write cache table: " + strJson);
         string strJsonEncrypt = EncryptionHelper.Encrypt(strJson);
         byte[] byteData = EncryptionHelper.GetBytes(strJsonEncrypt);
         return UnityUtility.WriteFile(byteData, cacheTableName, CacheFileLocation());
@@ -208,6 +211,7 @@ public class DataDownloader : MonoBehaviour
             }
 
             // update cache table
+            cacheTable = GetCacheTable();
             if (cacheTable.ContainsKey(downloadURL))
             {
                 cacheTable.Remove(downloadURL);
