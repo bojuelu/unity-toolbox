@@ -388,17 +388,17 @@ public static class UnityUtility
         return PathFormatPrivateMethod(path);
     }
 
-    public static string WriteFile(string fileName, byte[] bytes, string location)
+    public static string WriteFile(byte[] bytes, string fileName, string fileLocation)
 	{
 		try
         {
-            location = PathFormatPrivateMethod(location);
-            if (!Directory.Exists(location))
+            fileLocation = PathFormatPrivateMethod(fileLocation);
+            if (!Directory.Exists(fileLocation))
             {
-                Directory.CreateDirectory(location);
-                Debug.Log(string.Format("{0} not exist, create this folder", location));
+                Directory.CreateDirectory(fileLocation);
+                Debug.Log(string.Format("{0} not exist, create this folder", fileLocation));
             }
-            string filePathAndName = location + fileName;
+            string filePathAndName = fileLocation + fileName;
 			File.WriteAllBytes(filePathAndName, bytes);
 			Debug.Log("Write file: " + filePathAndName + " success");
 			return filePathAndName;
@@ -411,11 +411,11 @@ public static class UnityUtility
         return null;
 	}
 
-    public static string WriteFile(string filePath, byte[] bytes)
+    public static string WriteFile(byte[] bytes, string fileFullPath)
     {
         try
         {
-            FileInfo fileInfo = new FileInfo(filePath);
+            FileInfo fileInfo = new FileInfo(fileFullPath);
             string path = fileInfo.Directory.FullName;
             if (!Directory.Exists(path))
             {
@@ -423,9 +423,9 @@ public static class UnityUtility
                 Debug.Log(string.Format("{0} not exist, create this folder", path));
             }
 
-            File.WriteAllBytes(filePath, bytes);
-            Debug.Log("Write file: " + filePath + " success");
-            return filePath;
+            File.WriteAllBytes(fileFullPath, bytes);
+            Debug.Log("Write file: " + fileFullPath + " success");
+            return fileFullPath;
         }
         catch (System.Exception exception)
         {
@@ -435,17 +435,17 @@ public static class UnityUtility
         return null;
     }
 
-    public static string WriteTextFile(string fileName, string content, string location, Encoding encode)
+    public static string WriteTextFile(string content, Encoding encode, string fileName, string fileLocation)
     {
         try
         {
-            location = PathFormatPrivateMethod(location);
-            if (!Directory.Exists(location))
+            fileLocation = PathFormatPrivateMethod(fileLocation);
+            if (!Directory.Exists(fileLocation))
             {
-                Directory.CreateDirectory(location);
-                Debug.Log(string.Format("{0} not exist, create this folder", location));
+                Directory.CreateDirectory(fileLocation);
+                Debug.Log(string.Format("{0} not exist, create this folder", fileLocation));
             }
-            string filePathAndName = location + fileName;
+            string filePathAndName = fileLocation + fileName;
             File.WriteAllText(filePathAndName, content, encode);
             Debug.Log("Write text file: " + filePathAndName + " success");
             return filePathAndName;
@@ -458,13 +458,13 @@ public static class UnityUtility
         return null;
     }
 
-    public static string WriteTextFile(string filePath, string content, Encoding encode)
+    public static string WriteTextFile(string content, Encoding encode, string fileFullPath)
     {
         try
         {
-            File.WriteAllText(filePath, content, encode);
-            Debug.Log("Write text file: " + filePath + " success");
-            return filePath;
+            File.WriteAllText(fileFullPath, content, encode);
+            Debug.Log("Write text file: " + fileFullPath + " success");
+            return fileFullPath;
         }
         catch (System.Exception exception)
         {
@@ -474,12 +474,12 @@ public static class UnityUtility
         return null;
     }
 
-    public static byte[] ReadFile(string filePath)
+    public static byte[] ReadFile(string fileFullPath)
     {
         try
         {
-            byte[] bytes = File.ReadAllBytes(filePath);
-            Debug.Log("Read file: " + filePath + " success");
+            byte[] bytes = File.ReadAllBytes(fileFullPath);
+            Debug.Log("Read file: " + fileFullPath + " success");
             return bytes;
         }
         catch (System.Exception exception)
@@ -490,12 +490,12 @@ public static class UnityUtility
         return null;
     }
 
-    public static byte[] ReadFile(string fileName, string location)
+    public static byte[] ReadFile(string fileName, string fileLocation)
     {
         try
         {
-            location = PathFormatPrivateMethod(location);
-            string filePathAndName = location + fileName;
+            fileLocation = PathFormatPrivateMethod(fileLocation);
+            string filePathAndName = fileLocation + fileName;
             byte[] bytes = File.ReadAllBytes(filePathAndName);
             Debug.Log("Read file: " + filePathAndName + " success");
             return bytes;
@@ -508,12 +508,12 @@ public static class UnityUtility
         return null;
     }
 
-    public static string ReadTextFile(string filePath, Encoding encode)
+    public static string ReadTextFile(string fileFullPath, Encoding encode)
     {
         try
         {
-            string str = File.ReadAllText(filePath, encode);
-            Debug.Log("Read text file: " + filePath + " success");
+            string str = File.ReadAllText(fileFullPath, encode);
+            Debug.Log("Read text file: " + fileFullPath + " success");
             return str;
         }
         catch (System.Exception exception)
@@ -524,12 +524,12 @@ public static class UnityUtility
         return null;
     }
 
-    public static string ReadTextFile(string fileName, string location, Encoding encode)
+    public static string ReadTextFile(string fileName, string fileLocation, Encoding encode)
     {
         try
         {
-            location = PathFormatPrivateMethod(location);
-            string filePathAndName = location + fileName;
+            fileLocation = PathFormatPrivateMethod(fileLocation);
+            string filePathAndName = fileLocation + fileName;
             string str = File.ReadAllText(filePathAndName, encode);
             Debug.Log("Read text file: " + filePathAndName + " success");
             return str;
@@ -731,12 +731,12 @@ public static class UnityUtility
 
     public static void CopyRectTransform(RectTransform target, RectTransform source)
     {
-        target.sizeDelta = source.sizeDelta;
         target.anchorMax = source.anchorMax;
         target.anchorMin = source.anchorMin;
         target.pivot = source.pivot;
         target.anchoredPosition = source.anchoredPosition;
         target.anchoredPosition3D = source.anchoredPosition3D;
+        target.sizeDelta = source.sizeDelta;
     }
 
     public static string PrintExceptionDetails(System.Exception e)
