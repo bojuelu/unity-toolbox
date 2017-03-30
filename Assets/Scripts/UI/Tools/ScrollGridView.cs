@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler, IDragHandler
+public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     public enum States
     {
@@ -25,19 +25,11 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
 
     private TweenRectTransformMoveTo gridMover;
 
-    private int gridIndex = 0;
-    public int Index
-    {
-        set
-        {
-            gridIndex = value;
-        }
-        get
-        {
-            return gridIndex;
-        }
-    }
-    private int gridIndexLast = 0;
+    public int index = 0;
+    private int indexLast = 0;
+
+    public delegate void IndexChangeHandler(int indexNow, int indexLast);
+    public event IndexChangeHandler onIndexChangeEvent;
 
     private ContentSizeFitter contentSizeFitter;
 
@@ -51,7 +43,11 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
     /// <param name="data">Data.</param>
     public void OnBeginDrag(PointerEventData data)
     {
-        beginFingerDragPoint = data.position;
+        if (statusNow == States.Idle)
+        {
+            beginFingerDragPoint = data.position;
+            statusNow = States.UserScrolling;
+        }
     }
 
     /// <summary>
@@ -61,27 +57,12 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
     /// <param name="data">Data.</param>
     public void OnEndDrag(PointerEventData data)
     {
-        endFingerDragPoint = data.position;
-
-        gridIndex = CalcGridIndex();
-
         if (statusNow == States.UserScrolling)
         {
-            statusNow = States.TweenToPosition;
-        }
-    }
+            endFingerDragPoint = data.position;
+            index = CalcGridIndex();
 
-    /// <summary>
-    /// Raises the drag event.
-    /// "Don't" call this function by your own, it depend on Unity's callback system
-    /// </summary>
-    /// <param name="data">Data.</param>
-    public void OnDrag(PointerEventData data)
-    {
-        // if it is scrolling by tween position, then igorne it, otherwise, it is scrolling by user's fingers
-        if (statusNow != States.TweenToPosition)
-        {
-            statusNow = States.UserScrolling;
+            statusNow = States.TweenToPosition;
         }
     }
 
@@ -184,6 +165,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
     private int CalcGridIndex()
     {
         int gridsCount = GetGridsCount();
+        int origIndex = index;
 
         if (gridsCount > 0)
         {
@@ -208,7 +190,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                         }
                         else
                         {
-                            return gridIndex;
+                            return origIndex;
                         }
                     }break;
                 case GridLayoutGroup.Constraint.FixedRowCount:
@@ -223,18 +205,18 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                         }
                         else
                         {
-                            return gridIndex;
+                            return origIndex;
                         }
                     }break;
             }
 
             float pos = Mathf.Abs(anchoredPosition) + posFactor;
 
-            int index = 0;
-            while (index < gridsCount)
+            int calcIndex = 0;
+            while (calcIndex < gridsCount)
             {
-                float leftVal = oneGridLength * (float)index;
-                float rightVal = oneGridLength * (float)(index + 1);
+                float leftVal = oneGridLength * (float)calcIndex;
+                float rightVal = oneGridLength * (float)(calcIndex + 1);
 
                 if (pos >= leftVal && pos < rightVal)
                 {
@@ -242,10 +224,10 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                 }
                 else
                 {
-                    index++;
-                    if (index >= gridsCount)
+                    calcIndex++;
+                    if (calcIndex >= gridsCount)
                     {
-                        index = gridsCount - 1;
+                        calcIndex = gridsCount - 1;
                         break;
                     }
                     else
@@ -254,7 +236,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                     }
                 }
             }
-            return index;
+            return calcIndex;
         }
         else
         {
@@ -262,7 +244,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
         }
     }
 
-    private Vector2 CalcGridIndexToPosition(int toIndex)
+    private Vector2 CalcPositionViaIndex(int toIndex)
     {
         int gridsCount = GetGridsCount();
         if (gridsCount > 0)
@@ -316,7 +298,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                     }
 
                     // if gridIndex changed by the other script, ready to tween position
-                    if (gridIndexLast != gridIndex)
+                    if (index != indexLast)
                     {
                         statusNow = States.TweenToPosition;
                         break;
@@ -325,7 +307,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                 break;
             case States.UserScrolling:
                 {
-                    // there is nothing need to do here
+                    index = indexLast;  // while user is scrolling, can't assign index via the other script
                 }
                 break;
             case States.TweenToPosition:
@@ -335,30 +317,37 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler ,IEndDragHandler,
                         // not allow user scroll it
                         scrollRect.enabled = false;
 
-                        // check grid index is valid or not
+                        // fix grid index if it is invalid
                         int gridsCount = GetGridsCount();
-                        if (gridIndex >= gridsCount)
-                            gridIndex = gridsCount - 1;
-                        else if (gridIndex < 0)
-                            gridIndex = 0;
-
-                        // remember last gridIndex
-                        gridIndexLast = gridIndex;
+                        if (index >= gridsCount)
+                            index = gridsCount - 1;
+                        else if (index < 0)
+                            index = 0;
 
                         // calculate the position it should tween to
-                        Vector2 tweenPosTo = CalcGridIndexToPosition(gridIndex);
+                        Vector2 tweenPosTo = CalcPositionViaIndex(index);
 
                         // setup the tween and run it
                         gridMover.useNowAsFrom = true;
                         gridMover.vectorTo = tweenPosTo;
                         gridMover.Callback.onCompleteEvent += this.OnTweenComplete;
                         gridMover.Run();
+
+                        // if index changed, send event let who want to know,
+                        // only send this event at States.TweenToPosition status,
+                        // bcz only this status really change grids position.
+                        if (index != indexLast)
+                        {
+                            if (onIndexChangeEvent != null)
+                                onIndexChangeEvent(index, indexLast);
+                        }
+                        // remember the gridIndex
+                        indexLast = index;
+
                         break;
                     }
 
-                    // lock gridIndex, it's not allow change gridIndex while tweening hasn't complete
-                    gridIndex = gridIndexLast;
-
+                    index = indexLast;  // while tween to position has not complete, can't assign index via the other script
                 }
                 break;
         }
