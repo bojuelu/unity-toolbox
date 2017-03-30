@@ -315,38 +315,13 @@ public static class UnityUtility
         if (bytes == null)
             return false;
 
-        // gif at least 24 bytes
+        // mp4 at least 24 bytes
         if (bytes.Length <= 24)
             return false;
 
-        // 0000 0018 6674 7970
-        // 6d70 3432 0000 0000
-        // 6973 6f6d 6d70 3432
         if (
-            // 0000
-            bytes[0] == 0x00 && bytes[1] == 0x00 &&
-            // 0018
-            bytes[2] == 0x00 && bytes[3] == 0x18 &&
-            // 6674
-            bytes[4] == 0x66 && bytes[5] == 0x74 &&
-            // 7970
-            bytes[6] == 0x79 && bytes[7] == 0x70 &&
-            // 6d70
-            bytes[8] == 0x6d && bytes[9] == 0x70 &&
-            // 3432
-            bytes[10] == 0x34 && bytes[11] == 0x32 &&
-            // 0000
-            bytes[12] == 0x00 && bytes[13] == 0x00 &&
-            // 0000
-            bytes[14] == 0x00 && bytes[15] == 0x00 &&
-            // 6973
-            bytes[16] == 0x69 && bytes[17] == 0x73 &&
-            // 6f6d
-            bytes[18] == 0x6f && bytes[19] == 0x6d &&
-            // 6d70
-            bytes[20] == 0x6d && bytes[21] == 0x70 &&
-            // 3432
-            bytes[22] == 0x34 && bytes[23] == 0x32
+            // 6674 7970
+            bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70
         )
         {
             return true;
