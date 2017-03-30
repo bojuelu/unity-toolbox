@@ -16,7 +16,7 @@ public static class UnityUtility
     {
         if (str.Length <= 0)
             return "";
-        
+
         char[] rotUpperL = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', };
         char[] rotUpperR = new char[] { 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', };
 
@@ -150,7 +150,7 @@ public static class UnityUtility
     {
         if (length <= 0)
             return "";
-        
+
         char[] chars = new char[]
         {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -170,73 +170,73 @@ public static class UnityUtility
         return s;
     }
 
-	public static bool IsPNG(WWW wwwObj)
-	{
-		try
-		{
-			if( wwwObj != null)
-			{
-				if (wwwObj.isDone)
-				{
-					if(wwwObj.error == null && wwwObj.texture != null && wwwObj.bytes != null)
-					{
+    public static bool IsPNG(WWW wwwObj)
+    {
+        try
+        {
+            if (wwwObj != null)
+            {
+                if (wwwObj.isDone)
+                {
+                    if (string.IsNullOrEmpty(wwwObj.error) && wwwObj.texture != null && wwwObj.bytes != null)
+                    {
                         return IsPNG(wwwObj.bytes);
-					}
-				}
-			}
-		}
-		catch( System.Exception err )
-		{
-			Debug.LogError(err.Message);
-			Debug.LogError(err.StackTrace);
-		}
-		return false;
-	}
+                    }
+                }
+            }
+        }
+        catch (System.Exception err)
+        {
+            Debug.LogError(err.Message);
+            Debug.LogError(err.StackTrace);
+        }
+        return false;
+    }
 
     public static bool IsPNG(byte[] bytes)
     {
         if (bytes == null)
             return false;
-        
+
         // png at least 10 bytes
         if (bytes.Length <= 10)
             return false;
-        
+
         // 8950 4e47
-        if(bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
+        if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
             return true;
         else
             return false;
     }
-	
-	public static bool IsJPG(WWW wwwObj)
-	{
-		try
-		{
-			if (wwwObj != null)
-			{
-				if (wwwObj.isDone)
-				{
-					if(wwwObj.error == null && wwwObj.texture != null && wwwObj.bytes != null)
-					{
+
+    public static bool IsJPG(WWW wwwObj)
+    {
+        try
+        {
+            if (wwwObj != null)
+            {
+                if (wwwObj.isDone)
+                {
+                    if (string.IsNullOrEmpty(wwwObj.error) && wwwObj.texture != null && wwwObj.bytes != null)
+                    {
                         return IsJPG(wwwObj.bytes);
-					}
-				}
-			}
-		}
-		catch( System.Exception err )
-		{
-			Debug.LogError(err.Message);
-			Debug.LogError(err.StackTrace);
-		}
-		return false;
-	}
+                    }
+                }
+            }
+        }
+        catch (System.Exception err)
+        {
+            Debug.LogError(err.Message);
+            Debug.LogError(err.StackTrace);
+        }
+        return false;
+    }
 
     public static bool IsJPG(byte[] bytes)
     {
         if (bytes == null)
             return false;
-        
+
         // jpg at least 10 bytes
         if (bytes.Length <= 10)
             return false;
@@ -248,28 +248,28 @@ public static class UnityUtility
             return false;
     }
 
-	public static bool IsGIF(WWW wwwObj)
-	{
-		try
-		{
-			if (wwwObj != null)
-			{
-				if (wwwObj.isDone)
-				{
-					if(wwwObj.error == null && wwwObj.texture != null && wwwObj.bytes != null)
-					{
+    public static bool IsGIF(WWW wwwObj)
+    {
+        try
+        {
+            if (wwwObj != null)
+            {
+                if (wwwObj.isDone)
+                {
+                    if (string.IsNullOrEmpty(wwwObj.error) && wwwObj.texture != null && wwwObj.bytes != null)
+                    {
                         return IsGIF(wwwObj.bytes);
-					}
-				}
-			}
-		}
-		catch( System.Exception err )
-		{
-			Debug.LogError(err.Message);
-			Debug.LogError(err.StackTrace);
-		}
-		return false;
-	}
+                    }
+                }
+            }
+        }
+        catch (System.Exception err)
+        {
+            Debug.LogError(err.Message);
+            Debug.LogError(err.StackTrace);
+        }
+        return false;
+    }
 
     public static bool IsGIF(byte[] bytes)
     {
@@ -295,14 +295,14 @@ public static class UnityUtility
             {
                 if (wwwObj.isDone)
                 {
-                    if(wwwObj.error == null && wwwObj.bytes != null && wwwObj.bytes.Length > 24)
+                    if (string.IsNullOrEmpty(wwwObj.error) && wwwObj.bytes != null && wwwObj.bytes.Length > 24)
                     {
                         return IsMP4(wwwObj.bytes);
                     }
                 }
             }
         }
-        catch( System.Exception err )
+        catch (System.Exception err)
         {
             Debug.LogError(err.Message);
             Debug.LogError(err.StackTrace);
@@ -322,7 +322,7 @@ public static class UnityUtility
         // 0000 0018 6674 7970
         // 6d70 3432 0000 0000
         // 6973 6f6d 6d70 3432
-        if(
+        if (
             // 0000
             bytes[0] == 0x00 && bytes[1] == 0x00 &&
             // 0018
@@ -361,12 +361,12 @@ public static class UnityUtility
     }
 
     public static string LocalURL(string filePath)
-	{
+    {
         if (filePath[0] == '/')
             return "file://" + filePath;
         else
             return "file://" + "/" + filePath;
-	}
+    }
 
     public static string LocalURLToFilePath(string localFileURL)
     {
@@ -389,8 +389,8 @@ public static class UnityUtility
     }
 
     public static string WriteFile(byte[] bytes, string fileName, string fileLocation)
-	{
-		try
+    {
+        try
         {
             fileLocation = PathFormatPrivateMethod(fileLocation);
             if (!Directory.Exists(fileLocation))
@@ -399,17 +399,17 @@ public static class UnityUtility
                 Debug.Log(string.Format("{0} not exist, create this folder", fileLocation));
             }
             string filePathAndName = fileLocation + fileName;
-			File.WriteAllBytes(filePathAndName, bytes);
-			Debug.Log("Write file: " + filePathAndName + " success");
-			return filePathAndName;
-		}
-		catch (System.Exception exception)
-		{
-			Debug.LogError(exception.Message);
-			Debug.LogException(exception);
-		}
+            File.WriteAllBytes(filePathAndName, bytes);
+            Debug.Log("Write file: " + filePathAndName + " success");
+            return filePathAndName;
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogError(exception.Message);
+            Debug.LogException(exception);
+        }
         return null;
-	}
+    }
 
     public static string WriteFile(byte[] bytes, string fileFullPath)
     {
@@ -583,11 +583,11 @@ public static class UnityUtility
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             foreach (FileInfo file in dirInfo.GetFiles())
             {
-                file.Delete(); 
+                file.Delete();
             }
             foreach (DirectoryInfo dir in dirInfo.GetDirectories())
             {
-                dir.Delete(true); 
+                dir.Delete(true);
             }
         }
         catch (System.Exception exception)
@@ -605,7 +605,7 @@ public static class UnityUtility
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             FileInfo[] fis = dirInfo.GetFiles();
             string[] fileLocs = new string[fis.Length];
-            for (int i=0; i<fis.Length; i++)
+            for (int i = 0; i < fis.Length; i++)
             {
                 fileLocs[i] = fis[i].ToString();
             }
@@ -626,7 +626,7 @@ public static class UnityUtility
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             DirectoryInfo[] dis = dirInfo.GetDirectories();
             string[] dirLocs = new string[dis.Length];
-            for (int i=0; i<dis.Length; i++)
+            for (int i = 0; i < dis.Length; i++)
             {
                 dirLocs[i] = dis[i].ToString();
             }
@@ -656,21 +656,21 @@ public static class UnityUtility
     }
 
     public static bool IsFileExist(string fileName, string location)
-	{
-		try
-		{
+    {
+        try
+        {
             location = PathFormatPrivateMethod(location);
             string filePathAndName = location + fileName;
             bool isExist = File.Exists(filePathAndName);
-			return isExist;
-		}
-		catch (System.Exception exception)
-		{
-			Debug.LogError(exception.Message);
-			Debug.LogException(exception);
-		}
-		return false;
-	}
+            return isExist;
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogError(exception.Message);
+            Debug.LogException(exception);
+        }
+        return false;
+    }
 
     public static bool IsFileExist(string filePath)
     {
@@ -711,7 +711,7 @@ public static class UnityUtility
         {
             tex.Compress(true);
         }
-        Sprite sp = Sprite.Create(tex, rect,new Vector2(0, 0), 1);
+        Sprite sp = Sprite.Create(tex, rect, new Vector2(0, 0), 1);
         return sp;
     }
 
@@ -792,7 +792,7 @@ public static class UnityUtility
                 if (indexTo < charArray.Length)
                 {
                     char[] chars = new char[aUnicodeLength];
-                    for (int j=0; j<chars.Length; j++)
+                    for (int j = 0; j < chars.Length; j++)
                     {
                         chars[j] = charArray[indexFrom + j];
                     }
@@ -869,17 +869,17 @@ public static class UnityUtility
             string src = unicodeText;
             int len = unicodeText.Length / aUnicodeLength;
 
-            for (int i = 0; i <= len - 1; i++) 
-            { 
-                string str = ""; 
-                str = src.Substring(0, aUnicodeLength).Substring(2); 
-                src = src.Substring(aUnicodeLength); 
-                byte[] bytes = new byte[2]; 
-                bytes[1] = byte.Parse(int.Parse(str.Substring(0, 2),System.Globalization.NumberStyles.HexNumber).ToString()); 
-                bytes[0] = byte.Parse(int.Parse(str.Substring(2, 2),System.Globalization.NumberStyles.HexNumber).ToString()); 
+            for (int i = 0; i <= len - 1; i++)
+            {
+                string str = "";
+                str = src.Substring(0, aUnicodeLength).Substring(2);
+                src = src.Substring(aUnicodeLength);
+                byte[] bytes = new byte[2];
+                bytes[1] = byte.Parse(int.Parse(str.Substring(0, 2), System.Globalization.NumberStyles.HexNumber).ToString());
+                bytes[0] = byte.Parse(int.Parse(str.Substring(2, 2), System.Globalization.NumberStyles.HexNumber).ToString());
                 dst += Encoding.Unicode.GetString(bytes);
-            } 
-            return dst; 
+            }
+            return dst;
         }
         catch (System.Exception exc)
         {
@@ -887,5 +887,5 @@ public static class UnityUtility
             Debug.LogException(exc);
             return "?";
         }
-    } 
+    }
 }
