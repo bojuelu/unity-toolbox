@@ -30,7 +30,7 @@ public class TweenValueVector2 : TweenBase
         this.vectorFrom = vectorFrom;
         this.vectorTo = vectorTo;
 
-        this.Run();
+        Run();
     }
 
     public override void Run()
@@ -39,7 +39,7 @@ public class TweenValueVector2 : TweenBase
 
         onUpdateInvokeTimes = 0;
 
-        this.vectorNow = vectorFrom;
+        vectorNow = vectorFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(

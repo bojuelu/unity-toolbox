@@ -30,7 +30,7 @@ public class TweenValueFloat : TweenBase
         this.floatFrom = floatFrom;
         this.floatTo = floatTo;
 
-        this.Run();
+        Run();
     }
 
     public override void Run()
@@ -39,7 +39,7 @@ public class TweenValueFloat : TweenBase
 
         onUpdateInvokeTimes = 0;
 
-        this.floatNow = floatFrom;
+        floatNow = floatFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(

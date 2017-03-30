@@ -30,7 +30,7 @@ public class TweenValueRect : TweenBase
         this.rectFrom = rectFrom;
         this.rectTo = rectTo;
 
-        this.Run();
+        Run();
     }
 
     public override void Run()
@@ -39,7 +39,7 @@ public class TweenValueRect : TweenBase
 
         onUpdateInvokeTimes = 0;
 
-        this.rectNow = rectFrom;
+        rectNow = rectFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(

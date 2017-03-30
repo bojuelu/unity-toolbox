@@ -9,17 +9,21 @@ using System.Collections;
 
 public class TweenGraphicAlphaTo : TweenValueFloat
 {
+    public bool useNowAsFrom = false;
+
     private Graphic graphic;
 
     public override void Run()
     {
-        graphic = this.tweenTarget.GetComponent<Graphic>();
+        graphic = tweenTarget.GetComponent<Graphic>();
 
         float nowAlpha = graphic.color.a;
-
-        this.FloatNow = nowAlpha;  // avoid tweening first frame use wrong value
-
+        if (useNowAsFrom)
+            floatFrom = nowAlpha;
+        
         base.Run();
+
+        FloatNow = nowAlpha; // avoid use the wrong value at first frame
     }
 
     void Update()

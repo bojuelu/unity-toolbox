@@ -13,5 +13,6 @@ public class UIPanelAndWidgets : UIPanelPlus
     public Image[] images;
     public RawImage[] rawImages;
     public Button[] buttons;
+    public Toggle[] toggles;
     public InputField[] inputFields;
 }

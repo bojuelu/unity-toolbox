@@ -30,7 +30,7 @@ public class TweenValueColor : TweenBase
         this.colorFrom = colorFrom;
         this.colorTo = colorTo;
 
-        this.Run();
+        Run();
     }
 
     public override void Run()
@@ -39,7 +39,7 @@ public class TweenValueColor : TweenBase
 
         onUpdateInvokeTimes = 0;
 
-        this.colorNow = colorFrom;
+        colorNow = colorFrom;
 
         iTween.ValueTo(tweenTarget,
             iTween.Hash(

@@ -9,17 +9,21 @@ using System.Collections;
 
 public class TweenGraphicColorTo : TweenValueColor
 {
+    public bool useNowAsFrom = false;
+
     private Graphic graphic;
 
     public override void Run()
     {
-        graphic = this.tweenTarget.GetComponent<Graphic>();
+        graphic = tweenTarget.GetComponent<Graphic>();
 
         Color nowColor = graphic.color;
-
-        this.ColorNow = nowColor;  // avoid tweening first frame use wrong value
+        if (useNowAsFrom)
+            colorFrom = nowColor;
 
         base.Run();
+
+        ColorNow = nowColor;  // avoid use the wrong value at first frame
     }
 
     void Update()
