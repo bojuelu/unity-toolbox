@@ -9,6 +9,7 @@ using System.Collections;
 
 public class TweenGraphicsColorTo : TweenValueColor
 {
+    public Graphic[] skip;
     private Graphic[] graphics;
 
     public override void Run()
@@ -43,8 +44,32 @@ public class TweenGraphicsColorTo : TweenValueColor
             }
             else
             {
-                graphics[i].color = this.ColorNow;
+                if (SkipThisGraphic(graphics[i]))
+                {
+                    continue;
+                }
+                else
+                {
+                    graphics[i].color = this.ColorNow;
+                }
             }            
         }
+    }
+
+    bool SkipThisGraphic(Graphic g)
+    {
+        if (skip == null)
+            return false;
+        if (skip.Length <= 0)
+            return false;
+
+        for (int i = 0; i < skip.Length; i++)
+        {
+            if (skip[i] == null)
+                continue;
+            if (skip[i] == g)
+                return true;
+        }
+        return false;
     }
 }

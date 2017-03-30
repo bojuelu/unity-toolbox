@@ -9,6 +9,7 @@ using System.Collections;
 
 public class TweenGraphicsAlphaTo : TweenValueFloat
 {
+    public Graphic[] skip;
     private Graphic[] graphics;
 
     public override void Run()
@@ -43,13 +44,37 @@ public class TweenGraphicsAlphaTo : TweenValueFloat
             }
             else
             {
-                graphics[i].color = new Color(
-                    graphics[i].color.r,
-                    graphics[i].color.g,
-                    graphics[i].color.b,
-                    this.FloatNow
-                );
+                if (SkipThisGraphic(graphics[i]))
+                {
+                    continue;
+                }
+                else
+                {
+                    graphics[i].color = new Color(
+                        graphics[i].color.r,
+                        graphics[i].color.g,
+                        graphics[i].color.b,
+                        this.FloatNow
+                    );
+                }
             }            
         }
+    }
+
+    bool SkipThisGraphic(Graphic g)
+    {
+        if (skip == null)
+            return false;
+        if (skip.Length <= 0)
+            return false;
+
+        for (int i = 0; i < skip.Length; i++)
+        {
+            if (skip[i] == null)
+                continue;
+            if (skip[i] == g)
+                return true;
+        }
+        return false;
     }
 }
