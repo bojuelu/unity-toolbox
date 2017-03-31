@@ -65,7 +65,6 @@ public class UIRoot : MonoBehaviour
         for (int i = 0; i < registeredObjs.Count; i++)
         {
             UIObject obj = registeredObjs[i];
-            //Debug.Log(string.Format("{0} {1} {1}", obj.name, name, tag));
             if (obj == null)
                 continue;
             if (string.IsNullOrEmpty(tag))
@@ -89,6 +88,29 @@ public class UIRoot : MonoBehaviour
         {
             if (registeredObjs[i] is T)
                 return registeredObjs[i] as T;
+        }
+        Debug.LogWarning("can not find uiobject by type: " + typeof(T).ToString());
+        return null;
+    }
+
+    public T Find<T>(string name, string tag = "") where T : UIObject
+    {
+        for (int i = 0; i < registeredObjs.Count; i++)
+        {
+            UIObject obj = registeredObjs[i];
+            if (obj is T)
+            {
+                if (string.IsNullOrEmpty(tag))
+                {
+                    if (obj.name == name)
+                        return obj as T;
+                }
+                else
+                {
+                    if (obj.name == name && obj.tag == tag)
+                        return obj as T;
+                }
+            }
         }
         Debug.LogWarning("can not find uiobject by type: " + typeof(T).ToString());
         return null;
