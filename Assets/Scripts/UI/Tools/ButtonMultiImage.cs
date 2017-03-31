@@ -16,7 +16,7 @@ public class ButtonMultiImage : Button
         {
             if(m_graphics == null)
             {
-                m_graphics = targetGraphic.transform.parent.GetComponentsInChildren<Graphic>();
+                m_graphics = targetGraphic.transform.GetComponentsInChildren<Graphic>();
             }
             return m_graphics;
         }
