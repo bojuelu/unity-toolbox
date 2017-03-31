@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Fold / Un-fold a RectTransform
+/// You can fold a rect transform by UGUI Toggle, or assign 'fold' flag in your script directly.
+/// Author: BoJue.
+/// </summary>
+using UnityEngine;
 using UnityEngine.UI;
 
 public class FoldRect : MonoBehaviour
