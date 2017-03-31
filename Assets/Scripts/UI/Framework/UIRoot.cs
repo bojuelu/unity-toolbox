@@ -60,28 +60,39 @@ public class UIRoot : MonoBehaviour
         return false;
     }
 
-    public UIObject Find(string name, string tag="")
+    /// <summary>
+    /// Find the specified name and objTag. Call it after Monobehaviour Start()
+    /// </summary>
+    /// <returns>The find.</returns>
+    /// <param name="name">Name.</param>
+    /// <param name="objTag">Object tag.</param>
+    public UIObject Find(string name, string objTag="")
     {
         for (int i = 0; i < registeredObjs.Count; i++)
         {
             UIObject obj = registeredObjs[i];
             if (obj == null)
                 continue;
-            if (string.IsNullOrEmpty(tag))
+            if (string.IsNullOrEmpty(objTag))
             {
                 if (obj.name == name)
                     return obj;
             }
             else
             {
-                if (obj.name == name && obj.objectTag == tag)
+                if (obj.name == name && obj.objectTag == objTag)
                     return obj;
             }
         }
-        Debug.LogWarning("can not find uiobject. name: " + name + " tag: " + tag);
+        Debug.LogWarning("can not find uiobject. name: " + name + " tag: " + objTag);
         return null;
     }
 
+    /// <summary>
+    /// Find instance. Call it after Monobehaviour Start()
+    /// </summary>
+    /// <returns>The find.</returns>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
     public T Find<T>() where T : UIObject
     {
         for (int i = 0; i < registeredObjs.Count; i++)
@@ -93,21 +104,28 @@ public class UIRoot : MonoBehaviour
         return null;
     }
 
-    public T Find<T>(string name, string tag = "") where T : UIObject
+    /// <summary>
+    /// Find the specified name and objTag. Call it after Monobehaviour Start()
+    /// </summary>
+    /// <returns>The find.</returns>
+    /// <param name="name">Name.</param>
+    /// <param name="objTag">Object tag.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    public T Find<T>(string name, string objTag = "") where T : UIObject
     {
         for (int i = 0; i < registeredObjs.Count; i++)
         {
             UIObject obj = registeredObjs[i];
             if (obj is T)
             {
-                if (string.IsNullOrEmpty(tag))
+                if (string.IsNullOrEmpty(objTag))
                 {
                     if (obj.name == name)
                         return obj as T;
                 }
                 else
                 {
-                    if (obj.name == name && obj.tag == tag)
+                    if (obj.name == name && obj.objectTag == objTag)
                         return obj as T;
                 }
             }
