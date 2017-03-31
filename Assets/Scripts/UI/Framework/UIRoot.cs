@@ -97,8 +97,9 @@ public class UIRoot : MonoBehaviour
     {
         for (int i = 0; i < registeredObjs.Count; i++)
         {
-            if (registeredObjs[i] is T)
-                return registeredObjs[i] as T;
+            UIObject obj = registeredObjs[i];
+            if (obj is T)
+                return obj as T;
         }
         Debug.LogWarning("can not find uiobject by type: " + typeof(T).ToString());
         return null;

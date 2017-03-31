@@ -49,6 +49,8 @@ public class UIObject : MonoBehaviour
         if (canFindViaUIRoot)
         {
             hasRegistered = root.Register(this);
+            if (hasRegistered == false)
+                Debug.LogError(this.name + " Register to UIRoot failed");
         }
     }
 

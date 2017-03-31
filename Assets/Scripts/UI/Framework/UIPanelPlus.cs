@@ -51,10 +51,10 @@ public class UIPanelPlus : UIPanel
 
     protected override void Start()
     {
+        base.Start();
+
         if (onStartEvent != null)
             onStartEvent.Invoke();
-
-        base.Start();
     }
 
     public override void BringIn()
@@ -105,7 +105,7 @@ public class UIPanelPlus : UIPanel
         yield return new WaitForEndOfFrame();
 
         while (IsTweening())
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
         GameObject.Destroy(this.gameObject);
     }
