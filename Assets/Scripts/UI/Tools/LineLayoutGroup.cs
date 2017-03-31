@@ -76,6 +76,7 @@ public class LineLayoutGroup : MonoBehaviour
 
     private void LineCellsByVerticalAndCalcAllCellSize()
     {
+        allCellsSize = Vector2.zero;
         Vector2 pos = Vector2.zero;
         for (int i = 0; i < thisRectTransform.childCount; i++)
         {
