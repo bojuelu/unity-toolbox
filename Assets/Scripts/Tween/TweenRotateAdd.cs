@@ -20,9 +20,9 @@ public class TweenRotateAdd : TweenBase
     {
         base.Run();
 
-        Space space = Space.Self;
-        if (!base.isLocal)
-            space = Space.World;
+        Space space = Space.World;
+        if (isLocal)
+            space = Space.Self;
 
         iTween.RotateAdd(base.tweenTarget,
             iTween.Hash(

@@ -65,7 +65,7 @@ public class BatchTweens : MonoBehaviour
         }
         return isRunning;
     }
-
+        
     public void ReloadTweens()
     {
         tweens = this.gameObject.GetComponents<TweenBase>();

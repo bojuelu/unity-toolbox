@@ -20,9 +20,9 @@ public class TweenMoveAdd : TweenBase
     {
         base.Run();
 
-        Space space = Space.Self;
-        if (!base.isLocal)
-            space = Space.World;
+        Space space = Space.World;
+        if (isLocal)
+            space = Space.Self;
 
         iTween.MoveAdd(base.tweenTarget,
             iTween.Hash(

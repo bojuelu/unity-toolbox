@@ -48,6 +48,10 @@ public class TweenGraphicsAlphaTo : TweenValueFloat
                 {
                     continue;
                 }
+                else if (graphics[i].gameObject.name.Contains("skip-tween"))
+                {
+                    continue;
+                }
                 else
                 {
                     graphics[i].color = new Color(

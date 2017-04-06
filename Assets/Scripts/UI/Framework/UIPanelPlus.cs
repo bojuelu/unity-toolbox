@@ -59,7 +59,7 @@ public class UIPanelPlus : UIPanel
 
     public override void BringIn()
     {
-        if (isShow == true || IsTweening())
+        if (isShow == true)
             return;
 
         bringInTweens.Run();
@@ -69,7 +69,7 @@ public class UIPanelPlus : UIPanel
 
     public override void Dismiss()
     {
-        if (isShow == false || IsTweening())
+        if (isShow == false)
             return;
 
         dismissTweens.Run();
@@ -78,6 +78,14 @@ public class UIPanelPlus : UIPanel
             this.StartCoroutine(this.WaitTweensDoneThenDestroyItself());
         
         base.Dismiss();
+    }
+
+    public void SwitchBringInOrDismiss()
+    {
+        if (isShow)
+            Dismiss();
+        else
+            BringIn();
     }
 
     private float CalcTweeningSpendTime(BatchTweens batchTween)
