@@ -647,9 +647,9 @@ public static class UnityUtility
         return false;
     }
 
-    public static bool IsFileExist(string filePath)
+    public static bool IsFileExist(string fileFullPath)
     {
-        return IsFileExistPrivateMethod(filePath);
+        return IsFileExistPrivateMethod(fileFullPath);
     }
 
     public static bool IsDirectoryExist(string path)
@@ -772,7 +772,6 @@ public static class UnityUtility
                         chars[j] = charArray[indexFrom + j];
                     }
                     string s = new string(chars);
-                    Debug.Log("s: " + s);
                     if (IsUnicodeFormat(s))
                     {
                         s = UnicodeToString(s);
