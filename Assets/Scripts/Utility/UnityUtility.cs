@@ -330,12 +330,7 @@ public static class UnityUtility
             return false;
     }
 
-    public static string LocalURLHead()
-    {
-        return "file://";
-    }
-
-    public static string LocalURL(string filePath)
+    public static string FilePathToFileURL(string filePath)
     {
         if (filePath[0] == '/')
             return "file://" + filePath;
@@ -343,7 +338,7 @@ public static class UnityUtility
             return "file://" + "/" + filePath;
     }
 
-    public static string LocalURLToFilePath(string localFileURL)
+    public static string FileURLToFilePath(string localFileURL)
     {
         return localFileURL.Replace("file://", "");
     }
