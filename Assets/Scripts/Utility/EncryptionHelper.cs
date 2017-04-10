@@ -16,7 +16,7 @@ public static class EncryptionHelper
     private static string encryptionKey = "8b02bf6153e348d69632ae8b3356b3c3";
     private static byte[] encryptionSalt = new byte[] { 0x48, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 };
 
-    private static Encoding encode = Encoding.Unicode;
+    private static Encoding encode = Encoding.UTF8;
     public static Encoding Encode { get { return encode; } }
 
     public static byte[] GetBytes(string str)
