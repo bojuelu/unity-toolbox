@@ -137,7 +137,7 @@ public class DataDownloader : MonoBehaviour
         // download data from local cache
         if (isDownloadFromCache)
         {
-            wwwObj = new WWW(UnityUtility.LocalURL(savedCachePath));
+            wwwObj = new WWW(UnityUtility.FilePathToFileURL(savedCachePath));
         }
         // download data from web url
         else
