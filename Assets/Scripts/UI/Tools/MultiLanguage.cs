@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class MultiLanguage : MonoBehaviour
 {
@@ -14,18 +13,19 @@ public class MultiLanguage : MonoBehaviour
 
     void Start()
     {
-        UnityEngine.SystemLanguage lang = Application.systemLanguage;
+        // select string content via SystemLanguage
+        SystemLanguage lang = Application.systemLanguage;
         string[] content = null;
         switch (lang)
         {
-            case UnityEngine.SystemLanguage.English:
+            case SystemLanguage.English:
                 content = english;
                 break;
-            case UnityEngine.SystemLanguage.Chinese:
-            case UnityEngine.SystemLanguage.ChineseTraditional:
+            case SystemLanguage.Chinese:
+            case SystemLanguage.ChineseTraditional:
                 content = chineseTraditional;
                 break;
-            case UnityEngine.SystemLanguage.ChineseSimplified:
+            case SystemLanguage.ChineseSimplified:
                 content = chineseSimplified;
                 break;
             case SystemLanguage.Japanese:
@@ -37,11 +37,13 @@ public class MultiLanguage : MonoBehaviour
             case SystemLanguage.Thai:
                 content = thai;
                 break;
+                
             default:
                 content = english;
                 break;
         }
 
+        // apply string content to texts
         for (int i = 0; i < content.Length; i++)
         {
             if (content[i] == null)
