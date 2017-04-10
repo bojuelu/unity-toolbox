@@ -53,8 +53,8 @@ public class TweenRotateTo : TweenBase
                 "rotation", this.rotateTo,
                 "time", base.duration,
                 "delay", base.delay,
-                "easeType", base.Ease.ToString(),
-                "loopType", base.Loop,
+                "easeType", base.ease.ToString(),
+                "loopType", base.loop,
                 "ignoretimescale", base.ignoreTimeScale,
                 "oncomplete", base.Callback.OnCompleteFuncName,
                 "oncompletetarget", base.Callback.gameObject

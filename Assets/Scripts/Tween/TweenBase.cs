@@ -15,11 +15,12 @@ public abstract class TweenBase : MonoBehaviour
     public bool autoStart = true;
     public float duration = 2f;
     public float delay = 0f;
-    public iTween.EaseType Ease = iTween.EaseType.linear;
-    public iTween.LoopType Loop = iTween.LoopType.none;
+    public iTween.EaseType ease = iTween.EaseType.linear;
+    public iTween.LoopType loop = iTween.LoopType.none;
     public bool pingPongOnlyOnce = false;
     public bool ignoreTimeScale = false;
     public bool isLocal = true;
+
     protected string tweenType = "";
     public string TweenType { get { return tweenType; } }
 
@@ -29,8 +30,8 @@ public abstract class TweenBase : MonoBehaviour
     protected bool isTweening = false;
     public bool IsTweening { get { return isTweening; } }
 
-    protected int onCompleteTimes = 0;
-    public int OnCompleteTimes { get { return onCompleteTimes; } }
+    protected int completeTimes = 0;
+    public int CompleteTimes { get { return completeTimes; } }
 
     protected TweenCallback recvCallback = null;
     public TweenCallback Callback { get { return recvCallback; } }
@@ -38,7 +39,7 @@ public abstract class TweenBase : MonoBehaviour
     public virtual void Run()
     {
         // reset oncomplete counter
-        onCompleteTimes = 0;
+        completeTimes = 0;
 
 //        // remove the iTween with the same type
 //        iTween[] tweens = this.tweenTarget.GetComponents<iTween>();
@@ -122,9 +123,9 @@ public abstract class TweenBase : MonoBehaviour
 
     protected virtual void OnComplete()
     {
-        onCompleteTimes++;
+        completeTimes++;
 
-        switch (Loop)
+        switch (loop)
         {
             case iTween.LoopType.loop:
                 {
@@ -137,7 +138,7 @@ public abstract class TweenBase : MonoBehaviour
                 break;
             case iTween.LoopType.pingPong:
                 {
-                    if (pingPongOnlyOnce && onCompleteTimes >= 2)
+                    if (pingPongOnlyOnce && completeTimes >= 2)
                     {
                         Debug.Log("PingPongOnlyOnce && _onCompleteTimes >= 2 established, Stop this tween");
                         this.Stop();

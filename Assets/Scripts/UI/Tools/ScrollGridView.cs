@@ -393,8 +393,8 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         gridMover = this.gameObject.AddComponent<TweenRectTransformMoveTo>();
         gridMover.tweenTarget = scrollRect.content.gameObject;
         gridMover.autoStart = false;
-        gridMover.Loop = iTween.LoopType.none;
-        gridMover.Ease = iTween.EaseType.easeOutCubic;
+        gridMover.loop = iTween.LoopType.none;
+        gridMover.ease = iTween.EaseType.easeOutCubic;
         gridMover.delay = 0f;
         gridMover.duration = 0.25f;
     }
