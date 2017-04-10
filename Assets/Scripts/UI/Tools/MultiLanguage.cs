@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MultiLanguage : MonoBehaviour
 {
-    public UnityEngine.UI.Text[] Texts;
+    public UnityEngine.UI.Text[] texts;
 
     public string[] english;
     public string[] chineseTraditional;
@@ -46,12 +46,12 @@ public class MultiLanguage : MonoBehaviour
         {
             if (content[i] == null)
                 continue;
-            if (Texts[i] == null)
+            if (texts[i] == null)
                 continue;
-            if (i >= Texts.Length)
+            if (i >= texts.Length)
                 break;
             string theContent = content[i].Replace("\\n", System.Environment.NewLine);
-            Texts[i].text = theContent;
+            texts[i].text = theContent;
         }
     }
 
