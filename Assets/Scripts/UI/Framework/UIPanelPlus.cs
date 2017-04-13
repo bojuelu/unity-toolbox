@@ -9,7 +9,6 @@ using System.Collections;
 
 public class UIPanelPlus : UIPanel
 {
-    public bool defaultIsShow = true;
     public BatchTweens bringInTweens = null;
     public BatchTweens dismissTweens = null;
 
@@ -61,7 +60,7 @@ public class UIPanelPlus : UIPanel
     {
         if (isShow == true)
             return;
-
+        
         bringInTweens.Run();
 
         base.BringIn();

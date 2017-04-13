@@ -7,8 +7,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 
-public abstract class UIPanel : UIObject
+public class UIPanel : UIObject
 {
+    public bool defaultIsShow = true;
+
     protected bool isShow = true;
     public bool IsShow { get { return isShow; } }
 
@@ -29,6 +31,13 @@ public abstract class UIPanel : UIObject
 
         if (onDismissEvent != null)
             onDismissEvent.Invoke();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        isShow = defaultIsShow;
     }
 
     protected override void OnDestroy()
