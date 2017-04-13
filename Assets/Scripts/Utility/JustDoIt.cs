@@ -5,11 +5,19 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class JustDoItLater : MonoBehaviour
+public class JustDoIt : MonoBehaviour
 {
     public UnityEvent justDoIt;
     public float later = 1f;
+
+    public bool destroySelfWhenDone = true;
+
     private float t = 0f;
+
+    void OnEnable()
+    {
+        t = 0f;
+    }
 
     void Update()
     {
@@ -17,7 +25,11 @@ public class JustDoItLater : MonoBehaviour
         {
             justDoIt.Invoke();
             justDoIt.RemoveAllListeners();
-            GameObject.Destroy(this);
+
+            if (destroySelfWhenDone)
+                GameObject.Destroy(this);
+            else
+                enabled = false;
         }
         else
         {
