@@ -37,6 +37,16 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     private Vector2 endFingerDragPoint;
 
     /// <summary>
+    /// Gets the grids count.
+    /// It help you to know what gridIndex number you can set (0 ~ (gridsCount - 1))
+    /// </summary>
+    /// <returns>The grids count.</returns>
+    public int GetGridsCount()
+    {
+        return GridsCount();
+    }
+
+    /// <summary>
     /// Raises the begin drag event.
     /// "Don't" call this function by your own, it depend on Unity's callback system
     /// </summary>
@@ -60,28 +70,9 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (statusNow == States.UserScrolling)
         {
             endFingerDragPoint = data.position;
-            index = CalcGridIndex();
+            index = CalcGridIndexViaPosition();
 
             statusNow = States.TweenToPosition;
-        }
-    }
-
-    /// <summary>
-    /// Gets the grids count.
-    /// It help you to know what gridIndex number you can set (0 ~ (gridsCount - 1))
-    /// </summary>
-    /// <returns>The grids count.</returns>
-    public int GetGridsCount()
-    {
-        float oneGridLegnth = GetOneGridLength();
-        if (oneGridLegnth > 0f)
-        {
-            int gridsCount = (int)(GetAllGridsLength() / oneGridLegnth);
-            return gridsCount;
-        }
-        else
-        {
-            return 0;
         }
     }
 
@@ -94,30 +85,12 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             statusNow = States.Idle;
     }
 
-    private float GetAllGridsLength()
+    private int GridsCount()
     {
-        float allCellsLength = 0f;
-        RectTransform rt = scrollRect.content.gameObject.GetComponent<RectTransform>();
-        switch (gridLayoutGroup.constraint)
-        {
-            case GridLayoutGroup.Constraint.FixedColumnCount:
-                allCellsLength = rt.sizeDelta.y;
-                break;
-            case GridLayoutGroup.Constraint.FixedRowCount:
-                allCellsLength = rt.sizeDelta.x;
-                break;
-            case GridLayoutGroup.Constraint.Flexible:
-                Debug.LogError("can not use GridLayoutGroup.Constraint.Flexible. Destroy itself.");
-                this.enabled = false;
-                GameObject.Destroy(this);
-                break;
-            default:
-                break;
-        }
-        return allCellsLength;
+        return gridLayoutGroup.transform.childCount;
     }
 
-    private float GetOneGridLength()
+    private float OneGridLength()
     {
         float oneCellLegnth = 0f;
         switch (gridLayoutGroup.constraint)
@@ -139,7 +112,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         return oneCellLegnth;
     }
 
-    private float GetAnchoredPosition()
+    private float AnchoredPosition()
     {
         float anchoredPosition = 0f;
         RectTransform rt = scrollRect.content.gameObject.GetComponent<RectTransform>();
@@ -162,16 +135,16 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         return anchoredPosition;
     }
 
-    private int CalcGridIndex()
+    private int CalcGridIndexViaPosition()
     {
-        int gridsCount = GetGridsCount();
+        int gridsCount = GridsCount();
         int origIndex = index;
 
         if (gridsCount > 0)
         {
-            float oneGridLength = GetOneGridLength();
+            float oneGridLength = OneGridLength();
 
-            float anchoredPosition = GetAnchoredPosition();
+            float anchoredPosition = AnchoredPosition();
 
             float posFactor = 0f;
             Vector2 fingerVector = endFingerDragPoint - beginFingerDragPoint;
@@ -246,10 +219,10 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     private Vector2 CalcPositionViaIndex(int toIndex)
     {
-        int gridsCount = GetGridsCount();
+        int gridsCount = GridsCount();
         if (gridsCount > 0)
         {
-            float oneGridLength = GetOneGridLength();
+            float oneGridLength = OneGridLength();
             float toPos = toIndex * oneGridLength;
 
             Vector2 toVec2 = Vector2.zero;
@@ -318,7 +291,7 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                         scrollRect.enabled = false;
 
                         // fix grid index if it is invalid
-                        int gridsCount = GetGridsCount();
+                        int gridsCount = GridsCount();
                         if (index >= gridsCount)
                             index = gridsCount - 1;
                         else if (index < 0)
