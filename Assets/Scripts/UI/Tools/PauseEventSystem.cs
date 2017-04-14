@@ -6,8 +6,6 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using System.Collections;
 
 public class PauseEventSystem : MonoBehaviour
 {
@@ -18,24 +16,28 @@ public class PauseEventSystem : MonoBehaviour
 
     public void Pause()
     {
-        if (eventSystem.enabled == false)
-            return;
-        else
-        {
-            eventSystem.enabled = false;
-            timer = 0f;
-            this.enabled = true;
-        }
+        eventSystem.enabled = false;
+        timer = 0f;
+        this.enabled = true;
     }
 
     private void Awake()
     {
         eventSystem = this.gameObject.GetComponent<EventSystem>();
+        if (eventSystem == null)
+        {
+            eventSystem = GameObject.FindObjectOfType<EventSystem>();
+        }
     }
 
     private void Start()
     {
         this.enabled = false;
+    }
+
+    private void OnDisable()
+    {
+        eventSystem.enabled = true;
     }
 
     private void Update()
