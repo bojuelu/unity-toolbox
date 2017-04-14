@@ -48,10 +48,6 @@ public class TweenGraphicsColorTo : TweenValueColor
                 {
                     continue;
                 }
-                else if (graphics[i].gameObject.name.Contains("skip-tween"))
-                {
-                    continue;
-                }
                 else
                 {
                     graphics[i].color = this.ColorNow;
@@ -62,6 +58,9 @@ public class TweenGraphicsColorTo : TweenValueColor
 
     bool SkipThisGraphic(Graphic g)
     {
+        if (g.gameObject.name.Contains("skip-tween"))
+            return true;
+
         if (skip == null)
             return false;
         if (skip.Length <= 0)
