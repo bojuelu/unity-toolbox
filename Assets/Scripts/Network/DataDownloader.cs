@@ -58,7 +58,7 @@ public class DataDownloader : MonoBehaviour
 
     private static string GetCacheFilesLocation()
     {
-        return UnityUtility.PathFormat(Application.temporaryCachePath) + "data_downloader" + System.IO.Path.DirectorySeparatorChar;
+        return System.IO.Path.Combine(Application.temporaryCachePath, ("data_downloader" + System.IO.Path.DirectorySeparatorChar));
     }
 
     private static Dictionary<string, string> GetCacheTable()
