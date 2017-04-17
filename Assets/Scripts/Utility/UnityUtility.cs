@@ -366,11 +366,9 @@ public static class UnityUtility
             if (!Directory.Exists(fileLocation))
             {
                 Directory.CreateDirectory(fileLocation);
-                Debug.Log(string.Format("{0} not exist, create this folder", fileLocation));
             }
             string filePathAndName = fileLocation + fileName;
             File.WriteAllBytes(filePathAndName, bytes);
-            Debug.Log("Write file: " + filePathAndName + " success");
             return filePathAndName;
         }
         catch (System.Exception exception)
@@ -390,11 +388,9 @@ public static class UnityUtility
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-                Debug.Log(string.Format("{0} not exist, create this folder", path));
             }
 
             File.WriteAllBytes(fileFullPath, bytes);
-            Debug.Log("Write file: " + fileFullPath + " success");
             return fileFullPath;
         }
         catch (System.Exception exception)
@@ -413,11 +409,9 @@ public static class UnityUtility
             if (!Directory.Exists(fileLocation))
             {
                 Directory.CreateDirectory(fileLocation);
-                Debug.Log(string.Format("{0} not exist, create this folder", fileLocation));
             }
             string filePathAndName = fileLocation + fileName;
             File.WriteAllText(filePathAndName, content, encode);
-            Debug.Log("Write text file: " + filePathAndName + " success");
             return filePathAndName;
         }
         catch (System.Exception exception)
@@ -433,7 +427,6 @@ public static class UnityUtility
         try
         {
             File.WriteAllText(fileFullPath, content, encode);
-            Debug.Log("Write text file: " + fileFullPath + " success");
             return fileFullPath;
         }
         catch (System.Exception exception)
@@ -449,7 +442,6 @@ public static class UnityUtility
         try
         {
             byte[] bytes = File.ReadAllBytes(fileFullPath);
-            Debug.Log("Read file: " + fileFullPath + " success");
             return bytes;
         }
         catch (System.Exception exception)
@@ -467,7 +459,6 @@ public static class UnityUtility
             fileLocation = PathFormatPrivateMethod(fileLocation);
             string filePathAndName = fileLocation + fileName;
             byte[] bytes = File.ReadAllBytes(filePathAndName);
-            Debug.Log("Read file: " + filePathAndName + " success");
             return bytes;
         }
         catch (System.Exception exception)
@@ -483,7 +474,6 @@ public static class UnityUtility
         try
         {
             string str = File.ReadAllText(fileFullPath, encode);
-            Debug.Log("Read text file: " + fileFullPath + " success");
             return str;
         }
         catch (System.Exception exception)
@@ -501,7 +491,6 @@ public static class UnityUtility
             fileLocation = PathFormatPrivateMethod(fileLocation);
             string filePathAndName = fileLocation + fileName;
             string str = File.ReadAllText(filePathAndName, encode);
-            Debug.Log("Read text file: " + filePathAndName + " success");
             return str;
         }
         catch (System.Exception exception)
@@ -519,7 +508,6 @@ public static class UnityUtility
             location = PathFormatPrivateMethod(location);
             string filePathAndName = location + fileName;
             File.Delete(filePathAndName);
-            Debug.Log("Delete file: " + filePathAndName + " success");
             return true;
         }
         catch (System.Exception exception)
@@ -535,7 +523,6 @@ public static class UnityUtility
         try
         {
             File.Delete(filePath);
-            Debug.Log("Delete file: " + filePath + " success");
             return true;
         }
         catch (System.Exception exception)
@@ -546,7 +533,7 @@ public static class UnityUtility
         return false;
     }
 
-    public static bool CleanFilesAndDirs(string path)
+    public static bool DeleteFilesAndDirs(string path)
     {
         try
         {

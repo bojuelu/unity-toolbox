@@ -51,19 +51,24 @@ public class DataDownloader : MonoBehaviour
         return GetCacheTable();
     }
 
-    private static string CacheFileLocation()
+    public static string CacheFilesLocation()
+    {
+        return GetCacheFilesLocation();
+    }
+
+    private static string GetCacheFilesLocation()
     {
         return UnityUtility.PathFormat(Application.temporaryCachePath) + "data_downloader" + System.IO.Path.DirectorySeparatorChar;
     }
 
     private static Dictionary<string, string> GetCacheTable()
     {
-        if (!UnityUtility.IsDirectoryExist(CacheFileLocation()))
+        if (!UnityUtility.IsDirectoryExist(GetCacheFilesLocation()))
         {
-            UnityUtility.CreateDirectory(CacheFileLocation());
+            UnityUtility.CreateDirectory(GetCacheFilesLocation());
         }
 
-        if (!UnityUtility.IsFileExist(cacheTableName, CacheFileLocation()))
+        if (!UnityUtility.IsFileExist(cacheTableName, GetCacheFilesLocation()))
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
             Debug.Log("no cache table exist, will create a new one");
@@ -72,7 +77,7 @@ public class DataDownloader : MonoBehaviour
         }
         else
         {
-            string strOrigData = UnityUtility.ReadTextFile(cacheTableName, CacheFileLocation(), EncryptionHelper.Encode);
+            string strOrigData = UnityUtility.ReadTextFile(cacheTableName, GetCacheFilesLocation(), EncryptionHelper.Encode);
             string strJsonData = EncryptionHelper.Decrypt(strOrigData);
             JSONObject json = new JSONObject(strJsonData);
             return json.ToDictionary();
@@ -85,7 +90,7 @@ public class DataDownloader : MonoBehaviour
         string strJson = json.Print();
         string strJsonEncrypt = EncryptionHelper.Encrypt(strJson);
         byte[] byteData = EncryptionHelper.GetBytes(strJsonEncrypt);
-        return UnityUtility.WriteFile(byteData, cacheTableName, CacheFileLocation());
+        return UnityUtility.WriteFile(byteData, cacheTableName, GetCacheFilesLocation());
     }
 
     private static string UniqueFileName()
@@ -174,7 +179,7 @@ public class DataDownloader : MonoBehaviour
         // it is download from web, ready to save cache file
         else
         {
-            string willSaveCacheLoc = CacheFileLocation();
+            string willSaveCacheLoc = GetCacheFilesLocation();
             string willSaveCacheName = UniqueFileName();
 
             // check file type and add extent file name
