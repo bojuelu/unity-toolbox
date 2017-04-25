@@ -15,7 +15,7 @@ public class PauseEventSystem : MonoBehaviour
 
     private EventSystem eventSystem = null;
 
-    private static int callPauseCount = 0;
+    private static List<PauseEventSystem> pauseCaller;
 
     public void Pause(float time)
     {
@@ -25,10 +25,15 @@ public class PauseEventSystem : MonoBehaviour
 
     public void Pause()
     {
+        if (pauseCaller == null)
+            pauseCaller = new List<PauseEventSystem>();
+        
         eventSystem.enabled = false;
         timer = 0f;
         this.enabled = true;
-        callPauseCount++;
+
+        if (pauseCaller.Contains(this) == false)
+            pauseCaller.Add(this);
     }
 
     private void Awake()
@@ -55,15 +60,18 @@ public class PauseEventSystem : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= pauseTime)
         {
-            callPauseCount--;
-            this.enabled = false;
+            if (pauseCaller == null)
+                pauseCaller = new List<PauseEventSystem>();
 
-            if (callPauseCount <= 0)
+            if (pauseCaller.Contains(this))
+                pauseCaller.Remove(this);
+
+            if (pauseCaller.Count <= 0)
             {
-                callPauseCount = 0;
                 eventSystem.enabled = true;
             }
 
+            this.enabled = false;
         }
     }
 }
