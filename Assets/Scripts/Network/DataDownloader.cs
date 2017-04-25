@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class DataDownloader : MonoBehaviour
 {
-    public bool autoStart = true;
+    public bool autoStart = false;
     public string url = "";
 
     private bool isDownloading = false;
@@ -46,7 +46,7 @@ public class DataDownloader : MonoBehaviour
         isDownloading = true;
     }
 
-    public static Dictionary<string, string> CacheTable()
+    public static IDictionary<string, string> CacheTable()
     {
         return GetCacheTable();
     }
@@ -149,7 +149,9 @@ public class DataDownloader : MonoBehaviour
         {
             wwwObj = new WWW(downloadURL);
         }
+
         // wait until download complete
+        yield return null;
         while (!wwwObj.isDone)
         {
             downloadProgress = wwwObj.progress;

@@ -6,6 +6,7 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class PauseEventSystem : MonoBehaviour
 {
@@ -14,11 +15,20 @@ public class PauseEventSystem : MonoBehaviour
 
     private EventSystem eventSystem = null;
 
+    private static int callPauseCount = 0;
+
+    public void Pause(float time)
+    {
+        pauseTime = time;
+        Pause();
+    }
+
     public void Pause()
     {
         eventSystem.enabled = false;
         timer = 0f;
         this.enabled = true;
+        callPauseCount++;
     }
 
     private void Awake()
@@ -45,8 +55,15 @@ public class PauseEventSystem : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= pauseTime)
         {
-            eventSystem.enabled = true;
+            callPauseCount--;
             this.enabled = false;
+
+            if (callPauseCount <= 0)
+            {
+                callPauseCount = 0;
+                eventSystem.enabled = true;
+            }
+
         }
     }
 }
