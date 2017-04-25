@@ -69,5 +69,20 @@ public static class Debug
         UnityEngine.Debug.LogException(e, uo);
 #endif
     }
+
+    public static void DrawRay(UnityEngine.Vector3 start, UnityEngine.Vector3 dir)
+    {
+        UnityEngine.Debug.DrawRay(start, dir);
+    }
+
+    public static void DrawLine(UnityEngine.Vector3 start, UnityEngine.Vector3 end)
+    {
+        UnityEngine.Debug.DrawLine(start, end);            
+    }
+
+    public static void DebugBreak()
+    {
+        UnityEngine.Debug.DebugBreak();
+    }
 }
 #endif
