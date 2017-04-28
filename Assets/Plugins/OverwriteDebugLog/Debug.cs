@@ -28,6 +28,13 @@ public static class Debug
 #endif
     }
 
+    public static void LogFormat(string format, params object[] args)
+    {
+#if LOG_VERBOSE || LOG_DEBUG
+        UnityEngine.Debug.LogFormat(format, args);
+#endif
+    }
+
     public static void LogWarning(object o)
     {
 #if LOG_VERBOSE || LOG_WARNING
@@ -39,6 +46,13 @@ public static class Debug
     {
 #if LOG_VERBOSE || LOG_WARNING
         UnityEngine.Debug.LogWarning(o, uo);
+#endif
+    }
+
+    public static void LogWarningFormat(string format, params object[] args)
+    {
+#if LOG_VERBOSE || LOG_WARNING
+        UnityEngine.Debug.LogWarningFormat(format, args);
 #endif
     }
 
@@ -56,6 +70,13 @@ public static class Debug
 #endif
     }
 
+    public static void LogErrorFormat(string format, params object[] args)
+    {
+#if LOG_VERBOSE || LOG_ERROR
+        UnityEngine.Debug.LogErrorFormat(format, args);
+#endif
+    }
+
     public static void LogException(System.Exception e)
     {
 #if LOG_VERBOSE || LOG_EXCEPTION
@@ -68,6 +89,47 @@ public static class Debug
 #if LOG_VERBOSE || LOG_EXCEPTION
         UnityEngine.Debug.LogException(e, uo);
 #endif
+    }
+
+    public static void LogExceptionFormat(string format, params object[] args)
+    {
+#if LOG_VERBOSE || LOG_EXCEPTION
+        UnityEngine.Debug.LogExceptionFormat(format, args);
+#endif
+    }
+
+    public static void Assert(bool b)
+    {
+//        UnityEngine.Debug.Assert(b);
+    }
+
+    public static void Assert(bool b, UnityEngine.Object o)
+    {
+//        UnityEngine.Debug.Assert(b, o);
+    }
+
+    public static void Assert(bool b, object o)
+    {
+//        UnityEngine.Debug.Assert(b, o);
+    }
+
+    public static void Assert(bool b, string s)
+    {
+//        UnityEngine.Debug.Assert(b, s);
+    }
+
+    public static void Assert(bool b, object o, UnityEngine.Object c)
+    {
+//        UnityEngine.Debug.Assert(b, o, c);
+    }
+
+    public static void Assert(bool b, string s, UnityEngine.Object c)
+    {
+//        UnityEngine.Debug.Assert(b, s, c);
+    }
+
+    public static void Assert(bool b, string s, params object[] args)
+    {
     }
 
     public static void DrawRay(UnityEngine.Vector3 start, UnityEngine.Vector3 dir)
