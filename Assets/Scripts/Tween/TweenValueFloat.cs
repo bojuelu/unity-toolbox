@@ -19,10 +19,11 @@ public class TweenValueFloat : TweenBase
 
     protected int onUpdateInvokeTimes = 0;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        tweenType = "value";
     }
 
     public void Run(float floatFrom, float floatTo)
@@ -41,24 +42,38 @@ public class TweenValueFloat : TweenBase
 
         floatNow = floatFrom;
 
+        tweenName = "value-float-to-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", tweenType,
+                "name", tweenName,
                 "from", floatFrom,
                 "to", floatTo,
                 "time", duration,
                 "delay", delay,
                 "easeType", ease.ToString(),
                 "loopType", loop,
-                "onupdate", Callback.OnUpdateFloatFuncName,
-                "onupdatetarget", Callback.gameObject,
-                "oncomplete", Callback.OnCompleteFuncName,
-                "oncompletetarget", Callback.gameObject,
+                "onupdate", recvCallback.OnUpdateFloatFuncName,
+                "onupdatetarget", recvCallback.gameObject,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject,
                 "ignoretimescale", ignoreTimeScale
             )
         );
 
-        Callback.onUpdateFloatEvent = this.OnUpdate;
+        recvCallback.onUpdateFloatEvent -= this.OnUpdate;
+        recvCallback.onUpdateFloatEvent += this.OnUpdate;
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 
     private void OnUpdate(float f)

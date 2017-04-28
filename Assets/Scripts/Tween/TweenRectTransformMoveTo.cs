@@ -6,7 +6,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class TweenRectTransformMoveTo : TweenValueVector2
+public class TweenRectTransformMoveTo : TweenValueVector3
 {
     public bool useNowAsFrom = false;
 
@@ -14,8 +14,8 @@ public class TweenRectTransformMoveTo : TweenValueVector2
     {
         if (useNowAsFrom)
         {
-            Vector2 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition;
-            this.vectorFrom = nowPos;
+            Vector3 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition3D;
+            vectorFrom = nowPos;
         }
 
         base.Run();
@@ -36,6 +36,6 @@ public class TweenRectTransformMoveTo : TweenValueVector2
 
     void ApplyPosition()
     {
-        this.tweenTarget.GetComponent<RectTransform>().anchoredPosition = this.VectorNow;
+        tweenTarget.GetComponent<RectTransform>().anchoredPosition3D = this.VectorNow;
     }
 }

@@ -21,8 +21,11 @@ public abstract class TweenBase : MonoBehaviour
     public bool ignoreTimeScale = false;
     public bool isLocal = true;
 
-    protected string tweenType = "";
-    public string TweenType { get { return tweenType; } }
+//    protected string tweenType = "";
+//    public string TweenType { get { return tweenType; } }
+
+    protected string tweenName = "";
+    public string TweenName { get { return tweenName; } }
 
     protected bool isInited = false;
     public bool IsInited { get { return isInited; } }
@@ -62,17 +65,15 @@ public abstract class TweenBase : MonoBehaviour
 
     public virtual void Pause()
     {
-        iTween.Pause(this.tweenTarget, tweenType);
     }
 
     public virtual void Resume()
     {
-        iTween.Resume(this.tweenTarget, tweenType);
     }
 
     public virtual void Stop()
     {
-        iTween.Stop(this.tweenTarget, tweenType);
+        iTween.StopByName(tweenTarget, tweenName);
 
         isTweening = false;
     }
@@ -90,8 +91,8 @@ public abstract class TweenBase : MonoBehaviour
             GameObject recvObj = new GameObject();
             recvObj.transform.SetParent(this.transform);
             recvObj.transform.localPosition = Vector3.zero;
-            recvObj.transform.localScale = Vector3.one;
             recvObj.transform.localRotation = Quaternion.identity;
+            recvObj.transform.localScale = Vector3.one;
             recvObj.name = this.name + "_tween_callback";
             recvCallback = recvObj.AddComponent<TweenCallback>();
             recvCallback.onCompleteEvent += this.OnComplete;

@@ -12,10 +12,11 @@ public class TweenMoveTo : TweenBase
     public Vector3 moveFrom = Vector3.zero;
     public Vector3 moveTo = Vector3.up * 10;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "moveto";
     }
 
     public void Run(Vector3 moveFrom, Vector3 moveTo, bool isLocal=true)
@@ -36,19 +37,32 @@ public class TweenMoveTo : TweenBase
         else
             this.transform.localPosition = moveFrom;
 
-        iTween.MoveTo(base.tweenTarget,
+        tweenName = "moveto-" + UnityUtility.GenerateRandomString(8);
+        iTween.MoveTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "islocal", base.isLocal,
-                "position", this.moveTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.ease.ToString(),
-                "loopType", base.loop,
-                "ignoretimescale", base.ignoreTimeScale,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject
+                "name", tweenName,
+                "islocal", isLocal,
+                "position", moveTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", ease.ToString(),
+                "loopType", loop,
+                "ignoretimescale", ignoreTimeScale,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject
             )
         );
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 }

@@ -10,10 +10,11 @@ public class TweenRotateAdd : TweenBase
 {
     public Vector3 rotateAmount = new Vector3(90, 90, 90);
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "rotateadd";
     }
 
     public override void Run()
@@ -24,19 +25,32 @@ public class TweenRotateAdd : TweenBase
         if (isLocal)
             space = Space.Self;
 
-        iTween.RotateAdd(base.tweenTarget,
+        tweenName = "rotateadd-" + UnityUtility.GenerateRandomString(8);
+        iTween.RotateAdd(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
+                "name", tweenName,
                 "space", space,
-                "amount", this.rotateAmount,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.ease.ToString(),
-                "loopType", base.loop,
-                "ignoretimescale", base.ignoreTimeScale,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject
+                "amount", rotateAmount,
+                "time", duration,
+                "delay", delay,
+                "easeType", ease.ToString(),
+                "loopType", loop,
+                "ignoretimescale", ignoreTimeScale,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject
             )
         );
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 }

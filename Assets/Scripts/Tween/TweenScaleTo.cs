@@ -12,10 +12,11 @@ public class TweenScaleTo : TweenBase
     public Vector3 scaleFrom = Vector3.one;
     public Vector3 scaleTo = Vector3.one * 2;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "scaleto";
     }
 
     public void Run(Vector3 scaleFrom, Vector3 scaleTo)
@@ -42,20 +43,32 @@ public class TweenScaleTo : TweenBase
         else
             this.transform.localScale = scaleFrom;
 
-        iTween.ScaleTo(base.tweenTarget,
+        tweenName = "scaleto-" + UnityUtility.GenerateRandomString(8);
+        iTween.ScaleTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "islocal", base.isLocal,
-                "scale", this.scaleTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.ease.ToString(),
-                "loopType", base.loop,
-                "ignoretimescale", base.ignoreTimeScale,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject
+                "name", tweenName,
+                "islocal", isLocal,
+                "scale", scaleTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", ease.ToString(),
+                "loopType", loop,
+                "ignoretimescale", ignoreTimeScale,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject
             )
         );
     }
 
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
+    }
 }

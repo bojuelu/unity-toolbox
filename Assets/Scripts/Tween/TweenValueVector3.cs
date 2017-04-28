@@ -19,10 +19,11 @@ public class TweenValueVector3 : TweenBase
 
     protected int onUpdateInvokeTimes = 0;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        tweenType = "value";
     }
 
     public void Run(Vector3 vectorFrom, Vector3 vectorTo)
@@ -41,24 +42,38 @@ public class TweenValueVector3 : TweenBase
 
         vectorNow = vectorFrom;
 
+        tweenName = "value-vector3-to-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", tweenType,
+                "name", tweenName,
                 "from", vectorFrom,
                 "to", vectorTo,
                 "time", duration,
                 "delay", delay,
                 "easeType", ease.ToString(),
                 "loopType", loop,
-                "onupdate", Callback.OnUpdateVector3FuncName,
-                "onupdatetarget", Callback.gameObject,
-                "oncomplete", Callback.OnCompleteFuncName,
-                "oncompletetarget", Callback.gameObject,
+                "onupdate", recvCallback.OnUpdateVector3FuncName,
+                "onupdatetarget", recvCallback.gameObject,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject,
                 "ignoretimescale", ignoreTimeScale
             )
         );
 
-        Callback.onUpdateVector3Event = this.OnUpdate;
+        recvCallback.onUpdateVector3Event -= this.OnUpdate;
+        recvCallback.onUpdateVector3Event += this.OnUpdate;
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 
     private void OnUpdate(Vector3 vec3)

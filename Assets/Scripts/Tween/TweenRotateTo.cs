@@ -12,10 +12,11 @@ public class TweenRotateTo : TweenBase
     public Vector3 rotateFrom = Vector3.zero;
     public Vector3 rotateTo = Vector3.forward * 180;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        base.tweenType = "rotateto";
     }
 
     public void Run(Vector3 rotateFrom, Vector3 rotateTo, bool isLocal)
@@ -45,20 +46,33 @@ public class TweenRotateTo : TweenBase
             this.transform.localRotation = new Quaternion(
                 rotateFrom.x, rotateFrom.y, rotateFrom.z, transform.localRotation.w
             );
-        
-        iTween.RotateTo(base.tweenTarget,
+
+        tweenName = "rotateto-" + UnityUtility.GenerateRandomString(8);
+        iTween.RotateTo(tweenTarget,
             iTween.Hash(
-                "name", base.tweenType,
-                "islocal", base.isLocal,
-                "rotation", this.rotateTo,
-                "time", base.duration,
-                "delay", base.delay,
-                "easeType", base.ease.ToString(),
-                "loopType", base.loop,
-                "ignoretimescale", base.ignoreTimeScale,
-                "oncomplete", base.Callback.OnCompleteFuncName,
-                "oncompletetarget", base.Callback.gameObject
+                "name", tweenName,
+                "islocal", isLocal,
+                "rotation", rotateTo,
+                "time", duration,
+                "delay", delay,
+                "easeType", ease.ToString(),
+                "loopType", loop,
+                "ignoretimescale", ignoreTimeScale,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject
             )
         );
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 }

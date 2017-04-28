@@ -19,10 +19,11 @@ public class TweenValueColor : TweenBase
 
     protected int onUpdateInvokeTimes = 0;
 
+    private iTween iTweenInstance = null;
+
     protected override void Awake()
     {
         base.Awake();
-        tweenType = "value";
     }
 
     public void Run(Color colorFrom, Color colorTo)
@@ -41,24 +42,38 @@ public class TweenValueColor : TweenBase
 
         colorNow = colorFrom;
 
+        tweenName = "value-color-to-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
-                "name", tweenType,
+                "name", tweenName,
                 "from", colorFrom,
                 "to", colorTo,
                 "time", duration,
                 "delay", delay,
                 "easeType", ease.ToString(),
                 "loopType", loop,
-                "onupdate", Callback.OnUpdateColorFuncName,
-                "onupdatetarget", Callback.gameObject,
-                "oncomplete", Callback.OnCompleteFuncName,
-                "oncompletetarget", Callback.gameObject,
+                "onupdate", recvCallback.OnUpdateColorFuncName,
+                "onupdatetarget", recvCallback.gameObject,
+                "oncomplete", recvCallback.OnCompleteFuncName,
+                "oncompletetarget", recvCallback.gameObject,
                 "ignoretimescale", ignoreTimeScale
             )
         );
 
-        Callback.onUpdateColorEvent = this.OnUpdate;
+        recvCallback.onUpdateColorEvent -= this.OnUpdate;
+        recvCallback.onUpdateColorEvent += this.OnUpdate;
+    }
+
+    public override void Pause()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = false;
+    }
+
+    public override void Resume()
+    {
+        if (iTweenInstance)
+            iTweenInstance.enabled = true;
     }
 
     private void OnUpdate(Color c)
