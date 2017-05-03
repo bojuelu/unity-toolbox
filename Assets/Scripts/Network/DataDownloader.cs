@@ -19,6 +19,8 @@ public class DataDownloader : MonoBehaviour
 
     private static string cacheTableName = "cache_table.txt";
 
+    private static bool checkedEncryptionVersion = false;
+
     /// <summary>
     /// Give a web url, download it and save to disk.
     /// Next time use the same url, it will download from local disk.
@@ -27,7 +29,12 @@ public class DataDownloader : MonoBehaviour
     /// <param name="downloadURL">URL.</param>
     /// <param name="callback">Callback function.</param>
     /// <param name="md5CheckSum">Md5 check sum.</param>
-    public void Download(string downloadURL, DownloadCompleteHandler callback, string md5Checksum = "")
+    public void Download(
+        string downloadURL,
+        DownloadCompleteHandler callback,
+        string md5Checksum = null,
+        System.Text.Encoding md5ChecksumEncoding = null
+    )
     {
         if (isDownloading)
         {
@@ -42,7 +49,7 @@ public class DataDownloader : MonoBehaviour
 
         url = downloadURL;
 
-        this.StartCoroutine(this.DownloadCoroutine(url, callback, md5Checksum));
+        this.StartCoroutine(this.DownloadCoroutine(url, callback, md5Checksum, md5ChecksumEncoding));
         isDownloading = true;
     }
 
@@ -62,13 +69,35 @@ public class DataDownloader : MonoBehaviour
     }
 
     private static Dictionary<string, string> GetCacheTable()
-    {
-        if (!UnityUtility.IsDirectoryExist(GetCacheFilesLocation()))
+    {        
+        string cacheFilesLocation = GetCacheFilesLocation();
+
+        if (!UnityUtility.IsDirectoryExist(cacheFilesLocation))
+            UnityUtility.CreateDirectory(cacheFilesLocation);
+
+        if (checkedEncryptionVersion == false)
         {
-            UnityUtility.CreateDirectory(GetCacheFilesLocation());
+            float lastVersion = PlayerPrefs.GetFloat("EncryptionHelper.Version", 0f);
+            float nowVersion = EncryptionHelper.Version;
+            bool needClearCacheTable = false;
+
+            if (lastVersion != nowVersion)
+            {
+                needClearCacheTable = true;
+            }
+            PlayerPrefs.SetFloat("EncryptionHelper.Version", nowVersion);
+            checkedEncryptionVersion = true;
+
+            if (needClearCacheTable)
+            {
+                Debug.Log("Clear cache table bcz EncryptionHelper.Version is not the same");
+                Dictionary<string, string> emptyCacheTable = new Dictionary<string, string>();
+                WriteCacheTable(emptyCacheTable);
+                return emptyCacheTable;
+            }
         }
 
-        if (!UnityUtility.IsFileExist(cacheTableName, GetCacheFilesLocation()))
+        if (!UnityUtility.IsFileExist(cacheTableName, cacheFilesLocation))
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
             Debug.Log("no cache table exist, will create a new one");
@@ -77,8 +106,8 @@ public class DataDownloader : MonoBehaviour
         }
         else
         {
-            string strOrigData = UnityUtility.ReadTextFile(cacheTableName, GetCacheFilesLocation(), EncryptionHelper.Encode);
-            string strJsonData = EncryptionHelper.Decrypt(strOrigData);
+            string strOrigData = UnityUtility.ReadTextFile(cacheTableName, cacheFilesLocation, EncryptionHelper.Encoding);
+            string strJsonData = EncryptionHelper.Decrypt(strOrigData, 0);
             JSONObject json = new JSONObject(strJsonData);
             return json.ToDictionary();
         }
@@ -88,9 +117,8 @@ public class DataDownloader : MonoBehaviour
     {
         JSONObject json = new JSONObject(dic);
         string strJson = json.Print();
-        string strJsonEncrypt = EncryptionHelper.Encrypt(strJson);
-        byte[] byteData = EncryptionHelper.GetBytes(strJsonEncrypt);
-        return UnityUtility.WriteFile(byteData, cacheTableName, GetCacheFilesLocation());
+        string strJsonEncrypt = EncryptionHelper.Encrypt(strJson, 0);
+        return UnityUtility.WriteTextFile(strJsonEncrypt, EncryptionHelper.Encoding, cacheTableName, GetCacheFilesLocation());
     }
 
     private static string UniqueFileName()
@@ -103,7 +131,12 @@ public class DataDownloader : MonoBehaviour
         return id;
     }
 
-    private IEnumerator DownloadCoroutine(string downloadURL, DownloadCompleteHandler callback, string md5Checksum)
+    private IEnumerator DownloadCoroutine(
+        string downloadURL,
+        DownloadCompleteHandler callback,
+        string md5Checksum,
+        System.Text.Encoding md5ChecksumEncoding
+    )
     {
         if (wwwObj != null)
         {
@@ -125,7 +158,7 @@ public class DataDownloader : MonoBehaviour
                 // if this function caller give a md5 checksum code, go check it
                 if (!string.IsNullOrEmpty(md5Checksum))
                 {
-                    if (EncryptionHelper.MD5ChecksumCode(savedCachePath) == md5Checksum)
+                    if (EncryptionHelper.MD5ChecksumCode(md5ChecksumEncoding, savedCachePath) == md5Checksum)
                     {
                         // pass checksum, download from cache
                         isDownloadFromCache = true;

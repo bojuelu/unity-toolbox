@@ -13,18 +13,38 @@ using System.Security.Cryptography;
 
 public static class EncryptionHelper
 {
-    private static string encryptionKey = "8b02bf6153e348d69632ae8b3356b3c3";
-    private static byte[] encryptionSalt = new byte[] { 0x48, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 };
+    private static string[] encryptionKeys =
+        {
+            "8b02bf6153e348d69632ae8b3356b3c3",
+            "r5jpvl39ob4dka8pciq8eay86k7m6obg",
+            "uh8ia8otirmh5docrgxgaji8lqdbzh62",
+            "9ul780xqkz3tde5k2w5s3gtjhfmu9wet",
+            "f06dmnpzrl9e9zsmvwvmtfo32xjcjseo",
+            "j4abfri9vm0nvbed2xgue0mbavwa4a64",
+        };
+    private static string[] encryptionSalts =
+        {
+            "9vonu1yfhdcn81sl8pjuu7cfzllsimr3",
+            "8n5wug7rfrdvjntgrqbxw1a8dvg1lo65",
+            "a8kkn072s9vv4b8rnu7y22nq56afc57p",
+            "r8pmogwrrulonvomxolmojkpwp5xcbb2",
+            "bp2irry9pdnja73abhirs3as5yo3k8b1",
+            "dwg8e8ky54j6yovuf4hzcp9xm1wr1b7o",
+        };
 
-    private static Encoding encode = Encoding.Unicode;
-    public static Encoding Encode { get { return encode; } }
+    private static Encoding encoding = Encoding.UTF8;
+    public static Encoding Encoding { get { return encoding; } }
+
+    // if keys array, salts array, or encoding changed, version must changed, too.
+    private static float version = 1.0f;
+    public static  float Version { get { return version; } }
 
     public static byte[] GetBytes(string str)
     {
-        return encode.GetBytes(str);
+        return encoding.GetBytes(str);
     }
 
-    public static string MD5ChecksumCode(string fileFullPath)
+    public static string MD5ChecksumCode(Encoding encoding, string fileFullPath)
     {
         try
         {
@@ -32,7 +52,7 @@ public static class EncryptionHelper
             {
                 using (var stream = File.OpenRead(fileFullPath))
                 {
-                    return Encoding.Default.GetString(md5.ComputeHash(stream));
+                    return encoding.GetString(md5.ComputeHash(stream));
                 }
             }
         }
@@ -45,12 +65,14 @@ public static class EncryptionHelper
         return "";
     }
 
-    public static string Encrypt(string clearText)
+    public static string Encrypt(string clearText, int keyAndSaltIndex)
     {
         byte[] clearBytes = GetBytes(clearText);
         using (Aes encryptor = Aes.Create())
         {
-            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, encryptionSalt);
+            byte[] key = encoding.GetBytes(encryptionKeys[keyAndSaltIndex]);
+            byte[] salt = encoding.GetBytes(encryptionSalts[keyAndSaltIndex]);
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 16);
             encryptor.Key = pdb.GetBytes(32);
             encryptor.IV = pdb.GetBytes(16);
             using (MemoryStream ms = new MemoryStream())
@@ -65,13 +87,15 @@ public static class EncryptionHelper
         }
         return clearText;
     }
-    public static string Decrypt(string cipherText)
+    public static string Decrypt(string cipherText, int keyAndSaltIndex)
     {
         cipherText = cipherText.Replace(" ", "+");
         byte[] cipherBytes = Convert.FromBase64String(cipherText);
         using (Aes encryptor = Aes.Create())
         {
-            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, encryptionSalt);
+            byte[] key = encoding.GetBytes(encryptionKeys[keyAndSaltIndex]);
+            byte[] salt = encoding.GetBytes(encryptionSalts[keyAndSaltIndex]);
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 16);
             encryptor.Key = pdb.GetBytes(32);
             encryptor.IV = pdb.GetBytes(16);
             using (MemoryStream ms = new MemoryStream())
@@ -81,7 +105,7 @@ public static class EncryptionHelper
                     cs.Write(cipherBytes, 0, cipherBytes.Length);
                     cs.Close();
                 }
-                cipherText = Encoding.Unicode.GetString(ms.ToArray());
+                cipherText = encoding.GetString(ms.ToArray());
             }
         }
         return cipherText;
