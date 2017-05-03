@@ -81,6 +81,8 @@ public class DataDownloader : MonoBehaviour
             float nowVersion = EncryptionHelper.Version;
             bool needClearCacheTable = false;
 
+            Debug.Log(string.Format("EncryptionHelper.Version now:{0} , last:{1}", nowVersion, lastVersion));
+
             if (lastVersion != nowVersion)
             {
                 needClearCacheTable = true;
@@ -90,7 +92,7 @@ public class DataDownloader : MonoBehaviour
 
             if (needClearCacheTable)
             {
-                Debug.Log("Clear cache table bcz EncryptionHelper.Version is not the same");
+                Debug.LogWarning("Clear cache table bcz EncryptionHelper.Version is not the same");
                 Dictionary<string, string> emptyCacheTable = new Dictionary<string, string>();
                 WriteCacheTable(emptyCacheTable);
                 return emptyCacheTable;
