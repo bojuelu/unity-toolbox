@@ -95,13 +95,13 @@ public static class EncryptionHelper
         return "";
     }
 
-    public static string Encrypt(string clearText, int selectKeyIndex)
+    public static string Encrypt(string clearText, int keyIndex)
     {
         byte[] clearBytes = GetBytes(clearText);
         using (Aes encryptor = Aes.Create())
         {
-            string password = passwords[selectKeyIndex];
-            byte[] salt = salts[selectKeyIndex];
+            string password = passwords[keyIndex];
+            byte[] salt = salts[keyIndex];
             Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt);
             encryptor.Key = pdb.GetBytes(32);
             encryptor.IV = pdb.GetBytes(16);
@@ -117,14 +117,14 @@ public static class EncryptionHelper
         }
         return clearText;
     }
-    public static string Decrypt(string cipherText, int selectKeyIndex)
+    public static string Decrypt(string cipherText, int keyIndex)
     {
         cipherText = cipherText.Replace(" ", "+");
         byte[] cipherBytes = Convert.FromBase64String(cipherText);
         using (Aes encryptor = Aes.Create())
         {
-            string password = passwords[selectKeyIndex];
-            byte[] salt = salts[selectKeyIndex];
+            string password = passwords[keyIndex];
+            byte[] salt = salts[keyIndex];
             Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt);
             encryptor.Key = pdb.GetBytes(32);
             encryptor.IV = pdb.GetBytes(16);
