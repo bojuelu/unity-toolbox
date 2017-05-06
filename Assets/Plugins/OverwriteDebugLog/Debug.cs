@@ -91,13 +91,6 @@ public static class Debug
 #endif
     }
 
-    public static void LogExceptionFormat(string format, params object[] args)
-    {
-#if LOG_VERBOSE || LOG_EXCEPTION
-        UnityEngine.Debug.LogExceptionFormat(format, args);
-#endif
-    }
-
     public static void Assert(bool b)
     {
 //        UnityEngine.Debug.Assert(b);
