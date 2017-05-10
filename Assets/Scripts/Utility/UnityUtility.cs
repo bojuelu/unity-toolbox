@@ -345,7 +345,7 @@ public static class UnityUtility
 
     private static string PathFormatPrivateMethod(string path)
     {
-        path = path.Trim();
+        path = path.Trim();  // remove space char at head and tail
         if (path[path.Length - 1] != Path.DirectorySeparatorChar)
         {
             path += Path.DirectorySeparatorChar;
@@ -597,27 +597,12 @@ public static class UnityUtility
         return null;
     }
 
-    private static bool IsFileExistPrivateMethod(string filePath)
-    {
-        try
-        {
-            bool isExist = File.Exists(filePath);
-            return isExist;
-        }
-        catch (System.Exception exception)
-        {
-            Debug.LogError(exception.Message);
-            Debug.LogException(exception);
-        }
-        return false;
-    }
-
     public static bool IsFileExist(string fileName, string location)
     {
         try
         {
             location = PathFormatPrivateMethod(location);
-            string filePathAndName = location + fileName;
+            string filePathAndName = Path.Combine(location, fileName);
             bool isExist = File.Exists(filePathAndName);
             return isExist;
         }
@@ -631,7 +616,17 @@ public static class UnityUtility
 
     public static bool IsFileExist(string fileFullPath)
     {
-        return IsFileExistPrivateMethod(fileFullPath);
+        try
+        {
+            bool isExist = File.Exists(fileFullPath);
+            return isExist;
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogError(exception.Message);
+            Debug.LogException(exception);
+        }
+        return false;
     }
 
     public static bool IsDirectoryExist(string path)
