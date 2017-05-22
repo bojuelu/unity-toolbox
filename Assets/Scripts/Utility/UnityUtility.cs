@@ -712,81 +712,37 @@ public static class UnityUtility
         char[] charArray = strText.ToCharArray();
         if (charArray.Length >= aUnicodeLength)
         {
-            // unicode example: \u4e2d
-            if (
-                charArray[0] == '\\' &&
-                charArray[1] == 'u' &&
-                charArray[2] != 'u' && charArray[2] != '\\' &&
-                charArray[3] != 'u' && charArray[3] != '\\' &&
-                charArray[4] != 'u' && charArray[4] != '\\' &&
-                charArray[5] != 'u' && charArray[5] != '\\'
-            )
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static string GrepUnicodeToString(string strText)
-    {
-        int aUnicodeLength = 6;
-        char[] charArray = strText.ToCharArray();
-        List<string> parsedStrList = new List<string>();
-
-        if (charArray.Length >= aUnicodeLength)
-        {
             for (int i = 0; i < charArray.Length; i++)
             {
-                int indexFrom = i;
-                int indexTo = i + (aUnicodeLength - 1);
-
-                if (indexTo < charArray.Length)
+                if (i + (aUnicodeLength) >= charArray.Length)
                 {
-                    char[] chars = new char[aUnicodeLength];
-                    for (int j = 0; j < chars.Length; j++)
+                    break;
+                }
+                // unicode example: \u4e2d
+                else
+                {
+                    if (charArray[i] == '\\')
                     {
-                        chars[j] = charArray[indexFrom + j];
-                    }
-                    string s = new string(chars);
-                    if (IsUnicodeFormat(s))
-                    {
-                        s = UnicodeToString(s);
-                        parsedStrList.Add(s);
-                        i = indexTo;
-                        continue;
+                        if (
+                            charArray[i + 0] == '\\' &&
+                            charArray[i + 1] == 'u' &&
+                            charArray[i + 2] != 'u' && charArray[2] != '\\' &&
+                            charArray[i + 3] != 'u' && charArray[3] != '\\' &&
+                            charArray[i + 4] != 'u' && charArray[4] != '\\' &&
+                            charArray[i + 5] != 'u' && charArray[5] != '\\'
+                        )
+                        {
+                            return true;
+                        }
                     }
                     else
                     {
-                        char c = charArray[indexFrom];
-                        string s1 = System.Convert.ToString(c);
-                        parsedStrList.Add(s1);
+                        continue;
                     }
                 }
-                else
-                {
-                    for (int j = indexFrom; j < charArray.Length; j++)
-                    {
-                        char c = charArray[j];
-                        string s = System.Convert.ToString(c);
-                        parsedStrList.Add(s);
-                    }
-                    break;
-                }
             }
-
-            string finalStr = "";
-            for (int i = 0; i < parsedStrList.Count; i++)
-            {
-                finalStr += parsedStrList[i];
-            }
-            parsedStrList = null;
-            return finalStr;
         }
-        else
-        {
-            return strText;
-        }
+        return false;
     }
 
     public static string StringToUnicode(string strText)
@@ -812,6 +768,98 @@ public static class UnityUtility
     }
 
     public static string UnicodeToString(string unicodeText)
+    {
+        try
+        {
+            int aUnicodeLength = 6;
+            char[] charArray = unicodeText.ToCharArray();
+            List<string> parsedStrList = new List<string>();
+
+            if (charArray.Length >= aUnicodeLength)
+            {
+                for (int i = 0; i < charArray.Length; i++)
+                {
+                    int indexFrom = i;
+                    int indexTo = i + (aUnicodeLength - 1);
+
+                    if (indexTo < charArray.Length)
+                    {
+                        char[] chars = new char[aUnicodeLength];
+                        for (int j = 0; j < chars.Length; j++)
+                        {
+                            chars[j] = charArray[indexFrom + j];
+                        }
+                        string s = new string(chars);
+                        if (SingleStringIsUnicodeFormat(s))
+                        {
+                            s = SingleUnicodeFormatToString(s);
+                            parsedStrList.Add(s);
+                            i = indexTo;
+                            continue;
+                        }
+                        else
+                        {
+                            char c = charArray[indexFrom];
+                            string s1 = System.Convert.ToString(c);
+                            parsedStrList.Add(s1);
+                        }
+                    }
+                    else
+                    {
+                        for (int j = indexFrom; j < charArray.Length; j++)
+                        {
+                            char c = charArray[j];
+                            string s = System.Convert.ToString(c);
+                            parsedStrList.Add(s);
+                        }
+                        break;
+                    }
+                }
+
+                string finalStr = "";
+                for (int i = 0; i < parsedStrList.Count; i++)
+                {
+                    finalStr += parsedStrList[i];
+                }
+                parsedStrList = null;
+                return finalStr;
+            }
+            else
+            {
+                return unicodeText;
+            }
+        }
+        catch (System.Exception exc)
+        {
+            Debug.LogError(exc.Message);
+            Debug.LogException(exc);
+            return "?";
+        }
+    }
+
+    private static bool SingleStringIsUnicodeFormat(string strText)
+    {
+        int aUnicodeLength = 6;
+        char[] charArray = strText.ToCharArray();
+        if (charArray.Length >= aUnicodeLength)
+        {
+            // unicode example: \u4e2d
+            if (
+                charArray[0] == '\\' &&
+                charArray[1] == 'u' &&
+                charArray[2] != 'u' && charArray[2] != '\\' &&
+                charArray[3] != 'u' && charArray[3] != '\\' &&
+                charArray[4] != 'u' && charArray[4] != '\\' &&
+                charArray[5] != 'u' && charArray[5] != '\\'
+            )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static string SingleUnicodeFormatToString(string unicodeText)
     {
         try
         {
