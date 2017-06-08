@@ -5,6 +5,7 @@
 /// </summary>
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class FoldRect : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class FoldRect : MonoBehaviour
 
     public Vector2 foldupSize = new Vector2(100, 100);
     public Vector2 unFoldupSize = new Vector2(100, 200);
+
+    public UnityEvent foldupEvent;
+    public UnityEvent unFoldupEvent;
 
     private RectTransform rect;
 
@@ -115,11 +119,15 @@ public class FoldRect : MonoBehaviour
     void FoldupDirectly()
     {
         SetRect(foldupSize);
+        if (foldupEvent != null)
+            foldupEvent.Invoke();
     }
 
     void UnfoldupDirectly()
     {
         SetRect(unFoldupSize);
+        if (unFoldupEvent != null)
+            unFoldupEvent.Invoke();
     }
 
     void SetRect(Vector2 v)

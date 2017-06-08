@@ -65,7 +65,8 @@ public class ButtonMultiImage : Button
 
         foreach(Graphic g in this.Graphics)
         {
-            g.CrossFadeColor (targetColor, (!instant) ? this.colors.fadeDuration : 0f, true, true);
+            if (g)
+                g.CrossFadeColor (targetColor, (!instant) ? this.colors.fadeDuration : 0f, true, true);
         }
     }
 }
