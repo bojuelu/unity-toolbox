@@ -12,6 +12,11 @@ using System.Collections.Generic;
 
 public static class UnityUtility
 {
+    public static double UnixTimestamp()
+    {
+        return DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+    }
+
     public static string Rot38(string str)
     {
         if (str.Length <= 0)
