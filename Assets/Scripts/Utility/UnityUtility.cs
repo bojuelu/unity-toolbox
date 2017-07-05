@@ -711,7 +711,7 @@ public static class UnityUtility
         return log;
     }
 
-    public static bool ContainUnicodeFormat(string strText)
+    public static bool ContainsUnicodeFormat(string strText)
     {
         int aUnicodeLength = 6;
         char[] charArray = strText.ToCharArray();
