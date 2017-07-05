@@ -711,16 +711,20 @@ public static class UnityUtility
         return log;
     }
 
-    public static bool IsUnicodeFormat(string strText)
+    public static bool ContainUnicodeFormat(string strText)
     {
         int aUnicodeLength = 6;
         char[] charArray = strText.ToCharArray();
+        Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] start. input string: {0}</color>", strText));
+        Debug.Log(string.Format("<color=yellow> charArray.Length:{0} </color>", charArray.Length));
         if (charArray.Length >= aUnicodeLength)
         {
             for (int i = 0; i < charArray.Length; i++)
             {
+                Debug.Log(string.Format("<color=yellow> charArray[{0}]:{1} </color>", i, charArray[i]));
                 if (i + (aUnicodeLength) >= charArray.Length)
                 {
+                    Debug.Log(string.Format("<color=yellow> {0}+6 >= {1} </color>", i, aUnicodeLength));
                     break;
                 }
                 // unicode example: \u4e2d
@@ -728,25 +732,43 @@ public static class UnityUtility
                 {
                     if (charArray[i] == '\\')
                     {
+                        Debug.Log(string.Format("<color=yellow> charArray[{0}] == '\\' </color>", i));
+                        Debug.Log(string.Format(
+                            "<color=yellow> charArray[{0} - {1}]: {2} | {3} | {4} | {5} | {6}</color>",
+                            i, i + 5,
+                            charArray[i + 1], charArray[i + 2], charArray[i + 3], charArray[i + 4], charArray[i + 5]));
                         if (
-                            charArray[i + 0] == '\\' &&
                             charArray[i + 1] == 'u' &&
-                            charArray[i + 2] != 'u' && charArray[2] != '\\' &&
-                            charArray[i + 3] != 'u' && charArray[3] != '\\' &&
-                            charArray[i + 4] != 'u' && charArray[4] != '\\' &&
-                            charArray[i + 5] != 'u' && charArray[5] != '\\'
-                        )
+                            charArray[i + 2] != 'u' && charArray[i + 2] != '\\' &&
+                            charArray[i + 3] != 'u' && charArray[i + 3] != '\\' &&
+                            charArray[i + 4] != 'u' && charArray[i + 4] != '\\' &&
+                            charArray[i + 5] != 'u' && charArray[i + 5] != '\\')
                         {
+                            Debug.Log(string.Format(
+                                "<color=yellow> charArray[{0} - {1}] is match unicode format </color>", i, i + 5));
+                            Debug.Log(string.Format("<color=yellow> return true </color>"));
+                            Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] end </color>"));
                             return true;
+                        }
+                        else
+                        {
+                            Debug.Log(string.Format(
+                                "<color=yellow> charArray[{0} - {1}] is not match unicode format </color>", i, i + 5));
+                            Debug.Log(string.Format("<color=yellow> continue </color>"));
+                            continue;
                         }
                     }
                     else
                     {
+                        Debug.Log(string.Format("<color=yellow> charArray[{0}] != '\\' </color>", i));
+                        Debug.Log(string.Format("<color=yellow> continue </color>"));
                         continue;
                     }
                 }
             }
         }
+        Debug.Log(string.Format("return false"));
+        Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] end </color>"));
         return false;
     }
 
