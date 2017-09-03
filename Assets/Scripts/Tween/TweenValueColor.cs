@@ -42,7 +42,7 @@ public class TweenValueColor : TweenBase
 
         colorNow = colorFrom;
 
-        tweenName = "value-color-to-" + UnityUtility.GenerateRandomString(8);
+        tweenName = "valuecolorto-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
                 "name", tweenName,

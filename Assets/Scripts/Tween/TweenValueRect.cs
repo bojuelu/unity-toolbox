@@ -42,7 +42,7 @@ public class TweenValueRect : TweenBase
 
         rectNow = rectFrom;
 
-        tweenName = "value-rect-to-" + UnityUtility.GenerateRandomString(8);
+        tweenName = "valuerectto-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
                 "name", tweenName,

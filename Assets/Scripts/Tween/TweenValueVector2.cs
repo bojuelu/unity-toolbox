@@ -42,7 +42,7 @@ public class TweenValueVector2 : TweenBase
 
         vectorNow = vectorFrom;
 
-        tweenName = "value-vector2-to-" + UnityUtility.GenerateRandomString(8);
+        tweenName = "valuevector2to-" + UnityUtility.GenerateRandomString(8);
         iTween.ValueTo(tweenTarget,
             iTween.Hash(
                 "name", tweenName,
