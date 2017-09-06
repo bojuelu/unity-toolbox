@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     public enum States
     {
@@ -20,13 +20,20 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public States Status { get { return statusNow; } }
     private States statusLast = States.TweenToPosition;
 
-    public ScrollRect scrollRect;
     public GridLayoutGroup gridLayoutGroup;
+    private ScrollRect scrollRect;
+    public ScrollRect ScrollRectRef { get { return scrollRect; } }
 
     private TweenRectTransformMoveTo gridMover;
 
     public int index = 0;
     private int indexLast = 0;
+
+    /// <summary>
+    /// The turn page threshold. 0.0f < value < 1.0f
+    /// </summary>
+    public float turnPageThreshold = 0.1f;
+    public float turnPageDuration = 0.25f;
 
     public delegate void IndexChangeHandler(int indexNow, int indexLast);
     public event IndexChangeHandler onIndexChangeEvent;
@@ -155,11 +162,11 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                     {
                         if (fingerVector.y > 0)
                         {
-                            posFactor = oneGridLength * 0.9f;
+                            posFactor = oneGridLength * (1f - turnPageThreshold);
                         }
                         else if (fingerVector.y < 0)
                         {
-                            posFactor = oneGridLength * 0.1f;
+                            posFactor = oneGridLength * turnPageThreshold;
                         }
                         else
                         {
@@ -170,11 +177,11 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                     {
                         if (fingerVector.x > 0)
                         {
-                            posFactor = oneGridLength * 0.1f;
+                            posFactor = oneGridLength * turnPageThreshold;
                         }
                         else if (fingerVector.x < 0)
                         {
-                            posFactor = oneGridLength * 0.9f;
+                            posFactor = oneGridLength * (1f - turnPageThreshold);
                         }
                         else
                         {
@@ -238,7 +245,6 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                     break;
                 case GridLayoutGroup.Constraint.Flexible:
                     Debug.LogError("can not use GridLayoutGroup.Constraint.Flexible. Destroy itself.");
-                    this.enabled = false;
                     GameObject.Destroy(this);
                     break;
                 default:
@@ -328,14 +334,14 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     private void Start()
     {
-        // setup ContentSizeFitter to minsize
-        contentSizeFitter = gridLayoutGroup.gameObject.GetComponent<ContentSizeFitter>();
-        if (contentSizeFitter == null)
-            contentSizeFitter = gridLayoutGroup.gameObject.AddComponent<ContentSizeFitter>();
-        contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.MinSize;
-        contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.MinSize;
-
         // setup ScrollRect
+        scrollRect = gameObject.GetComponent<ScrollRect>();
+        if (scrollRect == null)
+        {
+            Debug.LogError("This script must be added on a game object with ScrollRect component. Now destroy itself");
+            GameObject.Destroy(this);
+            return;
+        }
         switch (gridLayoutGroup.constraint)
         {
             case GridLayoutGroup.Constraint.FixedColumnCount:
@@ -348,9 +354,8 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                 break;
             case GridLayoutGroup.Constraint.Flexible:
                 Debug.LogError("can not use GridLayoutGroup.Constraint.Flexible. Destroy itself.");
-                this.enabled = false;
                 GameObject.Destroy(this);
-                break;
+                return;
             default:
                 break;
         }
@@ -362,6 +367,13 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         rt.pivot = new Vector2(0, 1);
         rt.anchoredPosition = Vector2.zero;
 
+        // setup ContentSizeFitter to minsize
+        contentSizeFitter = gridLayoutGroup.gameObject.GetComponent<ContentSizeFitter>();
+        if (contentSizeFitter == null)
+            contentSizeFitter = gridLayoutGroup.gameObject.AddComponent<ContentSizeFitter>();
+        contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.MinSize;
+        contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.MinSize;
+
         // setup tween (mover)
         gridMover = this.gameObject.AddComponent<TweenRectTransformMoveTo>();
         gridMover.tweenTarget = scrollRect.content.gameObject;
@@ -369,15 +381,23 @@ public class ScrollGridView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         gridMover.loop = iTween.LoopType.none;
         gridMover.ease = iTween.EaseType.easeOutCubic;
         gridMover.delay = 0f;
-        gridMover.duration = 0.25f;
+        gridMover.duration = turnPageDuration;
     }
 
     private void Update()
     {
+        if (turnPageThreshold <= 0f)
+            turnPageThreshold = 0.01f;
+        if (turnPageThreshold >= 1f)
+            turnPageThreshold = 0.99f;
+
+        if (turnPageDuration < 0f)
+            turnPageDuration = 0f;
+        gridMover.duration = turnPageDuration;
+
         if (gridLayoutGroup.constraintCount <= 0)
         {
             Debug.LogError("gridLayoutGroup.constraintCount <= 0; it must greater than 0, destroy itself.");
-            this.enabled = false;
             GameObject.Destroy(this);
             return;
         }
