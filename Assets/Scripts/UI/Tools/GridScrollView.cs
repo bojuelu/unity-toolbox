@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+public class GridScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public enum States
     {
@@ -29,10 +29,7 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     public int index = 0;
     private int indexLast = 0;
 
-    /// <summary>
-    /// The turn page threshold. 0.0f < value < 1.0f
-    /// </summary>
-    public float turnPageThreshold = 0.1f;
+    public float turnPagePositionThreshold = 0.1f;  // 0f < value < 1f, refrence by one grid size
     public float turnPageDuration = 0.25f;
 
     public delegate void IndexChangeHandler(int indexNow, int indexLast);
@@ -41,7 +38,16 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     private ContentSizeFitter contentSizeFitter;
 
     private Vector2 beginFingerDragPoint;
+    //private Vector2 lastFingerDragPoint;
     private Vector2 endFingerDragPoint;
+
+    public void SetIndex(int i)
+    {
+        if (statusNow != States.Idle)
+            return;
+        else
+            index = i;
+    }
 
     /// <summary>
     /// Gets the grids count.
@@ -68,6 +74,19 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     }
 
     /// <summary>
+    /// Raises the drag event.
+    /// "Don't" call this function by your own, it depend on Unity's callback system
+    /// </summary>
+    /// <param name="data">Data.</param>
+    public void OnDrag(PointerEventData data)
+    {
+        if (statusNow == States.UserScrolling)
+        {
+            //lastFingerDragPoint = data.position;
+        }
+    }
+
+    /// <summary>
     /// Raises the end drag event.
     /// "Don't" call this function by your own, it depend on Unity's callback system
     /// </summary>
@@ -77,6 +96,7 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (statusNow == States.UserScrolling)
         {
             endFingerDragPoint = data.position;
+
             index = CalcGridIndexViaPosition();
 
             statusNow = States.TweenToPosition;
@@ -142,6 +162,58 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         return anchoredPosition;
     }
 
+    private int CalcGridIndexViaShift(Vector2 shiftVector)
+    {
+        int gridsCount = GridsCount();
+        int origIndex = index;
+
+        if (gridsCount > 0)
+        {
+            int nextIndex = origIndex + 1;
+            if (nextIndex >= gridsCount)
+                nextIndex = gridsCount - 1;
+
+            int prevIndex = origIndex - 1;
+            if (prevIndex < 0)
+                prevIndex = 0;
+
+            int calcIndex = origIndex;
+
+            float shift = 0f;
+            switch (gridLayoutGroup.constraint)
+            {
+                case GridLayoutGroup.Constraint.FixedColumnCount:
+                    {
+                        shift = shiftVector.y;
+                    }
+                    break;
+                case GridLayoutGroup.Constraint.FixedRowCount:
+                    {
+                        shift = shiftVector.x;
+                    }
+                    break;
+                case GridLayoutGroup.Constraint.Flexible:
+                    {
+                        Debug.LogError("can not use GridLayoutGroup.Constraint.Flexible. Destroy itself.");
+                        GameObject.Destroy(this);
+                    }
+                    break;
+                default:
+                    {
+                    }
+                    break;
+            }
+            Debug.Log("<color=green>" + "shift: " + shift.ToString() + "</color>");
+            calcIndex = (shift > 0) ? prevIndex : nextIndex;
+
+            return calcIndex;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     private int CalcGridIndexViaPosition()
     {
         int gridsCount = GridsCount();
@@ -162,36 +234,37 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
                     {
                         if (fingerVector.y > 0)
                         {
-                            posFactor = oneGridLength * (1f - turnPageThreshold);
+                            posFactor = oneGridLength * (1f - turnPagePositionThreshold);
                         }
                         else if (fingerVector.y < 0)
                         {
-                            posFactor = oneGridLength * turnPageThreshold;
+                            posFactor = oneGridLength * turnPagePositionThreshold;
                         }
                         else
                         {
                             return origIndex;
                         }
-                    }break;
+                    }
+                    break;
                 case GridLayoutGroup.Constraint.FixedRowCount:
                     {
                         if (fingerVector.x > 0)
                         {
-                            posFactor = oneGridLength * turnPageThreshold;
+                            posFactor = oneGridLength * turnPagePositionThreshold;
                         }
                         else if (fingerVector.x < 0)
                         {
-                            posFactor = oneGridLength * (1f - turnPageThreshold);
+                            posFactor = oneGridLength * (1f - turnPagePositionThreshold);
                         }
                         else
                         {
                             return origIndex;
                         }
-                    }break;
+                    }
+                    break;
             }
 
             float pos = Mathf.Abs(anchoredPosition) + posFactor;
-
             int calcIndex = 0;
             while (calcIndex < gridsCount)
             {
@@ -385,11 +458,11 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     }
 
     private void Update()
-    {
-        if (turnPageThreshold <= 0f)
-            turnPageThreshold = 0.01f;
-        if (turnPageThreshold >= 1f)
-            turnPageThreshold = 0.99f;
+    {        
+        if (turnPagePositionThreshold <= 0f)
+            turnPagePositionThreshold = 0.01f;
+        if (turnPagePositionThreshold >= 1f)
+            turnPagePositionThreshold = 0.99f;
 
         if (turnPageDuration < 0f)
             turnPageDuration = 0f;
