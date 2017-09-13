@@ -29,7 +29,8 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public int index = 0;
     private int indexLast = 0;
 
-    public float turnPagePositionThreshold = 0.1f;  // 0f < value < 1f, refrence by one grid size
+    public float turnPageDragImpulseThreshold = 0.01f; // 0f < value < 1f, percentage of screen size
+    public float turnPagePositionThreshold = 0.2f;  // 0f < value < 1f, percentage of one grid size
     public float turnPageDuration = 0.25f;
 
     public delegate void IndexChangeHandler(int indexNow, int indexLast);
@@ -38,7 +39,7 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private ContentSizeFitter contentSizeFitter;
 
     private Vector2 beginFingerDragPoint;
-    //private Vector2 lastFingerDragPoint;
+    private Vector2 lastFingerDragPoint;
     private Vector2 endFingerDragPoint;
 
     public void SetIndex(int i)
@@ -82,7 +83,7 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         if (statusNow == States.UserScrolling)
         {
-            //lastFingerDragPoint = data.position;
+            lastFingerDragPoint = data.position;
         }
     }
 
@@ -97,7 +98,55 @@ public class GridScrollView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             endFingerDragPoint = data.position;
 
-            index = CalcGridIndexViaPosition();
+            Vector2 dragVector = endFingerDragPoint - lastFingerDragPoint;
+
+            bool setIndexByDragImpulsePower = false;
+            switch (gridLayoutGroup.constraint)
+            {
+                case GridLayoutGroup.Constraint.FixedColumnCount:
+                    {
+                        float dragImpulseWay = dragVector.y;
+
+                        float dragImpulsePower = Mathf.Abs(dragImpulseWay);
+                        Debug.Log(string.Format("<color=red>dragImpulsePower: {0}</color>", dragImpulsePower));
+
+                        float dragImpulsePercentage = dragImpulsePower / Screen.height;
+                        Debug.Log(string.Format("<color=red>dragImpulsePercentage: {0}</color>", dragImpulsePercentage));
+
+                        if (dragImpulsePercentage >= turnPageDragImpulseThreshold)
+                        {
+                            if (dragImpulseWay > 0)
+                                index--;
+                            else
+                                index++;
+                            setIndexByDragImpulsePower = true;
+                        }
+                    }
+                    break;
+                case GridLayoutGroup.Constraint.FixedRowCount:
+                    {
+                        float dragImpulseWay = dragVector.x;
+
+                        float dragImpulsePower = Mathf.Abs(dragImpulseWay);
+                        Debug.Log(string.Format("<color=red>dragImpulsePower: {0}</color>", dragImpulsePower));
+
+                        float dragImpulsePercentage = dragImpulsePower / Screen.height;
+                        Debug.Log(string.Format("<color=red>dragImpulsePercentage: {0}</color>", dragImpulsePercentage));
+
+                        if (dragImpulsePercentage >= turnPageDragImpulseThreshold)
+                        {
+                            if (dragImpulseWay > 0)
+                                index--;
+                            else
+                                index++;
+                            setIndexByDragImpulsePower = true;
+                        }
+                    }
+                    break;
+            }
+
+            if (!setIndexByDragImpulsePower)
+                index = CalcGridIndexViaPosition();
 
             statusNow = States.TweenToPosition;
         }
