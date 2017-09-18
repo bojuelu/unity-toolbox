@@ -14,9 +14,12 @@ public class JustDoIt : MonoBehaviour
 
     private float t = 0f;
 
-    public void Do()
+    public void Restart()
     {
-        enabled = true;
+        if (enabled == false)
+            enabled = true;
+        else
+            t = 0f;
     }
 
     void OnEnable()
