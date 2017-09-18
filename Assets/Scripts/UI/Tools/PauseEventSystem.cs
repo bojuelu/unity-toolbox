@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Pause event system.
+/// Pause unity event system.
 /// It used for avoid click UI too frequency cuz many weird bug.
 /// Author: BoJue.
 /// </summary>
@@ -10,49 +10,86 @@ using System.Collections.Generic;
 
 public class PauseEventSystem : MonoBehaviour
 {
+    private static List<PauseEventSystem> allPauseerInThisScene = new List<PauseEventSystem>();
+
     public float pauseTime = 1f;
-    private float timer = 0f;
+    public float timer = 0f;
 
     private EventSystem eventSystem = null;
 
-    private static List<PauseEventSystem> pauseCaller;
+    private bool isPause = false;
+    public bool IsPause { get { return isPause; } }
 
     public void Pause(float time)
     {
         pauseTime = time;
-        Pause();
+        timer = 0f;
+        enabled = true;
+        OnPause();
     }
 
     public void Pause()
-    {
-        if (pauseCaller == null)
-            pauseCaller = new List<PauseEventSystem>();
-        
-        eventSystem.enabled = false;
+    {   
         timer = 0f;
-        this.enabled = true;
+        enabled = true;
+        OnPause();
+    }
 
-        if (pauseCaller.Contains(this) == false)
-            pauseCaller.Add(this);
+    public void PauseUntilResume()
+    {
+        enabled = false;
+        OnPause();
+    }
+
+    public void Resume()
+    {
+        enabled = false;
+        OnResume();
+    }
+
+    private void OnPause()
+    {
+        isPause = true;
+
+        eventSystem.enabled = false;
+    }
+
+    private void OnResume()
+    {
+        isPause = false;
+
+        for (int i = 0; i < allPauseerInThisScene.Count; i++)
+        {
+            PauseEventSystem pes = allPauseerInThisScene[i];
+            if (pes == null)
+                continue;
+
+            if (pes.isPause)
+            {
+                return;
+            }
+        }
+
+        eventSystem.enabled = true;
     }
 
     private void Awake()
     {
-        eventSystem = this.gameObject.GetComponent<EventSystem>();
-        if (eventSystem == null)
-        {
-            eventSystem = GameObject.FindObjectOfType<EventSystem>();
-        }
     }
 
     private void Start()
     {
-        this.enabled = false;
-    }
+        eventSystem = GameObject.FindObjectOfType<EventSystem>();
+        if (eventSystem == null)
+        {
+            Debug.LogError("No EventSystem in this scene");
+            GameObject.Destroy(this);
+        }
 
-    private void OnDisable()
-    {
-        eventSystem.enabled = true;
+        this.enabled = false;
+
+        if (allPauseerInThisScene.Contains(this) == false)
+            allPauseerInThisScene.Add(this);
     }
 
     private void Update()
@@ -60,16 +97,7 @@ public class PauseEventSystem : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= pauseTime)
         {
-            if (pauseCaller == null)
-                pauseCaller = new List<PauseEventSystem>();
-
-            if (pauseCaller.Contains(this))
-                pauseCaller.Remove(this);
-
-            if (pauseCaller.Count <= 0)
-            {
-                eventSystem.enabled = true;
-            }
+            OnResume();
 
             this.enabled = false;
         }
