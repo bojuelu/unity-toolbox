@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// Let UGUI element can be draggable
+/// Author: BoJue.
+/// </summary>
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
