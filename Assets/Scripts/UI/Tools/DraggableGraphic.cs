@@ -7,8 +7,14 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Graphic))]
-public class DraggableGraphic : MonoBehaviour, IPointerDownHandler, IDragHandler
+public class DraggableGraphic : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
+    public delegate void EventHandler(DraggableGraphic obj, PointerEventData eventData);
+    public event EventHandler onPointDownEvent;
+    public event EventHandler onBeginDragEvent;
+    public event EventHandler onDragEvent;
+    public event EventHandler onEndDragEvent;
+
     private RectTransform thisRectTransform;
 
     private Vector3 dragShift = Vector3.zero;
@@ -25,6 +31,15 @@ public class DraggableGraphic : MonoBehaviour, IPointerDownHandler, IDragHandler
         Vector3 nowRectTransformPosition = thisRectTransform.position;
 
         dragShift = nowRectTransformPosition - pointerDownPosition;
+
+        if (onPointDownEvent != null)
+            onPointDownEvent(this, eventData);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (onBeginDragEvent != null)
+            onBeginDragEvent(this, eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -40,5 +55,22 @@ public class DraggableGraphic : MonoBehaviour, IPointerDownHandler, IDragHandler
             Vector2 finalPosition = globalMousePos + dragShift;
             thisRectTransform.position = finalPosition;
         }
+
+        if (onDragEvent != null)
+            onDragEvent(this, eventData);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (onEndDragEvent != null)
+            onEndDragEvent(this, eventData);
+    }
+
+    void OnDestroy()
+    {
+        onPointDownEvent = null;
+        onBeginDragEvent = null;
+        onDragEvent = null;
+        onEndDragEvent = null;
     }
 }
