@@ -7,9 +7,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Graphic))]
-public class DraggableGraphic : MonoBehaviour, IDragHandler
+public class DraggableGraphic : MonoBehaviour, IPointerDownHandler, IDragHandler
 {
     private RectTransform thisRectTransform;
+
+    private Vector3 dragShift = Vector3.zero;
 
     void Start()
     {
@@ -17,14 +19,17 @@ public class DraggableGraphic : MonoBehaviour, IDragHandler
         thisRectTransform = gameObject.GetComponent<RectTransform>();
     }
 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Vector3 pointerDownPosition = eventData.position;
+        Vector3 nowRectTransformPosition = thisRectTransform.position;
+
+        dragShift = nowRectTransformPosition - pointerDownPosition;
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
-        if (thisRectTransform == null)
-        {
-            Debug.LogError("[DraggableGraphic] thisRectTransform == null");
-            return;
-        }
-        Vector3 globalMousePos;
+        Vector3 globalMousePos = Vector3.zero;
         if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
             thisRectTransform,
             eventData.position,
@@ -32,7 +37,8 @@ public class DraggableGraphic : MonoBehaviour, IDragHandler
             out globalMousePos)
         )
         {
-            thisRectTransform.position = globalMousePos;
+            Vector2 finalPosition = globalMousePos + dragShift;
+            thisRectTransform.position = finalPosition;
         }
     }
 }
