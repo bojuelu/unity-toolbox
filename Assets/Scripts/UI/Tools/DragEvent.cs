@@ -5,7 +5,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragCallback : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DragEvent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public delegate void DragHandler(PointerEventData data);
     public event DragHandler onBeginDrag;
