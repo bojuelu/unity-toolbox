@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class ButtonClickCallback : MonoBehaviour
+public class ButtonClickEvent : MonoBehaviour
 {
     public delegate void ClickHandler(ButtonClickCallback b);
     public event ClickHandler onClickEvent;
