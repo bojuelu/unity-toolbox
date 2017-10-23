@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Drag callback.
+/// Drag event.
 /// Author: BoJue.
 /// </summary>
 using UnityEngine;

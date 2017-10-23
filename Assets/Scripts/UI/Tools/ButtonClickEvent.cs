@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// Button click callback. UGUI Button.onClick has no args let callback function know what button is clicked. This is the solution.
+/// Button click event. UGUI Button.onClick has no args let callback function know what button is clicked. This is the solution.
 /// Author: BoJue.
 /// </summary>
 
