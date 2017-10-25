@@ -32,12 +32,16 @@ public class JustDoIt : MonoBehaviour
         if (t >= later)
         {
             justDoIt.Invoke();
-            justDoIt.RemoveAllListeners();
 
             if (destroySelfWhenDone)
+            {
+                justDoIt.RemoveAllListeners();
                 GameObject.Destroy(this);
+            }
             else
+            {
                 enabled = false;
+            }
         }
         else
         {
