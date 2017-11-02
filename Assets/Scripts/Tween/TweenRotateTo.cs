@@ -14,11 +14,6 @@ public class TweenRotateTo : TweenBase
 
     private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public void Run(Vector3 rotateFrom, Vector3 rotateTo, bool isLocal)
     {
         this.rotateFrom = rotateFrom;
@@ -41,9 +36,9 @@ public class TweenRotateTo : TweenBase
         base.Run();
 
         if (useNowAsFrom)
-            rotateFrom = this.transform.localRotation.eulerAngles;
+            rotateFrom = tweenTarget.transform.localRotation.eulerAngles;
         else
-            this.transform.localRotation = new Quaternion(
+            tweenTarget.transform.localRotation = new Quaternion(
                 rotateFrom.x, rotateFrom.y, rotateFrom.z, transform.localRotation.w
             );
 

@@ -14,7 +14,7 @@ public class TweenRectTransformMoveTo : TweenValueVector3
     {
         if (useNowAsFrom)
         {
-            Vector3 nowPos = this.tweenTarget.GetComponent<RectTransform>().anchoredPosition3D;
+            Vector3 nowPos = tweenTarget.GetComponent<RectTransform>().anchoredPosition3D;
             vectorFrom = nowPos;
         }
 

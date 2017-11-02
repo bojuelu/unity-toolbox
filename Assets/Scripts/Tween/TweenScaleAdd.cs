@@ -12,11 +12,6 @@ public class TweenScaleAdd : TweenBase
 
     private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public override void Run()
     {
         base.Run();

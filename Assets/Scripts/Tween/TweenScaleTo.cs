@@ -14,11 +14,6 @@ public class TweenScaleTo : TweenBase
 
     private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public void Run(Vector3 scaleFrom, Vector3 scaleTo)
     {
         this.scaleFrom = scaleFrom;
@@ -39,9 +34,9 @@ public class TweenScaleTo : TweenBase
         base.Run();
 
         if (useNowAsFrom)
-            scaleFrom = this.transform.localScale;
+            scaleFrom = tweenTarget.transform.localScale;
         else
-            this.transform.localScale = scaleFrom;
+            tweenTarget.transform.localScale = scaleFrom;
 
         tweenName = "scaleto-" + UnityUtility.GenerateRandomString(8);
         iTween.ScaleTo(tweenTarget,

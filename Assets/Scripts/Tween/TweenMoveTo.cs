@@ -14,11 +14,6 @@ public class TweenMoveTo : TweenBase
 
     private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public void Run(Vector3 moveFrom, Vector3 moveTo, bool isLocal=true)
     {
         this.moveFrom = moveFrom;
@@ -33,9 +28,9 @@ public class TweenMoveTo : TweenBase
         base.Run();
 
         if (useNowAsFrom)
-            moveFrom = this.transform.localPosition;
+            moveFrom = tweenTarget.transform.localPosition;
         else
-            this.transform.localPosition = moveFrom;
+            tweenTarget.transform.localPosition = moveFrom;
 
         tweenName = "moveto-" + UnityUtility.GenerateRandomString(8);
         iTween.MoveTo(tweenTarget,
