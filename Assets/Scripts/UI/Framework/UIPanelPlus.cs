@@ -37,11 +37,6 @@ public class UIPanelPlus : UIPanel
         return bringInTweens.IsRunning() || dismissTweens.IsRunning();
     }
 
-    protected virtual void Awake()
-    {
-        isShow = defaultIsShow;
-    }
-
     protected virtual void OnEnable()
     {
         if (onEnableEvent != null)

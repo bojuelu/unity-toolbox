@@ -16,15 +16,18 @@ public class JustDoIt : MonoBehaviour
 
     public void Restart()
     {
-        if (enabled == false)
-            enabled = true;
-        else
-            t = 0f;
+        t = 0f;
+        enabled = true;
     }
 
-    void OnEnable()
+    public void Pause()
     {
-        t = 0f;
+        enabled = false;
+    }
+
+    public void Resume()
+    {
+        enabled = true;
     }
 
     void Update()
@@ -32,15 +35,12 @@ public class JustDoIt : MonoBehaviour
         if (t >= later)
         {
             justDoIt.Invoke();
+            enabled = false;
 
             if (destroySelfWhenDone)
             {
                 justDoIt.RemoveAllListeners();
                 GameObject.Destroy(this);
-            }
-            else
-            {
-                enabled = false;
             }
         }
         else
