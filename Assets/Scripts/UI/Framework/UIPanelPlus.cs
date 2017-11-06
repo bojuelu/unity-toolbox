@@ -12,7 +12,7 @@ public class UIPanelPlus : UIPanel
     public BatchTweens bringInTweens = null;
     public BatchTweens dismissTweens = null;
 
-    public bool DestroyItselfWhenDismiss = false;
+    public bool destroyItselfWhenDismiss = false;
 
     public UnityEvent onStartEvent;
     public UnityEvent onFirstUpdateEvent;
@@ -68,7 +68,7 @@ public class UIPanelPlus : UIPanel
 
         dismissTweens.Run();
 
-        if (DestroyItselfWhenDismiss)
+        if (destroyItselfWhenDismiss)
             this.StartCoroutine(this.WaitTweensDoneThenDestroyItself());
         
         base.Dismiss();
