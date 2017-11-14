@@ -33,7 +33,7 @@ extern "C"
 {
     char* GetLogTag()
     {
-        NSString *logTag = @"LOG_NONE";
+        NSString *logTag = @"LOG_NONE";  // { LOG_VERBOSE || LOG_DEBUG || LOG_WARNING || LOG_ERROR || LOG_EXCEPTION }
         
         return cStringCopy([logTag UTF8String]);
     }
