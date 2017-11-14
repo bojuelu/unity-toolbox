@@ -18,6 +18,7 @@
 #endif
 
 #if HIDE_LOG_FROM_XCODE
+using System;
 using System.Runtime.InteropServices;
 
 public static class Debug
@@ -27,68 +28,123 @@ public static class Debug
 
     public static void Log(object o)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_DEBUG")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_DEBUG")
             UnityEngine.Debug.Log(o);
+        
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void Log(object o, UnityEngine.Object uo)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_DEBUG")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_DEBUG")
             UnityEngine.Debug.Log(o, uo);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogFormat(string format, params object[] args)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_DEBUG")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_DEBUG")
             UnityEngine.Debug.LogFormat(format, args);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogWarning(object o)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_WARNING")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_WARNING")
             UnityEngine.Debug.LogWarning(o);
+        
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogWarning(object o, UnityEngine.Object uo)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_WARNING")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_WARNING")
             UnityEngine.Debug.LogWarning(o, uo);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogWarningFormat(string format, params object[] args)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_WARNING")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_WARNING")
             UnityEngine.Debug.LogWarningFormat(format, args);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogError(object o)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_ERROR")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_ERROR")
             UnityEngine.Debug.LogError(o);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogError(object o, UnityEngine.Object uo)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_ERROR")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_ERROR")
             UnityEngine.Debug.LogError(o, uo);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogErrorFormat(string format, params object[] args)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_ERROR")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_ERROR")
             UnityEngine.Debug.LogErrorFormat(format, args);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogException(System.Exception e)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_ERROR")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_EXCEPTION")
             UnityEngine.Debug.LogException(e);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void LogException(System.Exception e, UnityEngine.Object uo)
     {
-        if (GetLogTag() == "LOG_VERBOSE" || GetLogTag() == "LOG_ERROR")
+        string tag = GetLogTag();
+        if (tag == "LOG_VERBOSE" || tag == "LOG_EXCEPTION")
             UnityEngine.Debug.LogException(e, uo);
+
+        // free memory, bcz this string is come from malloc via objective-c
+        IntPtr stringPointer = (IntPtr)Marshal.StringToHGlobalAnsi(tag);
+        Marshal.FreeHGlobal(stringPointer);
     }
 
     public static void Assert(bool b)
