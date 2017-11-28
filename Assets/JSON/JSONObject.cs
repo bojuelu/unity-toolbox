@@ -5,9 +5,7 @@
 
 #if UNITY_2 || UNITY_3 || UNITY_4 || UNITY_5
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 #endif
-using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -735,7 +733,7 @@ public class JSONObject {
 #pragma warning restore 219
 	#region STRINGIFY
 	const float maxFrameTime = 0.008f;
-	static readonly Stopwatch printWatch = new Stopwatch();
+	static readonly System.Diagnostics.Stopwatch printWatch = new System.Diagnostics.Stopwatch();
 	IEnumerable StringifyAsync(int depth, StringBuilder builder, bool pretty = false) {	//Convert the JSONObject into a string
 		//Profiler.BeginSample("JSONprint");
 		if(depth++ > MAX_DEPTH) {
