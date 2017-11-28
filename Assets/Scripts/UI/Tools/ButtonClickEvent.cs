@@ -9,7 +9,7 @@ using System.Collections;
 
 public class ButtonClickEvent : MonoBehaviour
 {
-    public delegate void ClickHandler(ButtonClickCallback b);
+    public delegate void ClickHandler(ButtonClickEvent b);
     public event ClickHandler onClickEvent;
     public string strID = "";
     public int intID = 0;
