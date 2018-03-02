@@ -1,26 +1,28 @@
-﻿/// <summary>
-/// Fix issue: High resolution device is too sensitive on drag, so let click event being ignored.
-/// https://answers.unity.com/questions/1149417/ui-button-onclick-sensitivity-for-high-dpi-devices.html
-/// Author: FireOApache (https://answers.unity.com/users/323653/fireoapache.html)
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
- 
-public class DragCorrector : MonoBehaviour
+
+namespace UnityToolbox
 {
-    public int baseTH = 6;
-    public int basePPI = 210;
-    public int dragTH = 0;
-
-    void Start()
+    /// <summary>
+    /// Fix issue: High resolution device is too sensitive on drag, so let click event being ignored.
+    /// https://answers.unity.com/questions/1149417/ui-button-onclick-sensitivity-for-high-dpi-devices.html
+    /// Author: FireOApache (https://answers.unity.com/users/323653/fireoapache.html)
+    /// </summary>
+    public class DragCorrector : MonoBehaviour
     {
-        dragTH = baseTH * (int)Screen.dpi / basePPI;
+        public int baseTH = 6;
+        public int basePPI = 210;
+        private int dragTH = 0;
 
-        EventSystem es = GetComponent<EventSystem>();
+        void Start()
+        {
+            dragTH = baseTH * (int)Screen.dpi / basePPI;
 
-        if (es) es.pixelDragThreshold = dragTH;
+            EventSystem es = GetComponent<EventSystem>();
 
-        Debug.Log("[DragCorrector] dragTH: " + dragTH);
+            if (es) es.pixelDragThreshold = dragTH;
+
+            Debug.Log("[DragCorrector] dragTH: " + dragTH);
+        }
     }
 }

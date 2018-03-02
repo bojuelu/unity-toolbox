@@ -1,76 +1,79 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class Timeline : MonoBehaviour
+namespace UnityToolbox
 {
-    public float totalTime = 10f;
-    public float passedTime = 0f;
-
-    [System.Serializable]
-    public class Slot : System.Object
+    public class Timeline : MonoBehaviour
     {
-        public float timeAt = 0f;
-        public UnityEvent todo = null;
-        public bool hasTriggered = false;
-    }
-    public Slot[] slots;
+        public float totalTime = 10f;
+        public float passedTime = 0f;
 
-    public void Start()
-    {
-        if (passedTime >= totalTime || passedTime <= 0f)
+        [System.Serializable]
+        public class Slot : System.Object
         {
-            Restart();
+            public float timeAt = 0f;
+            public UnityEvent todo = null;
+            public bool hasTriggered = false;
         }
-    }
+        public Slot[] slots;
 
-    public void Restart()
-    {
-        passedTime = 0f;
-        for (int i = 0; i < slots.Length; i++)
+        public void Start()
         {
-            slots[i].hasTriggered = false;
-        }
-        enabled = true;
-    }
-
-    public void Pause()
-    {
-        enabled = false;
-    }
-
-    public void Resume()
-    {
-        enabled = true;
-    }
-
-    void OnEnable()
-    {
-        if (passedTime >= totalTime)
-        {
-            Restart();
-        }
-    }
-
-    void Update()
-    {
-        passedTime += Time.deltaTime;
-
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i].hasTriggered)
-                continue;
-                
-            if (passedTime >= slots[i].timeAt)
+            if (passedTime >= totalTime || passedTime <= 0f)
             {
-                slots[i].todo.Invoke();
-                slots[i].hasTriggered = true;
+                Restart();
             }
         }
 
-        if (passedTime >= totalTime)
+        public void Restart()
+        {
+            passedTime = 0f;
+            for (int i = 0; i < slots.Length; i++)
+            {
+                slots[i].hasTriggered = false;
+            }
+            enabled = true;
+        }
+
+        public void Pause()
         {
             enabled = false;
-            return;
+        }
+
+        public void Resume()
+        {
+            enabled = true;
+        }
+
+        void OnEnable()
+        {
+            if (passedTime >= totalTime)
+            {
+                Restart();
+            }
+        }
+
+        void Update()
+        {
+            passedTime += Time.deltaTime;
+
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i].hasTriggered)
+                    continue;
+
+                if (passedTime >= slots[i].timeAt)
+                {
+                    slots[i].todo.Invoke();
+                    slots[i].hasTriggered = true;
+                }
+            }
+
+            if (passedTime >= totalTime)
+            {
+                enabled = false;
+                return;
+            }
         }
     }
 }

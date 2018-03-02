@@ -1,105 +1,107 @@
-﻿/// <summary>
-/// Pause unity event system.
-/// It used for avoid click UI too frequency cuz many weird bug.
-/// Author: BoJue.
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class PauseEventSystem : MonoBehaviour
+namespace UnityToolbox
 {
-    private static List<PauseEventSystem> allPauseerInThisScene = new List<PauseEventSystem>();
-
-    public float pauseTime = 1f;
-    public float timer = 0f;
-
-    private EventSystem eventSystem = null;
-
-    private bool isPause = false;
-    public bool IsPause { get { return isPause; } }
-
-    public void Pause(float time)
+    /// <summary>
+    /// Pause unity event system.
+    /// It used for avoid click UI too frequency cuz many weird bug.
+    /// Author: BoJue.
+    /// </summary>
+    public class PauseEventSystem : MonoBehaviour
     {
-        pauseTime = time;
-        timer = 0f;
-        enabled = true;
-        OnPause();
-    }
+        private static List<PauseEventSystem> allPauseerInThisScene = new List<PauseEventSystem>();
 
-    public void Pause()
-    {   
-        timer = 0f;
-        enabled = true;
-        OnPause();
-    }
+        public float pauseTime = 1f;
+        public float timer = 0f;
 
-    public void PauseUntilResume()
-    {
-        enabled = false;
-        OnPause();
-    }
+        private EventSystem eventSystem = null;
 
-    public void Resume()
-    {
-        enabled = false;
-        OnResume();
-    }
+        private bool isPause = false;
+        public bool IsPause { get { return isPause; } }
 
-    private void OnPause()
-    {
-        isPause = true;
-
-        eventSystem.enabled = false;
-    }
-
-    private void OnResume()
-    {
-        isPause = false;
-
-        for (int i = 0; i < allPauseerInThisScene.Count; i++)
+        public void Pause(float time)
         {
-            PauseEventSystem pes = allPauseerInThisScene[i];
-            if (pes == null)
-                continue;
-
-            if (pes.isPause)
-            {
-                return;
-            }
+            pauseTime = time;
+            timer = 0f;
+            enabled = true;
+            OnPause();
         }
 
-        eventSystem.enabled = true;
-    }
-
-    private void Awake()
-    {
-    }
-
-    private void Start()
-    {
-        eventSystem = GameObject.FindObjectOfType<EventSystem>();
-        if (eventSystem == null)
+        public void Pause()
         {
-            Debug.LogError("No EventSystem in this scene");
-            GameObject.Destroy(this);
+            timer = 0f;
+            enabled = true;
+            OnPause();
         }
 
-        this.enabled = false;
-
-        if (allPauseerInThisScene.Contains(this) == false)
-            allPauseerInThisScene.Add(this);
-    }
-
-    private void Update()
-    {
-        timer += Time.deltaTime;
-        if (timer >= pauseTime)
+        public void PauseUntilResume()
         {
+            enabled = false;
+            OnPause();
+        }
+
+        public void Resume()
+        {
+            enabled = false;
             OnResume();
+        }
+
+        private void OnPause()
+        {
+            isPause = true;
+
+            eventSystem.enabled = false;
+        }
+
+        private void OnResume()
+        {
+            isPause = false;
+
+            for (int i = 0; i < allPauseerInThisScene.Count; i++)
+            {
+                PauseEventSystem pes = allPauseerInThisScene[i];
+                if (pes == null)
+                    continue;
+
+                if (pes.isPause)
+                {
+                    return;
+                }
+            }
+
+            eventSystem.enabled = true;
+        }
+
+        private void Awake()
+        {
+        }
+
+        private void Start()
+        {
+            eventSystem = GameObject.FindObjectOfType<EventSystem>();
+            if (eventSystem == null)
+            {
+                Debug.LogError("No EventSystem in this scene");
+                GameObject.Destroy(this);
+            }
 
             this.enabled = false;
+
+            if (allPauseerInThisScene.Contains(this) == false)
+                allPauseerInThisScene.Add(this);
+        }
+
+        private void Update()
+        {
+            timer += Time.deltaTime;
+            if (timer >= pauseTime)
+            {
+                OnResume();
+
+                this.enabled = false;
+            }
         }
     }
 }

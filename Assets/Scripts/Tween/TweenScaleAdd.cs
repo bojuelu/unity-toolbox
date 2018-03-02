@@ -1,51 +1,53 @@
-﻿/// <summary>
+﻿using UnityEngine;
+using System.Collections;
+
+/// <summary>
 /// Tween scale add. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
-
-using UnityEngine;
-using System.Collections;
-
-public class TweenScaleAdd : TweenBase
+namespace UnityToolbox
 {
-    public Vector3 scaleAmount = Vector3.one * 2f;
-
-    private iTween iTweenInstance = null;
-
-    public override void Run()
+    public class TweenScaleAdd : TweenBase
     {
-        base.Run();
+        public Vector3 scaleAmount = Vector3.one * 2f;
 
-        Space space = Space.World;
-        if (isLocal)
-            space = Space.Self;
+        private iTween iTweenInstance = null;
 
-        tweenName = "scaleadd-" + UnityUtility.GenerateRandomString(8);
-        iTween.ScaleAdd(tweenTarget,
-            iTween.Hash(
-                "name", tweenName,
-                "space", space,
-                "amount", scaleAmount,
-                "time", duration,
-                "delay", delay,
-                "easeType", ease.ToString(),
-                "loopType", loop,
-                "ignoretimescale", ignoreTimeScale,
-                "oncomplete", recvCallback.OnCompleteFuncName,
-                "oncompletetarget", recvCallback.gameObject
-            )
-        );
-    }
+        public override void Run()
+        {
+            base.Run();
 
-    public override void Pause()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = false;
-    }
+            Space space = Space.World;
+            if (isLocal)
+                space = Space.Self;
 
-    public override void Resume()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = true;
+            tweenName = "scaleadd-" + UnityUtility.GenerateRandomString(8);
+            iTween.ScaleAdd(tweenTarget,
+                iTween.Hash(
+                    "name", tweenName,
+                    "space", space,
+                    "amount", scaleAmount,
+                    "time", duration,
+                    "delay", delay,
+                    "easeType", ease.ToString(),
+                    "loopType", loop,
+                    "ignoretimescale", ignoreTimeScale,
+                    "oncomplete", recvCallback.OnCompleteFuncName,
+                    "oncompletetarget", recvCallback.gameObject
+                )
+            );
+        }
+
+        public override void Pause()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = false;
+        }
+
+        public override void Resume()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = true;
+        }
     }
 }

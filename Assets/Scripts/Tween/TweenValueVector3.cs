@@ -1,84 +1,86 @@
-﻿/// <summary>
+﻿using UnityEngine;
+using System.Collections;
+
+/// <summary>
 /// Tween value vector3. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
-
-using UnityEngine;
-using System.Collections;
-
-public class TweenValueVector3 : TweenBase
+namespace UnityToolbox
 {
-    public Vector3 vectorFrom = Vector3.zero;
-    public Vector3 vectorTo = Vector3.up * 10;
-    private Vector3 vectorNow = Vector3.zero;
-    public Vector3 VectorNow
+    public class TweenValueVector3 : TweenBase
     {
-        get { return vectorNow; }
-        set { vectorNow = value; }
-    }
+        public Vector3 vectorFrom = Vector3.zero;
+        public Vector3 vectorTo = Vector3.up * 10;
+        private Vector3 vectorNow = Vector3.zero;
+        public Vector3 VectorNow
+        {
+            get { return vectorNow; }
+            set { vectorNow = value; }
+        }
 
-    protected int onUpdateInvokeTimes = 0;
+        protected int onUpdateInvokeTimes = 0;
 
-    private iTween iTweenInstance = null;
+        private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
+        protected override void Awake()
+        {
+            base.Awake();
+        }
 
-    public void Run(Vector3 vectorFrom, Vector3 vectorTo)
-    {
-        this.vectorFrom = vectorFrom;
-        this.vectorTo = vectorTo;
+        public void Run(Vector3 vectorFrom, Vector3 vectorTo)
+        {
+            this.vectorFrom = vectorFrom;
+            this.vectorTo = vectorTo;
 
-        Run();
-    }
+            Run();
+        }
 
-    public override void Run()
-    {
-        base.Run();
+        public override void Run()
+        {
+            base.Run();
 
-        onUpdateInvokeTimes = 0;
+            onUpdateInvokeTimes = 0;
 
-        vectorNow = vectorFrom;
+            vectorNow = vectorFrom;
 
-        tweenName = "valuevector3to-" + UnityUtility.GenerateRandomString(8);
-        iTween.ValueTo(tweenTarget,
-            iTween.Hash(
-                "name", tweenName,
-                "from", vectorFrom,
-                "to", vectorTo,
-                "time", duration,
-                "delay", delay,
-                "easeType", ease.ToString(),
-                "loopType", loop,
-                "onupdate", recvCallback.OnUpdateVector3FuncName,
-                "onupdatetarget", recvCallback.gameObject,
-                "oncomplete", recvCallback.OnCompleteFuncName,
-                "oncompletetarget", recvCallback.gameObject,
-                "ignoretimescale", ignoreTimeScale
-            )
-        );
+            tweenName = "valuevector3to-" + UnityUtility.GenerateRandomString(8);
+            iTween.ValueTo(tweenTarget,
+                iTween.Hash(
+                    "name", tweenName,
+                    "from", vectorFrom,
+                    "to", vectorTo,
+                    "time", duration,
+                    "delay", delay,
+                    "easeType", ease.ToString(),
+                    "loopType", loop,
+                    "onupdate", recvCallback.OnUpdateVector3FuncName,
+                    "onupdatetarget", recvCallback.gameObject,
+                    "oncomplete", recvCallback.OnCompleteFuncName,
+                    "oncompletetarget", recvCallback.gameObject,
+                    "ignoretimescale", ignoreTimeScale
+                )
+            );
 
-        recvCallback.onUpdateVector3Event -= this.OnUpdate;
-        recvCallback.onUpdateVector3Event += this.OnUpdate;
-    }
+            recvCallback.onUpdateVector3Event -= this.OnUpdate;
+            recvCallback.onUpdateVector3Event += this.OnUpdate;
+        }
 
-    public override void Pause()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = false;
-    }
+        public override void Pause()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = false;
+        }
 
-    public override void Resume()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = true;
-    }
+        public override void Resume()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = true;
+        }
 
-    private void OnUpdate(Vector3 vec3)
-    {
-        vectorNow = vec3;
-        onUpdateInvokeTimes++;
+        private void OnUpdate(Vector3 vec3)
+        {
+            vectorNow = vec3;
+            onUpdateInvokeTimes++;
+        }
     }
 }

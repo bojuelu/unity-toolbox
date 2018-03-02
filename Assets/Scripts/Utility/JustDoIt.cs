@@ -1,51 +1,53 @@
-﻿/// <summary>
-/// Just do it ...later! "http://picture-cdn.wheretoget.it/crgqai-l.jpg"
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class JustDoIt : MonoBehaviour
+namespace UnityToolbox
 {
-    public UnityEvent justDoIt;
-    public float later = 1f;
-
-    public bool destroySelfWhenDone = true;
-
-    private float t = 0f;
-
-    public void Restart()
+    /// <summary>
+    /// Just do it ...later! "http://picture-cdn.wheretoget.it/crgqai-l.jpg"
+    /// </summary>
+    public class JustDoIt : MonoBehaviour
     {
-        t = 0f;
-        enabled = true;
-    }
+        public UnityEvent justDoIt;
+        public float later = 1f;
 
-    public void Pause()
-    {
-        enabled = false;
-    }
+        public bool destroySelfWhenDone = true;
 
-    public void Resume()
-    {
-        enabled = true;
-    }
+        private float t = 0f;
 
-    void Update()
-    {
-        if (t >= later)
+        public void Restart()
         {
-            justDoIt.Invoke();
-            enabled = false;
-
-            if (destroySelfWhenDone)
-            {
-                justDoIt.RemoveAllListeners();
-                GameObject.Destroy(this);
-            }
+            t = 0f;
+            enabled = true;
         }
-        else
+
+        public void Pause()
         {
-            t += Time.deltaTime;
+            enabled = false;
+        }
+
+        public void Resume()
+        {
+            enabled = true;
+        }
+
+        void Update()
+        {
+            if (t >= later)
+            {
+                justDoIt.Invoke();
+                enabled = false;
+
+                if (destroySelfWhenDone)
+                {
+                    justDoIt.RemoveAllListeners();
+                    GameObject.Destroy(this);
+                }
+            }
+            else
+            {
+                t += Time.deltaTime;
+            }
         }
     }
 }

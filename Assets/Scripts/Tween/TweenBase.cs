@@ -1,132 +1,134 @@
-﻿/// <summary>
-/// Tween base. Powered by iTween.
-/// Author: BoJue.
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
-public abstract class TweenBase : MonoBehaviour
+namespace UnityToolbox
 {
-    public string id = "";
-
-    public GameObject tweenTarget = null;
-
-    public bool autoStart = true;
-    public float duration = 2f;
-    public float delay = 0f;
-    public iTween.EaseType ease = iTween.EaseType.linear;
-    public iTween.LoopType loop = iTween.LoopType.none;
-    public bool pingPongOnlyOnce = false;
-    public bool ignoreTimeScale = false;
-    public bool isLocal = true;
-
-    protected string tweenName = "";
-    public string TweenName { get { return tweenName; } }
-
-    protected bool isInited = false;
-    public bool IsInited { get { return isInited; } }
-
-    protected bool isTweening = false;
-    public bool IsTweening { get { return isTweening; } }
-
-    protected int completeTimes = 0;
-    public int CompleteTimes { get { return completeTimes; } }
-
-    protected TweenCallback recvCallback = null;
-    public TweenCallback Callback { get { return recvCallback; } }
-
-    public virtual void Run()
+    /// <summary>
+    /// Tween base. Powered by iTween.
+    /// Author: BoJue.
+    /// </summary>
+    public abstract class TweenBase : MonoBehaviour
     {
-        // reset oncomplete counter
-        completeTimes = 0;
+        public string id = "";
 
-        isTweening = true;
-    }
+        public GameObject tweenTarget = null;
 
-    public virtual void Pause()
-    {
-    }
+        public bool autoStart = true;
+        public float duration = 2f;
+        public float delay = 0f;
+        public iTween.EaseType ease = iTween.EaseType.linear;
+        public iTween.LoopType loop = iTween.LoopType.none;
+        public bool pingPongOnlyOnce = false;
+        public bool ignoreTimeScale = false;
+        public bool isLocal = true;
 
-    public virtual void Resume()
-    {
-    }
+        protected string tweenName = "";
+        public string TweenName { get { return tweenName; } }
 
-    public virtual void Stop()
-    {
-        iTween.StopByName(tweenTarget, tweenName);
+        protected bool isInited = false;
+        public bool IsInited { get { return isInited; } }
 
-        isTweening = false;
-    }
+        protected bool isTweening = false;
+        public bool IsTweening { get { return isTweening; } }
 
-    protected virtual void Awake()
-    {
-        if (tweenTarget == null)
+        protected int completeTimes = 0;
+        public int CompleteTimes { get { return completeTimes; } }
+
+        protected TweenCallback recvCallback = null;
+        public TweenCallback Callback { get { return recvCallback; } }
+
+        public virtual void Run()
         {
-            tweenTarget = this.gameObject;
+            // reset oncomplete counter
+            completeTimes = 0;
+
+            isTweening = true;
         }
 
-        // build a receive iTween callback event object
-        if (recvCallback == null)
+        public virtual void Pause()
         {
-            GameObject recvObj = new GameObject();
-            recvObj.transform.SetParent(this.transform);
-            recvObj.transform.localPosition = Vector3.zero;
-            recvObj.transform.localRotation = Quaternion.identity;
-            recvObj.transform.localScale = Vector3.one;
-            recvObj.name = this.name + "_tween_callback";
-            recvCallback = recvObj.AddComponent<TweenCallback>();
-            recvCallback.onCompleteEvent += this.OnComplete;
-        }
-    }
-
-    protected virtual void Start()
-    {
-        // init iTween
-        if (!isInited)
-        {
-            iTween.Init(this.tweenTarget);
-            isInited = true;
         }
 
-        if (autoStart)
+        public virtual void Resume()
         {
-            this.Run();
         }
-    }
 
-    protected virtual void OnDestroy()
-    {
-        if (recvCallback != null)
+        public virtual void Stop()
         {
-            recvCallback.onCompleteEvent -= this.OnComplete;
+            iTween.StopByName(tweenTarget, tweenName);
+
+            isTweening = false;
         }
-    }
 
-    protected virtual void OnComplete()
-    {
-        completeTimes++;
-
-        switch (loop)
+        protected virtual void Awake()
         {
-            case iTween.LoopType.loop:
-                {
-                }
-                break;
-            case iTween.LoopType.none:
-                {
-                    isTweening = false;
-                }
-                break;
-            case iTween.LoopType.pingPong:
-                {
-                    if (pingPongOnlyOnce && completeTimes >= 2)
+            if (tweenTarget == null)
+            {
+                tweenTarget = this.gameObject;
+            }
+
+            // build a receive iTween callback event object
+            if (recvCallback == null)
+            {
+                GameObject recvObj = new GameObject();
+                recvObj.transform.SetParent(this.transform);
+                recvObj.transform.localPosition = Vector3.zero;
+                recvObj.transform.localRotation = Quaternion.identity;
+                recvObj.transform.localScale = Vector3.one;
+                recvObj.name = this.name + "_tween_callback";
+                recvCallback = recvObj.AddComponent<TweenCallback>();
+                recvCallback.onCompleteEvent += this.OnComplete;
+            }
+        }
+
+        protected virtual void Start()
+        {
+            // init iTween
+            if (!isInited)
+            {
+                iTween.Init(this.tweenTarget);
+                isInited = true;
+            }
+
+            if (autoStart)
+            {
+                this.Run();
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (recvCallback != null)
+            {
+                recvCallback.onCompleteEvent -= this.OnComplete;
+            }
+        }
+
+        protected virtual void OnComplete()
+        {
+            completeTimes++;
+
+            switch (loop)
+            {
+                case iTween.LoopType.loop:
                     {
-                        Debug.Log("PingPongOnlyOnce && _onCompleteTimes >= 2 established, Stop this tween");
-                        this.Stop();
                     }
-                }
-                break;
+                    break;
+                case iTween.LoopType.none:
+                    {
+                        isTweening = false;
+                    }
+                    break;
+                case iTween.LoopType.pingPong:
+                    {
+                        if (pingPongOnlyOnce && completeTimes >= 2)
+                        {
+                            Debug.Log("PingPongOnlyOnce && _onCompleteTimes >= 2 established, Stop this tween");
+                            this.Stop();
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

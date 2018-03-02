@@ -1,85 +1,92 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class UISetParentToUIRoot : MonoBehaviour
+namespace UnityToolbox
 {
-    [System.Serializable]
-    public class RectTransformArgs
+    /// <summary>
+    /// Setup selfs parent to UIRoot at Start().
+    /// Author: BoJue.
+    /// </summary>
+    public class UISetParentToUIRoot : MonoBehaviour
     {
-        public Vector3 anchoredPosition3D = Vector3.zero;
-        public Vector2 anchoredPosition = Vector2.zero;
-        public Vector2 offsetMin = Vector2.zero;
-        public Vector2 offsetMax = Vector2.zero;
-        public Vector2 sizeDelta = new Vector2(100, 100);
-        public Vector2 anchorMin = new Vector2(0.5f, 0.5f);
-        public Vector2 anchorMax = new Vector2(0.5f, 0.5f);
-        public Vector2 pivot = new Vector2(0.5f, 0.5f);
-    }
-    public RectTransformArgs parentedArgs;
-
-    public enum SortUnderUIRoot
-    {
-        None,
-        First,
-        Last,
-    }
-    public SortUnderUIRoot Sorting = SortUnderUIRoot.Last;
-
-    private RectTransform thisRectTransform = null;
-
-    void Start()
-    {
-        thisRectTransform = this.GetComponent<RectTransform>();
-        UIRoot uiRoot = UIRoot.Instance;
-        if (uiRoot == null)
+        [System.Serializable]
+        public class RectTransformArgs
         {
-            Debug.LogError("UIRoot is null");
-            GameObject.Destroy(this);
-            return;
+            public Vector3 anchoredPosition3D = Vector3.zero;
+            public Vector2 anchoredPosition = Vector2.zero;
+            public Vector2 offsetMin = Vector2.zero;
+            public Vector2 offsetMax = Vector2.zero;
+            public Vector2 sizeDelta = new Vector2(100, 100);
+            public Vector2 anchorMin = new Vector2(0.5f, 0.5f);
+            public Vector2 anchorMax = new Vector2(0.5f, 0.5f);
+            public Vector2 pivot = new Vector2(0.5f, 0.5f);
         }
-        else if (thisRectTransform == null)
-        {
-            Debug.LogError("this is not a ugui object");
-            GameObject.Destroy(this);
-            return;
-        }
-        else
-        {
-            Vector3 origPos = this.transform.localPosition;
-            Quaternion origRotation = this.transform.localRotation;
-            Vector3 origScale = this.transform.localScale;
+        public RectTransformArgs parentedArgs;
 
-            this.transform.SetParent(uiRoot.transform);
-            switch (Sorting)
+        public enum SortUnderUIRoot
+        {
+            None,
+            First,
+            Last,
+        }
+        public SortUnderUIRoot Sorting = SortUnderUIRoot.Last;
+
+        private RectTransform thisRectTransform = null;
+
+        void Start()
+        {
+            thisRectTransform = this.GetComponent<RectTransform>();
+            UIRoot uiRoot = UIRoot.Instance;
+            if (uiRoot == null)
             {
-                case SortUnderUIRoot.First:
-                    this.transform.SetAsFirstSibling();
-                    break;
-                case SortUnderUIRoot.Last:
-                    this.transform.SetAsLastSibling();
-                    break;
-                case SortUnderUIRoot.None:
-                    break;
+                Debug.LogError("UIRoot is null");
+                GameObject.Destroy(this);
+                return;
             }
+            else if (thisRectTransform == null)
+            {
+                Debug.LogError("this is not a ugui object");
+                GameObject.Destroy(this);
+                return;
+            }
+            else
+            {
+                Vector3 origPos = this.transform.localPosition;
+                Quaternion origRotation = this.transform.localRotation;
+                Vector3 origScale = this.transform.localScale;
 
-            this.transform.localPosition = origPos;
-            this.transform.localRotation = origRotation;
-            this.transform.localScale = origScale;
+                this.transform.SetParent(uiRoot.transform);
+                switch (Sorting)
+                {
+                    case SortUnderUIRoot.First:
+                        this.transform.SetAsFirstSibling();
+                        break;
+                    case SortUnderUIRoot.Last:
+                        this.transform.SetAsLastSibling();
+                        break;
+                    case SortUnderUIRoot.None:
+                        break;
+                }
 
-            thisRectTransform.pivot = parentedArgs.pivot;
+                this.transform.localPosition = origPos;
+                this.transform.localRotation = origRotation;
+                this.transform.localScale = origScale;
 
-            thisRectTransform.anchorMin = parentedArgs.anchorMin;
-            thisRectTransform.anchorMax = parentedArgs.anchorMax;            
+                thisRectTransform.pivot = parentedArgs.pivot;
 
-            thisRectTransform.offsetMin = parentedArgs.offsetMin;
-            thisRectTransform.offsetMax = parentedArgs.offsetMax;
+                thisRectTransform.anchorMin = parentedArgs.anchorMin;
+                thisRectTransform.anchorMax = parentedArgs.anchorMax;
 
-            thisRectTransform.anchoredPosition = parentedArgs.anchoredPosition;
-            thisRectTransform.anchoredPosition3D = parentedArgs.anchoredPosition3D;
+                thisRectTransform.offsetMin = parentedArgs.offsetMin;
+                thisRectTransform.offsetMax = parentedArgs.offsetMax;
 
-            thisRectTransform.sizeDelta = parentedArgs.sizeDelta;
+                thisRectTransform.anchoredPosition = parentedArgs.anchoredPosition;
+                thisRectTransform.anchoredPosition3D = parentedArgs.anchoredPosition3D;
 
-            GameObject.Destroy(this);
+                thisRectTransform.sizeDelta = parentedArgs.sizeDelta;
+
+                GameObject.Destroy(this);
+            }
         }
     }
 }

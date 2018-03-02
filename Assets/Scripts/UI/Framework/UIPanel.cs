@@ -1,53 +1,53 @@
-﻿/// <summary>
-/// A panel has BringIn(open) and Dismiss(close) behavior.
-/// Author: BoJue.
-/// </summary>
+﻿using UnityEngine.Events;
 
-using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
-
-public class UIPanel : UIObject
+namespace UnityToolbox
 {
-    public bool defaultIsShow = true;
-
-    protected bool isShow = true;
-    public bool IsShow { get { return isShow; } }
-
-    public UnityEvent onBringInEvent;
-    public UnityEvent onDismissEvent;
-
-    public virtual void BringIn()
+    /// <summary>
+    /// A panel has BringIn(open) and Dismiss(close) behavior.
+    /// Author: BoJue.
+    /// </summary>
+    public class UIPanel : UIObject
     {
-        isShow = true;
+        public bool defaultIsShow = true;
 
-        if (onBringInEvent != null)
-            onBringInEvent.Invoke();
-    }
+        protected bool isShow = true;
+        public bool IsShow { get { return isShow; } }
 
-    public virtual void Dismiss()
-    {
-        isShow = false;
+        public UnityEvent onBringInEvent;
+        public UnityEvent onDismissEvent;
 
-        if (onDismissEvent != null)
-            onDismissEvent.Invoke();
-    }
+        public virtual void BringIn()
+        {
+            isShow = true;
 
-    protected override void Start()
-    {
-        base.Start();
+            if (onBringInEvent != null)
+                onBringInEvent.Invoke();
+        }
 
-        isShow = defaultIsShow;
-    }
+        public virtual void Dismiss()
+        {
+            isShow = false;
 
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
+            if (onDismissEvent != null)
+                onDismissEvent.Invoke();
+        }
 
-        if (onBringInEvent != null)
-            onBringInEvent.RemoveAllListeners();
+        protected override void Start()
+        {
+            base.Start();
 
-        if (onDismissEvent != null)
-            onDismissEvent.RemoveAllListeners();
+            isShow = defaultIsShow;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (onBringInEvent != null)
+                onBringInEvent.RemoveAllListeners();
+
+            if (onDismissEvent != null)
+                onDismissEvent.RemoveAllListeners();
+        }
     }
 }

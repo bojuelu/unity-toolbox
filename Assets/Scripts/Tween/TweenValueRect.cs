@@ -1,84 +1,86 @@
-﻿/// <summary>
+﻿using UnityEngine;
+using System.Collections;
+
+/// <summary>
 /// Tween value rect. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
-
-using UnityEngine;
-using System.Collections;
-
-public class TweenValueRect : TweenBase
+namespace UnityToolbox
 {
-    public Rect rectFrom = new Rect(0, 0, 0, 0);
-    public Rect rectTo = new Rect(1, 1, 1, 1);
-    private Rect rectNow = new Rect(0, 0, 0, 0);
-    public Rect RectNow
+    public class TweenValueRect : TweenBase
     {
-        get { return rectNow; }
-        set { rectNow = value; }
-    }
+        public Rect rectFrom = new Rect(0, 0, 0, 0);
+        public Rect rectTo = new Rect(1, 1, 1, 1);
+        private Rect rectNow = new Rect(0, 0, 0, 0);
+        public Rect RectNow
+        {
+            get { return rectNow; }
+            set { rectNow = value; }
+        }
 
-    protected int onUpdateInvokeTimes = 0;
+        protected int onUpdateInvokeTimes = 0;
 
-    private iTween iTweenInstance = null;
+        private iTween iTweenInstance = null;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
+        protected override void Awake()
+        {
+            base.Awake();
+        }
 
-    public void Run(Rect rectFrom, Rect rectTo)
-    {
-        this.rectFrom = rectFrom;
-        this.rectTo = rectTo;
+        public void Run(Rect rectFrom, Rect rectTo)
+        {
+            this.rectFrom = rectFrom;
+            this.rectTo = rectTo;
 
-        Run();
-    }
+            Run();
+        }
 
-    public override void Run()
-    {
-        base.Run();
+        public override void Run()
+        {
+            base.Run();
 
-        onUpdateInvokeTimes = 0;
+            onUpdateInvokeTimes = 0;
 
-        rectNow = rectFrom;
+            rectNow = rectFrom;
 
-        tweenName = "valuerectto-" + UnityUtility.GenerateRandomString(8);
-        iTween.ValueTo(tweenTarget,
-            iTween.Hash(
-                "name", tweenName,
-                "from", rectFrom,
-                "to", rectTo,
-                "time", duration,
-                "delay", delay,
-                "easeType", ease.ToString(),
-                "loopType", loop,
-                "onupdate", recvCallback.OnUpdateRectFuncName,
-                "onupdatetarget", recvCallback.gameObject,
-                "oncomplete", recvCallback.OnCompleteFuncName,
-                "oncompletetarget", recvCallback.gameObject,
-                "ignoretimescale", ignoreTimeScale
-            )
-        );
+            tweenName = "valuerectto-" + UnityUtility.GenerateRandomString(8);
+            iTween.ValueTo(tweenTarget,
+                iTween.Hash(
+                    "name", tweenName,
+                    "from", rectFrom,
+                    "to", rectTo,
+                    "time", duration,
+                    "delay", delay,
+                    "easeType", ease.ToString(),
+                    "loopType", loop,
+                    "onupdate", recvCallback.OnUpdateRectFuncName,
+                    "onupdatetarget", recvCallback.gameObject,
+                    "oncomplete", recvCallback.OnCompleteFuncName,
+                    "oncompletetarget", recvCallback.gameObject,
+                    "ignoretimescale", ignoreTimeScale
+                )
+            );
 
-        recvCallback.onUpdateRectEvent -= this.OnUpdate;
-        recvCallback.onUpdateRectEvent += this.OnUpdate;
-    }
+            recvCallback.onUpdateRectEvent -= this.OnUpdate;
+            recvCallback.onUpdateRectEvent += this.OnUpdate;
+        }
 
-    public override void Pause()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = false;
-    }
+        public override void Pause()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = false;
+        }
 
-    public override void Resume()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = true;
-    }
+        public override void Resume()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = true;
+        }
 
-    private void OnUpdate(Rect rect)
-    {
-        rectNow = rect;
-        onUpdateInvokeTimes++;
+        private void OnUpdate(Rect rect)
+        {
+            rectNow = rect;
+            onUpdateInvokeTimes++;
+        }
     }
 }

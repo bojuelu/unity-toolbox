@@ -2,31 +2,34 @@
 using UnityEngine.Events;
 using System.Collections;
 
-public class TweenCompleteEvent : MonoBehaviour
+namespace UnityToolbox
 {
-    public TweenBase tween;
-    public UnityEvent onTweenCompleteEvent;
+    public class TweenCompleteEvent : MonoBehaviour
+    {
+        public TweenBase tween;
+        public UnityEvent onTweenCompleteEvent;
 
-	void Start ()
-	{
-        if (tween == null)
+        void Start()
         {
-            tween = this.GetComponent<TweenBase>();
+            if (tween == null)
+            {
+                tween = this.GetComponent<TweenBase>();
+            }
+
+            tween.Callback.onCompleteEvent += OnTweenComplete;
         }
 
-        tween.Callback.onCompleteEvent += OnTweenComplete;
-	}
-
-    void OnDestroy()
-    {
-        tween.Callback.onCompleteEvent -= OnTweenComplete;
-    }
-
-    void OnTweenComplete()
-    {
-        if (onTweenCompleteEvent != null)
+        void OnDestroy()
         {
-            onTweenCompleteEvent.Invoke();
+            tween.Callback.onCompleteEvent -= OnTweenComplete;
+        }
+
+        void OnTweenComplete()
+        {
+            if (onTweenCompleteEvent != null)
+            {
+                onTweenCompleteEvent.Invoke();
+            }
         }
     }
 }

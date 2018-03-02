@@ -1,64 +1,65 @@
-﻿/// <summary>
-/// Depend on UIRoot. The elements of UIRoot.
-/// Author: BoJue.
-/// </summary>
+﻿using UnityEngine;
 
-using UnityEngine;
-using System.Collections;
-
-public class UIObject : MonoBehaviour
+namespace UnityToolbox
 {
-    public string objectTag = "";
-    public bool canFindViaUIRoot = true;
-    private UIRoot root = null;
-    public UIRoot Root { get { return root; } }
-    private bool hasRegistered = false;
-    public bool HasRegistered { get { return hasRegistered; } }
-
-    public void SetParent(UIRoot root, bool resetPos=true, bool resetScale=true)
+    /// <summary>
+    /// Depend on UIRoot. The elements of UIRoot.
+    /// Author: BoJue.
+    /// </summary>
+    public class UIObject : MonoBehaviour
     {
-        if (root == null)
+        public string objectTag = "";
+        public bool canFindViaUIRoot = true;
+        private UIRoot root = null;
+        public UIRoot Root { get { return root; } }
+        private bool hasRegistered = false;
+        public bool HasRegistered { get { return hasRegistered; } }
+
+        public void SetParent(UIRoot root, bool resetPos = true, bool resetScale = true)
         {
-            Debug.LogError("when set parent to uiroot, the uiroot is null");
-            return;
-        }
-        
-        this.root = root;
+            if (root == null)
+            {
+                Debug.LogError("when set parent to uiroot, the uiroot is null");
+                return;
+            }
 
-        Vector3 origPos = this.transform.localPosition;
-        Vector3 origScale = this.transform.localScale;
+            this.root = root;
 
-        this.transform.SetParent(root.transform);
+            Vector3 origPos = this.transform.localPosition;
+            Vector3 origScale = this.transform.localScale;
 
-        if (resetPos)
-            this.transform.localPosition = origPos;
-        if (resetScale)
-            this.transform.localScale = origScale;
-    }
+            this.transform.SetParent(root.transform);
 
-    protected virtual void Start()
-    {
-        root = UIRoot.Instance;
-        if (root == null)
-        {
-            Debug.LogError("UIRoot not exist, destory itself");
-            GameObject.Destroy(this);
-            return;
+            if (resetPos)
+                this.transform.localPosition = origPos;
+            if (resetScale)
+                this.transform.localScale = origScale;
         }
 
-        if (canFindViaUIRoot)
+        protected virtual void Start()
         {
-            hasRegistered = root.Register(this);
-            if (hasRegistered == false)
-                Debug.LogError(this.name + " Register to UIRoot failed");
-        }
-    }
+            root = UIRoot.Instance;
+            if (root == null)
+            {
+                Debug.LogError("UIRoot not exist, destory itself");
+                GameObject.Destroy(this);
+                return;
+            }
 
-    protected virtual void OnDestroy()
-    {
-        if (root != null && hasRegistered)
+            if (canFindViaUIRoot)
+            {
+                hasRegistered = root.Register(this);
+                if (hasRegistered == false)
+                    Debug.LogError(this.name + " Register to UIRoot failed");
+            }
+        }
+
+        protected virtual void OnDestroy()
         {
-            hasRegistered = root.Unregister(this);
+            if (root != null && hasRegistered)
+            {
+                hasRegistered = root.Unregister(this);
+            }
         }
     }
 }

@@ -4,10 +4,12 @@ using System.Text;
 using System.Security.Cryptography;
 using UnityEngine;
 
-public static class TripleDESCrypto
+namespace UnityToolbox
 {
-    private static string[] keys =
-        {
+    public static class TripleDESCrypto
+    {
+        private static string[] keys =
+            {
             "ULgwGy5f9ljtM2zBCVRev0JT",
             "EGZA7eUzVPxLGHpCPKyqK0xT",
             "4HtdUIy0AHSqIqYJkVjaPDcU",
@@ -19,8 +21,8 @@ public static class TripleDESCrypto
             "dKiBj2Dgy0Ls09q9zJyEUlJC",
             "tm4OVGScvza5kcAzXbS3hung"
         };
-    private static string[] ivs =
-        {
+        private static string[] ivs =
+            {
             "IfDTKZ4P",
             "I2NVxWNy",
             "sbKmEJi2",
@@ -33,59 +35,60 @@ public static class TripleDESCrypto
             "5EdnZ0ff"
         };
 
-    public static string Encrypt(string clearText, int keyivIndex)
-    {
-        try
+        public static string Encrypt(string clearText, int keyivIndex)
         {
-            byte[] rgbKey = Encoding.UTF8.GetBytes(keys[keyivIndex]);
-            byte[] rgbIV = Encoding.UTF8.GetBytes(ivs[keyivIndex]);
+            try
+            {
+                byte[] rgbKey = Encoding.UTF8.GetBytes(keys[keyivIndex]);
+                byte[] rgbIV = Encoding.UTF8.GetBytes(ivs[keyivIndex]);
 
-            byte[] inputByteArray = Encoding.UTF8.GetBytes(clearText);
-            TripleDESCryptoServiceProvider dCSP = new TripleDESCryptoServiceProvider();
-            dCSP.Mode = CipherMode.CBC;
-            dCSP.Padding = PaddingMode.PKCS7;
-            MemoryStream mStream = new MemoryStream();
-            CryptoStream cStream = new CryptoStream(mStream, dCSP.CreateEncryptor(rgbKey, rgbIV), CryptoStreamMode.Write);
-            cStream.Write(inputByteArray, 0, inputByteArray.Length);
-            cStream.FlushFinalBlock();
-            string cipherText = Convert.ToBase64String(mStream.ToArray());
-            cStream.Close();
-            mStream.Close();
+                byte[] inputByteArray = Encoding.UTF8.GetBytes(clearText);
+                TripleDESCryptoServiceProvider dCSP = new TripleDESCryptoServiceProvider();
+                dCSP.Mode = CipherMode.CBC;
+                dCSP.Padding = PaddingMode.PKCS7;
+                MemoryStream mStream = new MemoryStream();
+                CryptoStream cStream = new CryptoStream(mStream, dCSP.CreateEncryptor(rgbKey, rgbIV), CryptoStreamMode.Write);
+                cStream.Write(inputByteArray, 0, inputByteArray.Length);
+                cStream.FlushFinalBlock();
+                string cipherText = Convert.ToBase64String(mStream.ToArray());
+                cStream.Close();
+                mStream.Close();
 
-            return cipherText;
+                return cipherText;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+                return clearText;
+            }
         }
-        catch (System.Exception ex)
-        {
-            Debug.LogException(ex);
-            return clearText;
-        }
-    }
 
-    public static string Decrypt(string cipherText, int keyivIndex)
-    {
-        try
+        public static string Decrypt(string cipherText, int keyivIndex)
         {
-            cipherText = cipherText.Replace("\\n", "");  // encrypt via python will have '\n' at tail.
-            byte[] rgbKey = Encoding.UTF8.GetBytes(keys[keyivIndex]);
-            byte[] rgbIV = Encoding.UTF8.GetBytes(ivs[keyivIndex]);
-            byte[] inputByteArray = Convert.FromBase64String(cipherText);
-            TripleDESCryptoServiceProvider dCSP = new TripleDESCryptoServiceProvider();
-            dCSP.Mode = CipherMode.CBC;
-            dCSP.Padding = PaddingMode.PKCS7;
-            MemoryStream mStream = new MemoryStream();
-            CryptoStream cStream = new CryptoStream(mStream, dCSP.CreateDecryptor(rgbKey, rgbIV), CryptoStreamMode.Write);
-            cStream.Write(inputByteArray, 0, inputByteArray.Length);
-            cStream.FlushFinalBlock();
-            string clearText = Encoding.UTF8.GetString(mStream.ToArray());
-            cStream.Close();
-            mStream.Close();
+            try
+            {
+                cipherText = cipherText.Replace("\\n", "");  // encrypt via python will have '\n' at tail.
+                byte[] rgbKey = Encoding.UTF8.GetBytes(keys[keyivIndex]);
+                byte[] rgbIV = Encoding.UTF8.GetBytes(ivs[keyivIndex]);
+                byte[] inputByteArray = Convert.FromBase64String(cipherText);
+                TripleDESCryptoServiceProvider dCSP = new TripleDESCryptoServiceProvider();
+                dCSP.Mode = CipherMode.CBC;
+                dCSP.Padding = PaddingMode.PKCS7;
+                MemoryStream mStream = new MemoryStream();
+                CryptoStream cStream = new CryptoStream(mStream, dCSP.CreateDecryptor(rgbKey, rgbIV), CryptoStreamMode.Write);
+                cStream.Write(inputByteArray, 0, inputByteArray.Length);
+                cStream.FlushFinalBlock();
+                string clearText = Encoding.UTF8.GetString(mStream.ToArray());
+                cStream.Close();
+                mStream.Close();
 
-            return clearText;
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogException(ex);
-            return cipherText;
+                return clearText;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogException(ex);
+                return cipherText;
+            }
         }
     }
 }

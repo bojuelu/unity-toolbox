@@ -1,41 +1,43 @@
-﻿/// <summary>
+﻿using UnityEngine;
+using System.Collections;
+
+/// <summary>
 /// Tween rect transform move to. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
-
-using UnityEngine;
-using System.Collections;
-
-public class TweenRectTransformMoveTo : TweenValueVector3
+namespace UnityToolbox
 {
-    public bool useNowAsFrom = false;
-
-    public override void Run()
+    public class TweenRectTransformMoveTo : TweenValueVector3
     {
-        if (useNowAsFrom)
+        public bool useNowAsFrom = false;
+
+        public override void Run()
         {
-            Vector3 nowPos = tweenTarget.GetComponent<RectTransform>().anchoredPosition3D;
-            vectorFrom = nowPos;
+            if (useNowAsFrom)
+            {
+                Vector3 nowPos = tweenTarget.GetComponent<RectTransform>().anchoredPosition3D;
+                vectorFrom = nowPos;
+            }
+
+            base.Run();
         }
 
-        base.Run();
-    }
+        void Update()
+        {
+            if (isTweening && onUpdateInvokeTimes > 0)
+                ApplyPosition();
+        }
 
-    void Update()
-    {
-        if (isTweening && onUpdateInvokeTimes > 0)
+        protected override void OnComplete()
+        {
+            base.OnComplete();
+
             ApplyPosition();
-    }
+        }
 
-    protected override void OnComplete()
-    {
-        base.OnComplete();
-
-        ApplyPosition();
-    }
-
-    void ApplyPosition()
-    {
-        tweenTarget.GetComponent<RectTransform>().anchoredPosition3D = this.VectorNow;
+        void ApplyPosition()
+        {
+            tweenTarget.GetComponent<RectTransform>().anchoredPosition3D = this.VectorNow;
+        }
     }
 }

@@ -1,62 +1,65 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AssetBundleLoader : MonoBehaviour
+namespace UnityToolbox
 {
-    public bool DrawTestingButton = false;
-    public string FilePath = "";
-    public event System.EventHandler BuildCompleteEvent;
-    
-    private WWW _wwwObj = null;
-    private GameObject _buildedObject = null;
-
-    IEnumerator Build()
+    public class AssetBundleLoader : MonoBehaviour
     {
-        if (_wwwObj != null)
+        public bool drawTestingButton = false;
+        public string filePath = "";
+        public event System.EventHandler buildCompleteEvent;
+
+        private WWW wwwObj = null;
+        private GameObject buildedObject = null;
+
+        IEnumerator Build()
         {
-            _wwwObj.Dispose();
-            _wwwObj = null;
-        }
-
-        _wwwObj = new WWW(FilePath);
-
-        while (!_wwwObj.isDone)
-        {
-            Debug.Log("building progress: " + (int)(_wwwObj.progress * 100f) + "%");
-            yield return null;
-        }
-        yield return new WaitForEndOfFrame();
-        Debug.Log("building progress: " + 100f + "%");
-
-        if (string.IsNullOrEmpty(_wwwObj.error))
-        {
-            AssetBundle ab = _wwwObj.assetBundle;
-            Object mainAsset = ab.mainAsset;
-
-            _buildedObject = GameObject.Instantiate(mainAsset) as GameObject;
-            if (BuildCompleteEvent != null)
+            if (wwwObj != null)
             {
-                BuildCompleteEvent(_buildedObject, null);
+                wwwObj.Dispose();
+                wwwObj = null;
+            }
+
+            wwwObj = new WWW(filePath);
+
+            while (!wwwObj.isDone)
+            {
+                Debug.Log("building progress: " + (int)(wwwObj.progress * 100f) + "%");
+                yield return null;
+            }
+            yield return new WaitForEndOfFrame();
+            Debug.Log("building progress: " + 100f + "%");
+
+            if (string.IsNullOrEmpty(wwwObj.error))
+            {
+                AssetBundle ab = wwwObj.assetBundle;
+                Object mainAsset = ab.mainAsset;
+
+                buildedObject = GameObject.Instantiate(mainAsset) as GameObject;
+                if (buildCompleteEvent != null)
+                {
+                    buildCompleteEvent(buildedObject, null);
+                }
+            }
+            else
+            {
+                Debug.LogError(wwwObj.error);
             }
         }
-        else
-        {
-            Debug.LogError(_wwwObj.error);
-        }
-    }
 
-    // test
-    void OnGUI()
-    {
-        if (!DrawTestingButton)
-            return;
-        
-        FilePath = GUI.TextField(new Rect(0, 0, 1024, 100), FilePath);
-
-        if (GUI.Button(new Rect(0, 100, 100, 100), "build"))
+        // test
+        void OnGUI()
         {
-            this.StopAllCoroutines();
-            this.StartCoroutine(this.Build());
+            if (!drawTestingButton)
+                return;
+
+            filePath = GUI.TextField(new Rect(0, 0, 1024, 100), filePath);
+
+            if (GUI.Button(new Rect(0, 100, 100, 100), "build"))
+            {
+                this.StopAllCoroutines();
+                this.StartCoroutine(this.Build());
+            }
         }
     }
 }

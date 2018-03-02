@@ -4,71 +4,74 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-public class AssetBundleBuilder
+namespace UnityToolbox
 {
-    const string kMenu = "Assets/Build AssetBundles/";
-
-    [MenuItem(kMenu + "Android")]
-    static void CreateAssetBunldesForAndroid()
+    public class AssetBundleBuilder
     {
-        ExecCreateAssetBunldes(BuildTarget.Android);
-    }
+        const string kMenu = "Assets/Build AssetBundles/";
 
-    [MenuItem(kMenu + "iOS")]
-    static void CreateAssetBunldesForIOS()
-    {
-        ExecCreateAssetBunldes(BuildTarget.iOS);
-    }
-
-    static void ExecCreateAssetBunldes(BuildTarget buildTarget)
-    {
-        if (EditorApplication.isPlaying || EditorApplication.isPaused)
+        [MenuItem(kMenu + "Android")]
+        static void CreateAssetBunldesForAndroid()
         {
-            Debug.LogWarning("Stop the editor first");
-            return;
+            ExecCreateAssetBunldes(BuildTarget.Android);
         }
 
-        string targetDir = "AssetBundles/" + buildTarget.ToString();
-        string extensionName = ".asset";
-
-        if (!Directory.Exists(targetDir))
-            Directory.CreateDirectory(targetDir);
-        
-        Object[] selectedAsset = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
-
-        Debug.Log("Select object count: " + selectedAsset.Length);
-        Debug.Log("Object list:");
-        for (int i = 0; i < selectedAsset.Length; i++)
+        [MenuItem(kMenu + "iOS")]
+        static void CreateAssetBunldesForIOS()
         {
-            Object obj = selectedAsset[i];
-            Debug.Log(obj.name);
+            ExecCreateAssetBunldes(BuildTarget.iOS);
         }
 
-        for (int i = 0; i < selectedAsset.Length; i++)
+        static void ExecCreateAssetBunldes(BuildTarget buildTarget)
         {
-            Object obj = selectedAsset[i];
-
-            //string sourcePath = AssetDatabase.GetAssetPath(obj);
-            string targetPath = targetDir + Path.DirectorySeparatorChar + obj.name + extensionName;
-
-            if (File.Exists(targetPath))
-                File.Delete(targetPath);
-
-            if (!(obj is GameObject) && !(obj is Texture2D) && !(obj is Material))
+            if (EditorApplication.isPlaying || EditorApplication.isPaused)
             {
-                Debug.LogWarning(obj.name + " can not build for assetbundle, skip it.");
-                continue;
+                Debug.LogWarning("Stop the editor first");
+                return;
             }
 
-            if (BuildPipeline.BuildAssetBundle(obj, null, targetPath, BuildAssetBundleOptions.CollectDependencies, buildTarget))
+            string targetDir = "AssetBundles/" + buildTarget.ToString();
+            string extensionName = ".asset";
+
+            if (!Directory.Exists(targetDir))
+                Directory.CreateDirectory(targetDir);
+
+            Object[] selectedAsset = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
+
+            Debug.Log("Select object count: " + selectedAsset.Length);
+            Debug.Log("Object list:");
+            for (int i = 0; i < selectedAsset.Length; i++)
             {
-                Debug.Log(targetPath + " build complete");
+                Object obj = selectedAsset[i];
+                Debug.Log(obj.name);
             }
-            else
-            {  
-                Debug.Log(targetPath + " build failed");
+
+            for (int i = 0; i < selectedAsset.Length; i++)
+            {
+                Object obj = selectedAsset[i];
+
+                //string sourcePath = AssetDatabase.GetAssetPath(obj);
+                string targetPath = targetDir + Path.DirectorySeparatorChar + obj.name + extensionName;
+
+                if (File.Exists(targetPath))
+                    File.Delete(targetPath);
+
+                if (!(obj is GameObject) && !(obj is Texture2D) && !(obj is Material))
+                {
+                    Debug.LogWarning(obj.name + " can not build for assetbundle, skip it.");
+                    continue;
+                }
+
+                if (BuildPipeline.BuildAssetBundle(obj, null, targetPath, BuildAssetBundleOptions.CollectDependencies, buildTarget))
+                {
+                    Debug.Log(targetPath + " build complete");
+                }
+                else
+                {
+                    Debug.Log(targetPath + " build failed");
+                }
             }
         }
-    }
 
+    }
 }

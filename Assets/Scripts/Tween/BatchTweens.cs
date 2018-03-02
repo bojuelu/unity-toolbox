@@ -1,90 +1,92 @@
-﻿/// <summary>
-/// Run a lot of Tweens at once. Powered by iTween.
-/// Author: BoJue.
-/// </summary>
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BatchTweens : MonoBehaviour
+namespace UnityToolbox
 {
-    public bool autoStart = true;
-    private TweenBase[] tweens = null;
-
-    public void Run()
+    /// <summary>
+    /// Run a lot of Tweens at once. Powered by iTween.
+    /// Author: BoJue.
+    /// </summary>
+    public class BatchTweens : MonoBehaviour
     {
-        for (int i = 0; i < tweens.Length; i++)
+        public bool autoStart = true;
+        private TweenBase[] tweens = null;
+
+        public void Run()
         {
-            if (tweens[i].enabled)
+            for (int i = 0; i < tweens.Length; i++)
             {
-                tweens[i].Run();
+                if (tweens[i].enabled)
+                {
+                    tweens[i].Run();
+                }
             }
         }
-    }
 
-    public void Pause()
-    {
-        for (int i = 0; i < tweens.Length; i++)
+        public void Pause()
         {
-            if (tweens[i].enabled)
+            for (int i = 0; i < tweens.Length; i++)
             {
-                tweens[i].Pause();
+                if (tweens[i].enabled)
+                {
+                    tweens[i].Pause();
+                }
             }
         }
-    }
 
-    public void Resume()
-    {
-        for (int i = 0; i < tweens.Length; i++)
+        public void Resume()
         {
-            if (tweens[i].enabled)
+            for (int i = 0; i < tweens.Length; i++)
             {
-                tweens[i].Resume();
+                if (tweens[i].enabled)
+                {
+                    tweens[i].Resume();
+                }
             }
         }
-    }
 
-    public void Stop()
-    {
-        for (int i = 0; i < tweens.Length; i++)
+        public void Stop()
         {
-            if (tweens[i].enabled)
+            for (int i = 0; i < tweens.Length; i++)
             {
-                tweens[i].Stop();
+                if (tweens[i].enabled)
+                {
+                    tweens[i].Stop();
+                }
             }
         }
-    }
 
-    public bool IsRunning()
-    {
-        bool isRunning = false;
-        for (int i = 0; i < tweens.Length; i++)
+        public bool IsRunning()
         {
-            isRunning |= (tweens[i].IsTweening && tweens[i].enabled);
+            bool isRunning = false;
+            for (int i = 0; i < tweens.Length; i++)
+            {
+                isRunning |= (tweens[i].IsTweening && tweens[i].enabled);
+            }
+            return isRunning;
         }
-        return isRunning;
-    }
-        
-    public void ReloadTweens()
-    {
-        tweens = this.gameObject.GetComponents<TweenBase>();
-        for (int i = 0; i < tweens.Length; i++)
+
+        public void ReloadTweens()
         {
-            tweens[i].autoStart = false;
+            tweens = this.gameObject.GetComponents<TweenBase>();
+            for (int i = 0; i < tweens.Length; i++)
+            {
+                tweens[i].autoStart = false;
+            }
         }
-    }
 
-    void Awake()
-    {
-        ReloadTweens();
-    }
-
-    void Start()
-    {
-        if (autoStart)
+        void Awake()
         {
-            this.Run();
+            ReloadTweens();
+        }
+
+        void Start()
+        {
+            if (autoStart)
+            {
+                this.Run();
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+/// <summary>
 /// Mask your UGUI image with great anti-aliasing effect.
 /// 1. Create an material, choose this shader.
 /// 2. Select the material, you can see a Texture slot on inspector,
@@ -87,7 +89,7 @@ Shader "UI/Mask"
             v2f vert (a2v i)
             {
                 v2f o;
-                o.vertex = mul(UNITY_MATRIX_MVP, i.vertex);
+                o.vertex = UnityObjectToClipPos(i.vertex);
                 o.uv = i.uv;
 
                 o.color = i.color * _Color;

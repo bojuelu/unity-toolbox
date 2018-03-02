@@ -1,69 +1,71 @@
-﻿/// <summary>
+﻿using UnityEngine;
+using System.Collections;
+
+/// <summary>
 /// Tween scale to. Powered by iTween.
 /// Author: BoJue.
 /// </summary>
-
-using UnityEngine;
-using System.Collections;
-
-public class TweenScaleTo : TweenBase
+namespace UnityToolbox
 {
-    public bool useNowAsFrom = false;
-    public Vector3 scaleFrom = Vector3.one;
-    public Vector3 scaleTo = Vector3.one * 2;
-
-    private iTween iTweenInstance = null;
-
-    public void Run(Vector3 scaleFrom, Vector3 scaleTo)
+    public class TweenScaleTo : TweenBase
     {
-        this.scaleFrom = scaleFrom;
-        this.scaleTo = scaleTo;
+        public bool useNowAsFrom = false;
+        public Vector3 scaleFrom = Vector3.one;
+        public Vector3 scaleTo = Vector3.one * 2;
 
-        this.Run();
-    }
+        private iTween iTweenInstance = null;
 
-    public void Run(Vector3 scaleTo)
-    {
-        this.scaleTo = scaleTo;
+        public void Run(Vector3 scaleFrom, Vector3 scaleTo)
+        {
+            this.scaleFrom = scaleFrom;
+            this.scaleTo = scaleTo;
 
-        this.Run();
-    }
+            this.Run();
+        }
 
-    public override void Run()
-    {
-        base.Run();
+        public void Run(Vector3 scaleTo)
+        {
+            this.scaleTo = scaleTo;
 
-        if (useNowAsFrom)
-            scaleFrom = tweenTarget.transform.localScale;
-        else
-            tweenTarget.transform.localScale = scaleFrom;
+            this.Run();
+        }
 
-        tweenName = "scaleto-" + UnityUtility.GenerateRandomString(8);
-        iTween.ScaleTo(tweenTarget,
-            iTween.Hash(
-                "name", tweenName,
-                "islocal", isLocal,
-                "scale", scaleTo,
-                "time", duration,
-                "delay", delay,
-                "easeType", ease.ToString(),
-                "loopType", loop,
-                "ignoretimescale", ignoreTimeScale,
-                "oncomplete", recvCallback.OnCompleteFuncName,
-                "oncompletetarget", recvCallback.gameObject
-            )
-        );
-    }
+        public override void Run()
+        {
+            base.Run();
 
-    public override void Pause()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = false;
-    }
+            if (useNowAsFrom)
+                scaleFrom = tweenTarget.transform.localScale;
+            else
+                tweenTarget.transform.localScale = scaleFrom;
 
-    public override void Resume()
-    {
-        if (iTweenInstance)
-            iTweenInstance.enabled = true;
+            tweenName = "scaleto-" + UnityUtility.GenerateRandomString(8);
+            iTween.ScaleTo(tweenTarget,
+                iTween.Hash(
+                    "name", tweenName,
+                    "islocal", isLocal,
+                    "scale", scaleTo,
+                    "time", duration,
+                    "delay", delay,
+                    "easeType", ease.ToString(),
+                    "loopType", loop,
+                    "ignoretimescale", ignoreTimeScale,
+                    "oncomplete", recvCallback.OnCompleteFuncName,
+                    "oncompletetarget", recvCallback.gameObject
+                )
+            );
+        }
+
+        public override void Pause()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = false;
+        }
+
+        public override void Resume()
+        {
+            if (iTweenInstance)
+                iTweenInstance.enabled = true;
+        }
     }
 }
