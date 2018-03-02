@@ -152,7 +152,7 @@ namespace UnityToolbox
             return new string(result);
         }
 
-        public static string GenerateRandomString(int length)
+        public static string GenerateRandomStringViaCharacter(int length)
         {
             if (length <= 0)
                 return "";
@@ -165,6 +165,26 @@ namespace UnityToolbox
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             };
+            char[] pickChars = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                int pickIndex = UnityEngine.Random.Range(0, chars.Length);
+                pickChars[i] = chars[pickIndex];
+            }
+
+            string s = new string(pickChars);
+            return s;
+        }
+
+        public static string GenerateRandomStringViaNumber(int length)
+        {
+            if (length <= 0)
+                return "";
+
+            char[] chars = new char[]
+                {
+                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+                };
             char[] pickChars = new char[length];
             for (int i = 0; i < length; i++)
             {
