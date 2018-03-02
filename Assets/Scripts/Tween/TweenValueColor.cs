@@ -43,7 +43,7 @@ namespace UnityToolbox
 
             colorNow = colorFrom;
 
-            tweenName = "valuecolorto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "valuecolorto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ValueTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

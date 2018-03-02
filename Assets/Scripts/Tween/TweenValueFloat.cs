@@ -43,7 +43,7 @@ namespace UnityToolbox
 
             floatNow = floatFrom;
 
-            tweenName = "valuefloatto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "valuefloatto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ValueTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

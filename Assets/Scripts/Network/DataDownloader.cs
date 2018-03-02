@@ -134,7 +134,7 @@ namespace UnityToolbox
             string id = string.Format(
                 "cache{0}{1}",
                 (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
-                UnityUtility.GenerateRandomString(8)
+                UnityUtility.GenerateRandomStringViaCharacter(8)
             );
             return id;
         }

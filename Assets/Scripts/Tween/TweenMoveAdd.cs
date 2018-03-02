@@ -26,7 +26,7 @@ namespace UnityToolbox
             if (isLocal)
                 space = Space.Self;
 
-            tweenName = "moveadd-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "moveadd-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTweenInstance = iTween.MoveAdd(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

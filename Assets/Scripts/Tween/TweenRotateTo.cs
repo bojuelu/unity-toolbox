@@ -43,7 +43,7 @@ namespace UnityToolbox
                     rotateFrom.x, rotateFrom.y, rotateFrom.z, transform.localRotation.w
                 );
 
-            tweenName = "rotateto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "rotateto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.RotateTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

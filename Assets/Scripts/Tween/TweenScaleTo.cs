@@ -39,7 +39,7 @@ namespace UnityToolbox
             else
                 tweenTarget.transform.localScale = scaleFrom;
 
-            tweenName = "scaleto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "scaleto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ScaleTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

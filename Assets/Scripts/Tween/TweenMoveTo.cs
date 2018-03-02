@@ -33,7 +33,7 @@ namespace UnityToolbox
             else
                 tweenTarget.transform.localPosition = moveFrom;
 
-            tweenName = "moveto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "moveto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.MoveTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

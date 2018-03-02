@@ -43,7 +43,7 @@ namespace UnityToolbox
 
             vectorNow = vectorFrom;
 
-            tweenName = "valuevector2to-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "valuevector2to-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ValueTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

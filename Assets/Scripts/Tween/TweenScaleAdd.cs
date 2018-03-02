@@ -21,7 +21,7 @@ namespace UnityToolbox
             if (isLocal)
                 space = Space.Self;
 
-            tweenName = "scaleadd-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "scaleadd-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ScaleAdd(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

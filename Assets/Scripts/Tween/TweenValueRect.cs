@@ -43,7 +43,7 @@ namespace UnityToolbox
 
             rectNow = rectFrom;
 
-            tweenName = "valuerectto-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "valuerectto-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.ValueTo(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,

@@ -21,7 +21,7 @@ namespace UnityToolbox
             if (isLocal)
                 space = Space.Self;
 
-            tweenName = "rotateadd-" + UnityUtility.GenerateRandomString(8);
+            tweenName = "rotateadd-" + UnityUtility.GenerateRandomStringViaCharacter(8);
             iTween.RotateAdd(tweenTarget,
                 iTween.Hash(
                     "name", tweenName,
