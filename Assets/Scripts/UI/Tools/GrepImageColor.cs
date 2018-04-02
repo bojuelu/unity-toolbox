@@ -24,24 +24,28 @@ namespace UnityToolbox
 
         public void OnPointerClick(PointerEventData pointerEventData)
         {
-            Vector2 clickPos = pointerEventData.position;  // new Vector2(Input.mousePosition.x, Input.mousePosition.y); //pointerEventData.position;
-
+            Vector2 clickPos = pointerEventData.position;
             Debug.Log("orig clickPos: " + clickPos.ToString());
 
             RectTransform canvasRT = canvas.GetComponent<RectTransform>();
-            clickPos.x *= (canvasRT.sizeDelta.x * canvasRT.localScale.x / Screen.width);
-            clickPos.y *= (canvasRT.sizeDelta.y * canvasRT.localScale.y / Screen.height);
+            clickPos.x *= (canvasRT.sizeDelta.x / Screen.width);
+            clickPos.y *= (canvasRT.sizeDelta.y / Screen.height);
             Debug.Log("result clickPos: " + clickPos.ToString());
 
-            Vector2 imagePos = imageRectTransform.anchoredPosition;
-            Debug.Log("imagePos: " + imagePos.ToString());
+            Vector2 imagePos = imageRectTransform.position;
+            Debug.Log("orig imagePos: " + imagePos.ToString());
+
+            imagePos.x *= (canvasRT.sizeDelta.x / Screen.width);
+            imagePos.y *= (canvasRT.sizeDelta.y / Screen.height);
+            Debug.Log("result imagePos: " + imagePos.ToString());
 
             Vector2 grepPixelPos = clickPos - imagePos;
+            Debug.Log("orig grepPixelPos: " + grepPixelPos.ToString());
 
-            grepPixelPos.x *= (imageRectTransform.sizeDelta.x / image.mainTexture.width) * imageRectTransform.localScale.x;
-            grepPixelPos.y *= (imageRectTransform.sizeDelta.y / image.mainTexture.height) * imageRectTransform.localScale.y;
+            grepPixelPos.x *= (image.mainTexture.width / imageRectTransform.sizeDelta.x) * imageRectTransform.localScale.x;
+            grepPixelPos.y *= (image.mainTexture.height / imageRectTransform.sizeDelta.y) * imageRectTransform.localScale.y;
+            Debug.Log("result grepPixelPos: " + grepPixelPos.ToString());
 
-            Debug.Log("grepPixelPos: " + grepPixelPos.ToString());
 
             Texture2D tex2d = image.mainTexture as Texture2D;
             Color grepColor = tex2d.GetPixel((int)grepPixelPos.x, (int)grepPixelPos.y);
