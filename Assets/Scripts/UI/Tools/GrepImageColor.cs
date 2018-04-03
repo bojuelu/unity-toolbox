@@ -42,8 +42,8 @@ namespace UnityToolbox
             Vector2 grepPixelPos = clickPos - imagePos;
             Debug.Log("orig grepPixelPos: " + grepPixelPos.ToString());
 
-            grepPixelPos.x *= (image.mainTexture.width / imageRectTransform.sizeDelta.x) * imageRectTransform.localScale.x;
-            grepPixelPos.y *= (image.mainTexture.height / imageRectTransform.sizeDelta.y) * imageRectTransform.localScale.y;
+            grepPixelPos.x *= (image.mainTexture.width / imageRectTransform.sizeDelta.x) / imageRectTransform.localScale.x;
+            grepPixelPos.y *= (image.mainTexture.height / imageRectTransform.sizeDelta.y) / imageRectTransform.localScale.y;
             Debug.Log("result grepPixelPos: " + grepPixelPos.ToString());
 
 
