@@ -128,10 +128,10 @@ namespace UnityToolbox
                             float dragImpulseWay = dragVector.x;
 
                             float dragImpulsePower = Mathf.Abs(dragImpulseWay);
-                            Debug.Log(string.Format("<color=red>dragImpulsePower: {0}</color>", dragImpulsePower));
+//                            Debug.Log(string.Format("<color=red>dragImpulsePower: {0}</color>", dragImpulsePower));
 
                             float dragImpulsePercentage = dragImpulsePower / Screen.height;
-                            Debug.Log(string.Format("<color=red>dragImpulsePercentage: {0}</color>", dragImpulsePercentage));
+//                            Debug.Log(string.Format("<color=red>dragImpulsePercentage: {0}</color>", dragImpulsePercentage));
 
                             if (dragImpulsePercentage >= turnPageDragImpulseThreshold)
                             {
