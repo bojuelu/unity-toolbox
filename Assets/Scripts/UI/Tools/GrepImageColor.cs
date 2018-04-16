@@ -7,7 +7,10 @@ namespace UnityToolbox
     public class GrepImageColor : MonoBehaviour, IPointerClickHandler
     {
         public Canvas canvas;
-        public Color grepOutColor;
+        public Color grepColor;
+
+        public delegate void OnGrepColorHandler(Color color);
+        public event OnGrepColorHandler onGrepColorHandler;
 
         Image image;
         RectTransform imageRectTransform;
@@ -42,17 +45,18 @@ namespace UnityToolbox
             Vector2 grepPixelPos = clickPos - imagePos;
             Debug.Log("orig grepPixelPos: " + grepPixelPos.ToString());
 
-            grepPixelPos.x *= (image.mainTexture.width / imageRectTransform.sizeDelta.x) / imageRectTransform.localScale.x;
-            grepPixelPos.y *= (image.mainTexture.height / imageRectTransform.sizeDelta.y) / imageRectTransform.localScale.y;
+            grepPixelPos.x *= (image.mainTexture.width / ((imageRectTransform.sizeDelta.x > 0) ? imageRectTransform.sizeDelta.x : 1)) / ((imageRectTransform.localScale.x > 0) ? imageRectTransform.localScale.x : 1);
+            grepPixelPos.y *= (image.mainTexture.height / ((imageRectTransform.sizeDelta.y > 0) ? imageRectTransform.sizeDelta.y : 1)) / ((imageRectTransform.localScale.y > 0) ? imageRectTransform.localScale.y : 1);
             Debug.Log("result grepPixelPos: " + grepPixelPos.ToString());
 
 
             Texture2D tex2d = image.mainTexture as Texture2D;
-            Color grepColor = tex2d.GetPixel((int)grepPixelPos.x, (int)grepPixelPos.y);
+            grepColor = tex2d.GetPixel((int)grepPixelPos.x, (int)grepPixelPos.y);
 
             Debug.Log("grepColor: " + grepColor.ToString());
 
-            grepOutColor = grepColor;
+            if (onGrepColorHandler != null)
+                onGrepColorHandler(grepColor);
         }
     }    
 }
