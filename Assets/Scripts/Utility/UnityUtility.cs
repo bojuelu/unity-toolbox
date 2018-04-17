@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Text;
 using System.IO;
@@ -10,9 +11,49 @@ namespace UnityToolbox
     /// <summary>
     /// Unity utility.
     /// Author: BoJue.
+    /// Refrence: https://www.evernote.com/shard/s497/nl/91181768/45799b32-211e-4cea-b327-dc2247b4d05a?title=unity%204.6%E5%85%B3%E4%BA%8ERectTransform%E7%9A%84%E4%B8%80%E4%BA%9B%E7%A0%94%E7%A9%B6
+    ///           https://blog.tomyail.com/unity-rect-transform/
     /// </summary>
     public static class UnityUtility
     {
+        public static Vector3 GetSpacePos(RectTransform rect, Canvas canvas, Camera camera)
+        {
+            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                return rect.position;
+            }
+            return camera.WorldToScreenPoint(rect.position);
+        }
+        
+        public static Rect GetSpaceRect(Canvas canvas, RectTransform rect, Camera camera)
+        {
+            Rect spaceRect = rect.rect;
+            Vector3 spacePos = GetSpacePos(rect, canvas, camera);
+            //lossyScale
+            spaceRect.x = spaceRect.x * rect.lossyScale.x + spacePos.x;
+            spaceRect.y = spaceRect.y * rect.lossyScale.y + spacePos.y;
+            spaceRect.width = spaceRect.width * rect.lossyScale.x;
+            spaceRect.height = spaceRect.height * rect.lossyScale.y;
+            return spaceRect;
+        }
+
+        /// <summary>
+		/// Check a point is in the rect transform area or not.
+        /// </summary>
+        /// <returns><c>true</c>, if contains screen point was rected, <c>false</c> otherwise.</returns>
+        /// <param name="point">The point you want to check. ex: Input.mousePosition.</param>
+        /// <param name="canvas">Canvas of rect transform.</param>
+        /// <param name="rect">Rect transform.</param>
+        /// <param name="camera">Camera will be use while Canvas.renderMode != RenderMode.ScreenSpaceOverlay. ex: Camera.main</param>
+        public static bool RectContainsScreenPoint(Vector3 point, Canvas canvas, RectTransform rect, Camera camera)
+        {
+            if (canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            {
+                return RectTransformUtility.RectangleContainsScreenPoint(rect, point, camera);
+            }
+            return GetSpaceRect(canvas, rect, camera).Contains(point);
+        }
+
         public static double UnixTimestamp()
         {
             return DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
@@ -348,6 +389,50 @@ namespace UnityToolbox
             if (
                 // 6674 7970
                 bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70
+            )
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public static bool IsMP3(WWW wwwObj)
+        {
+            try
+            {
+                if (wwwObj != null)
+                {
+                    if (wwwObj.isDone)
+                    {
+                        if (string.IsNullOrEmpty(wwwObj.error) && wwwObj.bytes != null)
+                        {
+                            return IsMP3(wwwObj.bytes);
+                        }
+                    }
+                }
+            }
+            catch (System.Exception err)
+            {
+                Debug.LogError(err.Message);
+                Debug.LogError(err.StackTrace);
+            }
+            return false;
+        }
+
+        public static bool IsMP3(byte[] bytes)
+        {
+            Debug.Log("Length = "+bytes.Length);
+            if (bytes == null)
+                return false;
+
+            // mp3 at least 10 bytes
+            if (bytes.Length <= 10)
+                return false;
+
+            if (
+                (bytes[0] == 0x49 && bytes[1] == 0x44 && bytes[2] == 0x33) ||   // ID3 : 73 68 51 (16bit : 49 44 33)
+                (bytes[0] == 0xFF && bytes[1] == 0xFB && bytes[2] == 0x90)      // ID3v2 : FF FB 90 64  
             )
             {
                 return true;
@@ -736,16 +821,12 @@ namespace UnityToolbox
         {
             int aUnicodeLength = 6;
             char[] charArray = strText.ToCharArray();
-            Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] start. input string: {0}</color>", strText));
-            Debug.Log(string.Format("<color=yellow> charArray.Length:{0} </color>", charArray.Length));
             if (charArray.Length >= aUnicodeLength)
             {
                 for (int i = 0; i < charArray.Length; i++)
                 {
-                    Debug.Log(string.Format("<color=yellow> charArray[{0}]:{1} </color>", i, charArray[i]));
                     if (i + (aUnicodeLength) >= charArray.Length)
                     {
-                        Debug.Log(string.Format("<color=yellow> {0}+6 >= {1} </color>", i, aUnicodeLength));
                         break;
                     }
                     // unicode example: \u4e2d
@@ -753,11 +834,6 @@ namespace UnityToolbox
                     {
                         if (charArray[i] == '\\')
                         {
-                            Debug.Log(string.Format("<color=yellow> charArray[{0}] == '\\' </color>", i));
-                            Debug.Log(string.Format(
-                                "<color=yellow> charArray[{0} - {1}]: {2} | {3} | {4} | {5} | {6}</color>",
-                                i, i + 5,
-                                charArray[i + 1], charArray[i + 2], charArray[i + 3], charArray[i + 4], charArray[i + 5]));
                             if (
                                 charArray[i + 1] == 'u' &&
                                 charArray[i + 2] != 'u' && charArray[i + 2] != '\\' &&
@@ -765,31 +841,20 @@ namespace UnityToolbox
                                 charArray[i + 4] != 'u' && charArray[i + 4] != '\\' &&
                                 charArray[i + 5] != 'u' && charArray[i + 5] != '\\')
                             {
-                                Debug.Log(string.Format(
-                                    "<color=yellow> charArray[{0} - {1}] is match unicode format </color>", i, i + 5));
-                                Debug.Log(string.Format("<color=yellow> return true </color>"));
-                                Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] end </color>"));
                                 return true;
                             }
                             else
                             {
-                                Debug.Log(string.Format(
-                                    "<color=yellow> charArray[{0} - {1}] is not match unicode format </color>", i, i + 5));
-                                Debug.Log(string.Format("<color=yellow> continue </color>"));
                                 continue;
                             }
                         }
                         else
                         {
-                            Debug.Log(string.Format("<color=yellow> charArray[{0}] != '\\' </color>", i));
-                            Debug.Log(string.Format("<color=yellow> continue </color>"));
                             continue;
                         }
                     }
                 }
             }
-            Debug.Log(string.Format("return false"));
-            Debug.Log(string.Format("<color=yellow> [ContainUnicodeFormat] end </color>"));
             return false;
         }
 
