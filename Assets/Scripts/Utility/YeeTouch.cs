@@ -41,6 +41,8 @@ namespace UnityToolbox
         */
 
         int lastTouchCount = 0;
+        Timer canInvokeOneFingerEventTimer = null;
+        float canInvokeOneFingerEventMustAbove = 0.2f;
 
         public delegate void OneFingerHandler(Finger f0);
         public delegate void TwoFingerHandler(Finger f0, Finger f1, TwoFingers twoF);
@@ -78,18 +80,19 @@ namespace UnityToolbox
             float twoFingersDistance = (f0Position - f1Position).magnitude;
             float diffValue = Mathf.Abs(keepThisDistance - twoFingersDistance);
 
-            float f = 100;
+            float f = 100f;
             float gap = ((float)Screen.width / f) + ((float)Screen.height / f);
 
             return (diffValue <= gap);
         }
 
         void Awake()
-        {   
+        {
         }
 
         void Start()
         {
+            canInvokeOneFingerEventTimer = new Timer();
         }
 
         void Update()
@@ -98,7 +101,7 @@ namespace UnityToolbox
             int touchCount = touches.Length;
             if (touchCount != lastTouchCount)
             {
-                for (int i = 0; i < fingers.Length;i++)
+                for (int i = 0; i < fingers.Length; i++)
                 {
                     fingers[i].valid = false;
                 }
@@ -131,7 +134,7 @@ namespace UnityToolbox
             }
 
             // check one finger gesture occur
-            if (touchCount == 1)
+            if (touchCount == 1 && canInvokeOneFingerEventTimer.GetTime() >= canInvokeOneFingerEventMustAbove)
             {
                 // touch condiction
                 if (fingers[0].phaseNow == TouchPhase.Began && fingers[0].phaseLast != TouchPhase.Began)
@@ -139,7 +142,12 @@ namespace UnityToolbox
                     if (onTouch != null)
                         onTouch(fingers[0]);
 
-                    Debug.Log("[onTouch]" + fingers[0].touch.position);
+                    Debug.Log(
+                        string.Format(
+                            "[onTouch] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.position={2}",
+                            fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.position
+                        )
+                    );
                 }
 
                 // touch hold condiction
@@ -148,7 +156,12 @@ namespace UnityToolbox
                     if (onTouchHold != null)
                         onTouchHold(fingers[0]);
 
-                    Debug.Log("[onTouchHold]" + fingers[0].touch.position);
+                    Debug.Log(
+                        string.Format(
+                            "[onTouchHold] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.position={2}",
+                            fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.position
+                        )
+                    );
                 }
                 else if (fingers[0].phaseNow == TouchPhase.Moved)
                 {
@@ -158,7 +171,12 @@ namespace UnityToolbox
                         if (onTouchHold != null)
                             onTouchHold(fingers[0]);
 
-                        Debug.Log("[onTouchHold]" + fingers[0].touch.position);
+                        Debug.Log(
+                            string.Format(
+                                "[onTouchHold] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.position={2}",
+                                fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.position
+                            )
+                        );
                     }
                 }
 
@@ -168,7 +186,12 @@ namespace UnityToolbox
                     if (onTouchUp != null)
                         onTouchUp(fingers[0]);
 
-                    Debug.Log("[onTouchUp]" + fingers[0].touch.position);
+                    Debug.Log(
+                        string.Format(
+                            "[onTouchUp] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.position={2}",
+                            fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.position
+                        )
+                    );
                 }
 
                 // tap condiction
@@ -183,7 +206,12 @@ namespace UnityToolbox
                         if (onTap != null)
                             onTap(fingers[0]);
 
-                        Debug.Log("[onTap]" + fingers[0].touch.position);
+                        Debug.Log(
+                            string.Format(
+                                "[onTouchTap] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.position={2}",
+                                fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.position
+                            )
+                        );
                     }
                 }
 
@@ -199,7 +227,12 @@ namespace UnityToolbox
                         if (onDrag != null)
                             onDrag(fingers[0]);
 
-                        Debug.Log("[onDrag]" + fingers[0].touch.deltaTime);
+                        Debug.Log(
+                            string.Format(
+                                "[onDrag] fingers[0].phaseLast={0}, fingers[0].phaseNow={1}, fingers[0].touch.deltaPosition={2}",
+                                fingers[0].phaseLast, fingers[0].phaseNow, fingers[0].touch.deltaPosition
+                            )
+                        );
                     }
                 }
             }
@@ -259,6 +292,8 @@ namespace UnityToolbox
                         ;
                     }
                 }
+
+                canInvokeOneFingerEventTimer.Reset();
             }
             else
             {
@@ -270,5 +305,28 @@ namespace UnityToolbox
                 twoFingers.deltaTwist = 0f;
             }
         }
-    }    
+    }
+
+    class Timer
+    {
+        public float lastTime = 0f;
+
+        public Timer()
+        {
+            Reset();
+        }
+
+        public void Reset()
+        {
+            lastTime = Time.time;
+        }
+
+        public float GetTime()
+        {
+            float nowTime = Time.time;
+            float result = nowTime - lastTime;
+
+            return result;
+        }
+    }
 }
