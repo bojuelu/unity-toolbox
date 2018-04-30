@@ -80,7 +80,7 @@ namespace UnityToolbox
             float twoFingersDistance = (f0Position - f1Position).magnitude;
             float diffValue = Mathf.Abs(keepThisDistance - twoFingersDistance);
 
-            float f = 100f;
+            float f = 10f;
             float gap = ((float)Screen.width / f) + ((float)Screen.height / f);
 
             return (diffValue <= gap);
@@ -289,7 +289,19 @@ namespace UnityToolbox
                     // twist condiction
                     if (isTwoFingersKeepSameDistance == true && isTwoFingersDeltaPositionVeryClose == false)
                     {
-                        ;
+                        float oldAngle = twoFingers.deltaTwist;
+
+                        Vector2 v2 = fingers[0].touch.position - fingers[1].touch.position;
+                        float newAngle = Mathf.Atan2(v2.y, v2.x);
+                        float deltaAngle = Mathf.DeltaAngle(newAngle, oldAngle);
+                        oldAngle = newAngle;
+
+                        twoFingers.deltaTwist = newAngle;
+
+                        if (onTwistTwoFingers != null)
+                            onTwistTwoFingers(fingers[0], fingers[1], twoFingers);
+
+                        Debug.Log("[onTwistTwoFingers]" + twoFingers.deltaTwist);
                     }
                 }
 
