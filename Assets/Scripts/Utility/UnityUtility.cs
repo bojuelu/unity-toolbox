@@ -16,6 +16,14 @@ namespace UnityToolbox
     /// </summary>
     public static class UnityUtility
     {
+        public static string Substring(string origStr, int maxLength)
+        {
+            if (origStr.Length <= maxLength)
+                return origStr;
+            else
+                return origStr.Substring(0, maxLength);
+        }
+
         public static Vector3 GetSpacePos(RectTransform rect, Canvas canvas, Camera camera)
         {
             if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
@@ -59,7 +67,7 @@ namespace UnityToolbox
             return DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        public static string Rot38(string str)
+        public static string RotCypher(string str)
         {
             if (str.Length <= 0)
                 return "";
@@ -70,8 +78,8 @@ namespace UnityToolbox
             char[] rotLowerL = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', };
             char[] rotLowerR = new char[] { 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', };
 
-            char[] rotSymbolL = new char[] { '~', '!', '@', '#', '$', '%', '^', };
-            char[] rotSymbolR = new char[] { '&', '*', '(', ')', '_', '+', ' ', };
+            char[] rotSymbolL = new char[] { '~', '!', '@', '#', '$', '%', '^', ':', '/', '{', '}'};
+            char[] rotSymbolR = new char[] { '&', '*', '(', ')', '_', '+', ' ', '|', '-', '\\', '='};
 
             char[] rotNumL = new char[] { '1', '2', '3', '4', '5', };
             char[] rotNumR = new char[] { '6', '7', '8', '9', '0', };

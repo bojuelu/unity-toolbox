@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace UnityToolbox
 {
@@ -23,9 +24,9 @@ namespace UnityToolbox
 
         public delegate void DownloadCompleteHandler(WWW www, string webURL, string savedCachePath);
 
-        private static string cacheTableName = "cache_table.txt";
+        private static string cacheTableName = "cache_table_201804261948";
 
-        private static bool checkedEncryptionVersion = false;
+        //private static bool checkedEncryptionVersion = false;
 
         /// <summary>
         /// Give a web url, download it and save to disk.
@@ -35,28 +36,44 @@ namespace UnityToolbox
         /// <param name="downloadURL">URL.</param>
         /// <param name="callback">Callback function.</param>
         /// <param name="md5CheckSum">Md5 check sum.</param>
+        /// <param name="readModel">use 0 is old save model , use  1 is  new save model, if you use 1 model md5 related null</param>
         public void Download(
             string downloadURL,
             DownloadCompleteHandler callback,
+            bool saveToPersistDataPath = false,
             string md5Checksum = null,
-            System.Text.Encoding md5ChecksumEncoding = null
+            System.Text.Encoding md5ChecksumEncoding = null,
+            int readModel = 0
         )
         {
             if (isDownloading)
             {
-                Debug.LogError("download coroutine not complete yet, try again later");
+                Debug.LogError("[DataDownloader] download coroutine not complete yet, try again later");
                 return;
             }
             else if (!IsValidURL(downloadURL))
             {
-                Debug.LogError("download URL is invalid, the URL:" + downloadURL);
+                Debug.LogError("[DataDownloader] download URL is invalid, the URL:" + downloadURL);
                 return;
             }
 
             url = downloadURL;
 
-            this.StartCoroutine(this.DownloadCoroutine(url, callback, md5Checksum, md5ChecksumEncoding));
-            isDownloading = true;
+            if(readModel == 0)
+            {
+                this.StartCoroutine(this.DownloadCoroutine(url, callback, saveToPersistDataPath, md5Checksum, md5ChecksumEncoding));
+                isDownloading = true;
+            }
+            else if(readModel == 1)
+            {
+                this.StartCoroutine(this.DownloadCoroutineEncrypt(url, callback, saveToPersistDataPath));
+                isDownloading = true;
+            }
+            else
+            {
+                Debug.LogError("[DataDownloader] readModel not support. readModel=" + readModel.ToString());
+                isDownloading = false;
+            }
         }
 
         public static IDictionary<string, string> CacheTable()
@@ -64,58 +81,61 @@ namespace UnityToolbox
             return GetCacheTable();
         }
 
-        public static string CacheFilesLocation()
+        private static string GetCacheFilesLocation(bool saveToPersistDataPath)
         {
-            return GetCacheFilesLocation();
+            if (saveToPersistDataPath)
+                return System.IO.Path.Combine(Application.persistentDataPath, ("data_downloader" + System.IO.Path.DirectorySeparatorChar));
+            else
+                return System.IO.Path.Combine(Application.temporaryCachePath, ("data_downloader" + System.IO.Path.DirectorySeparatorChar));
         }
 
-        private static string GetCacheFilesLocation()
+        private static string GetCacheTableLocation()
         {
-            return System.IO.Path.Combine(Application.temporaryCachePath, ("data_downloader" + System.IO.Path.DirectorySeparatorChar));
+            return GetCacheFilesLocation(true);            
         }
 
         private static Dictionary<string, string> GetCacheTable()
         {
-            string cacheFilesLocation = GetCacheFilesLocation();
+            string cacheTableLocation = GetCacheTableLocation();
 
-            if (!UnityUtility.IsDirectoryExist(cacheFilesLocation))
-                UnityUtility.CreateDirectory(cacheFilesLocation);
+            if (!UnityUtility.IsDirectoryExist(cacheTableLocation))
+                UnityUtility.CreateDirectory(cacheTableLocation);
 
-            if (checkedEncryptionVersion == false)
-            {
-                float lastVersion = PlayerPrefs.GetFloat("EncryptionHelper.Version", 0f);
-                float nowVersion = EncryptionHelper.Version;
-                bool needClearCacheTable = false;
+            //if (checkedEncryptionVersion == false)
+            //{
+            //    float lastVersion = PlayerPrefs.GetFloat("EncryptionHelper.Version", 0f);
+            //    float nowVersion = EncryptionHelper.Version;
+            //    bool needClearCacheTable = false;
 
-                Debug.Log(string.Format("EncryptionHelper.Version now:{0} , last:{1}", nowVersion, lastVersion));
+            //    Debug.Log(string.Format("[DataDownloader] EncryptionHelper.Version now:{0} , last:{1}", nowVersion, lastVersion));
 
-                if (lastVersion != nowVersion)
-                {
-                    needClearCacheTable = true;
-                }
-                PlayerPrefs.SetFloat("EncryptionHelper.Version", nowVersion);
-                checkedEncryptionVersion = true;
+            //    if (lastVersion != nowVersion)
+            //    {
+            //        needClearCacheTable = true;
+            //    }
+            //    PlayerPrefs.SetFloat("EncryptionHelper.Version", nowVersion);
+            //    checkedEncryptionVersion = true;
 
-                if (needClearCacheTable)
-                {
-                    Debug.LogWarning("Clear cache table bcz EncryptionHelper.Version is not the same");
-                    Dictionary<string, string> emptyCacheTable = new Dictionary<string, string>();
-                    WriteCacheTable(emptyCacheTable);
-                    return emptyCacheTable;
-                }
-            }
+            //    if (needClearCacheTable)
+            //    {
+            //        Debug.LogWarning("[DataDownloader] Clear cache table bcz EncryptionHelper.Version is not the same");
+            //        Dictionary<string, string> emptyCacheTable = new Dictionary<string, string>();
+            //        WriteCacheTable(emptyCacheTable);
+            //        return emptyCacheTable;
+            //    }
+            //}
 
-            if (!UnityUtility.IsFileExist(cacheTableName, cacheFilesLocation))
+            if (!UnityUtility.IsFileExist(cacheTableName, cacheTableLocation))
             {
                 Dictionary<string, string> dic = new Dictionary<string, string>();
-                Debug.Log("no cache table exist, will create a new one");
+                Debug.Log("[DataDownloader] no cache table exist, will create a new one");
                 WriteCacheTable(dic);
                 return dic;
             }
             else
             {
-                string strOrigData = UnityUtility.ReadTextFile(cacheTableName, cacheFilesLocation, EncryptionHelper.Encoding);
-                string strJsonData = EncryptionHelper.Decrypt(strOrigData, 0);
+                string strOrigData = UnityUtility.ReadTextFile(cacheTableName, cacheTableLocation, EncryptionHelper.Encoding);
+                string strJsonData = UnityUtility.RotCypher(strOrigData);
                 JSONObject json = new JSONObject(strJsonData);
                 return json.ToDictionary();
             }
@@ -125,8 +145,8 @@ namespace UnityToolbox
         {
             JSONObject json = new JSONObject(dic);
             string strJson = json.Print();
-            string strJsonEncrypt = EncryptionHelper.Encrypt(strJson, 0);
-            return UnityUtility.WriteTextFile(strJsonEncrypt, EncryptionHelper.Encoding, cacheTableName, GetCacheFilesLocation());
+            string strJsonEncrypt = UnityUtility.RotCypher(strJson);
+            return UnityUtility.WriteTextFile(strJsonEncrypt, EncryptionHelper.Encoding, cacheTableName, GetCacheTableLocation());
         }
 
         private static string UniqueFileName()
@@ -142,6 +162,7 @@ namespace UnityToolbox
         private IEnumerator DownloadCoroutine(
             string downloadURL,
             DownloadCompleteHandler callback,
+            bool saveToPersistDataPath,
             string md5Checksum,
             System.Text.Encoding md5ChecksumEncoding
         )
@@ -155,6 +176,7 @@ namespace UnityToolbox
             // check if it can download from cache
             bool isDownloadFromCache = false;
             string savedCachePath = "";
+
             Dictionary<string, string> cacheTable = GetCacheTable();
             // if url exist in the table, it might download from cache
             if (cacheTable.ContainsKey(downloadURL))
@@ -192,6 +214,7 @@ namespace UnityToolbox
             }
 
             // wait until download complete
+            downloadProgress = 0f;
             yield return null;
             while (!wwwObj.isDone)
             {
@@ -205,7 +228,7 @@ namespace UnityToolbox
             // if someting wrong, print error log and break this coroutine
             if (!string.IsNullOrEmpty(wwwObj.error))
             {
-                Debug.LogError(wwwObj.error);
+                Debug.LogError("[DataDownloader] " + wwwObj.error);
 
                 if (callback != null)
                     callback(wwwObj, downloadURL, "");
@@ -222,7 +245,7 @@ namespace UnityToolbox
             // it is download from web, ready to save cache file
             else
             {
-                string willSaveCacheLoc = GetCacheFilesLocation();
+                string willSaveCacheLoc = GetCacheFilesLocation(saveToPersistDataPath);
                 string willSaveCacheName = UniqueFileName();
 
                 // check file type and add extent file name
@@ -243,7 +266,7 @@ namespace UnityToolbox
                 // check if saved before, if yes, delete old one
                 if (UnityUtility.IsFileExist(willSaveCacheFullPath))
                 {
-                    Debug.LogWarning(willSaveCacheFullPath + " existed, orignal file will be delete");
+                    Debug.LogWarning("[DataDownloader] " + willSaveCacheFullPath + " existed, orignal file will be delete");
                     UnityUtility.DeleteFile(willSaveCacheFullPath);
                 }
 
@@ -252,7 +275,7 @@ namespace UnityToolbox
                 // file IO operation error occur, callback and break this coroutine
                 if (string.IsNullOrEmpty(savedCachePath))
                 {
-                    Debug.LogError("save file " + savedCachePath + " failed");
+                    Debug.LogError("[DataDownloader] save file " + savedCachePath + " failed");
                     if (callback != null)
                         callback(wwwObj, downloadURL, "");
                     yield break;
@@ -269,7 +292,7 @@ namespace UnityToolbox
                 // file IO operation error occur, callback and break this coroutine
                 if (string.IsNullOrEmpty(updatedCacheTableFullPath))
                 {
-                    Debug.LogError("write cache table " + updatedCacheTableFullPath + " failed");
+                    Debug.LogError("[DataDownloader] write cache table " + updatedCacheTableFullPath + " failed");
                     if (callback != null)
                         callback(wwwObj, downloadURL, "");
                     yield break;
@@ -283,6 +306,116 @@ namespace UnityToolbox
                 yield break;
             }
         }
+
+        private IEnumerator DownloadCoroutineEncrypt (
+            string downloadURL,
+            DownloadCompleteHandler callback,
+            bool saveToPersistDataPath
+        )
+        {
+           
+            
+            if (wwwObj != null)
+            {
+                wwwObj.Dispose();
+                wwwObj = null;
+            }
+
+           
+
+             // check if it can download from cache
+            bool isDownloadFromCache = false;
+            string aesEncryptUrl = AESEncryptionHelper.Encrypt(downloadURL,0);
+		    byte[] urlByte = Encoding.UTF8.GetBytes(aesEncryptUrl);
+		    string Base64url = Convert.ToBase64String(urlByte);
+
+            string willSaveCacheLoc = GetCacheFilesLocation(saveToPersistDataPath);
+            string willSaveCacheFullPath = willSaveCacheLoc + Base64url;
+            string willSaveCacheFullPathCache = willSaveCacheFullPath + "Cache";
+
+            if(UnityUtility.IsFileExist(willSaveCacheFullPath))
+            {
+                isDownloadFromCache = true;
+            }
+
+             // download data from local cache
+            if (isDownloadFromCache)
+            {
+                string localObjText = UnityUtility.ReadTextFile(willSaveCacheFullPath,Encoding.UTF8);
+                string localObjAesDecrypt = AESEncryptionHelper.Decrypt(localObjText,0);
+                byte[] ocalObj = Convert.FromBase64String(localObjAesDecrypt);
+                
+                UnityUtility.WriteFile(ocalObj,willSaveCacheFullPathCache);
+                wwwObj = new WWW(UnityUtility.FilePathToFileURL(willSaveCacheFullPathCache));
+            }
+            // download data from web url
+            else
+            {
+
+                wwwObj = new WWW(downloadURL);
+            }
+
+             // wait until download complete
+            downloadProgress = 0f;
+            yield return null;
+            while (!wwwObj.isDone)
+            {
+                downloadProgress = wwwObj.progress;
+                yield return null;
+            }
+            yield return wwwObj;
+            downloadProgress = 1f;
+            isDownloading = false;
+
+            // if someting wrong, print error log and break this coroutine
+            if (!string.IsNullOrEmpty(wwwObj.error))
+            {
+                Debug.LogError("[DataDownloader] " + wwwObj.error);
+
+                if (callback != null)
+                    callback(wwwObj, downloadURL, "");
+                yield break;
+            }
+
+              // if it is downloaded from cache, not need to save to cache again. invoke callback and break this coroutine
+            if (isDownloadFromCache)
+            {
+                if (callback != null)
+                {
+                    callback(wwwObj, downloadURL, willSaveCacheFullPath);
+                    UnityUtility.DeleteFile(willSaveCacheFullPathCache);
+                }
+                yield break;
+            }
+            else
+            {
+              
+                string wwwObjBase64 = Convert.ToBase64String(wwwObj.bytes);
+                string wwwObjAesEncrypt = AESEncryptionHelper.Encrypt(wwwObjBase64,0);
+                
+                // save file to local disk
+                string savedCache = UnityUtility.WriteTextFile(wwwObjAesEncrypt,Encoding.UTF8,willSaveCacheFullPath);
+
+                // file IO operation error occur, callback and break this coroutine
+                if (string.IsNullOrEmpty(savedCache))
+                {
+                    Debug.LogError("[DataDownloader] save file " + savedCache + " failed");
+                    if (callback != null)
+                        callback(wwwObj, downloadURL, "");
+                    yield break;
+                }
+
+                // callback and end this coroutine
+                if (callback != null)
+                {
+                    callback(wwwObj, downloadURL, willSaveCacheFullPath);
+                }
+                yield break;
+            }
+
+
+        }
+
 
         private bool IsValidURL(string s)
         {
@@ -299,9 +432,9 @@ namespace UnityToolbox
             if (autoStart && !isDownloading)
             {
                 if (IsValidURL(url))
-                    Download(url, null, "");
+                    Download(url, null);
                 else
-                    Debug.LogError("download URL is invalid, the URL:" + url);
+                    Debug.LogError("[DataDownloader] download URL is invalid, the URL:" + url);
             }
         }
 
@@ -309,7 +442,7 @@ namespace UnityToolbox
         {
             if (isDownloading)
             {
-                Debug.LogWarning("DownloadCoroutine has not finished, it will be terminated");
+                Debug.LogWarning("[DataDownloader] DownloadCoroutine has not finished, it will be terminated");
                 this.StopAllCoroutines();
             }
             if (wwwObj != null)
