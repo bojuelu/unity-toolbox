@@ -13,9 +13,55 @@ namespace UnityToolbox
     /// Author: BoJue.
     /// Refrence: https://www.evernote.com/shard/s497/nl/91181768/45799b32-211e-4cea-b327-dc2247b4d05a?title=unity%204.6%E5%85%B3%E4%BA%8ERectTransform%E7%9A%84%E4%B8%80%E4%BA%9B%E7%A0%94%E7%A9%B6
     ///           https://blog.tomyail.com/unity-rect-transform/
+    ///           http://blog.xuite.net/frankintaiwan/twblog/158977252-C%23.Net+%E5%AD%97%E4%B8%B2%E7%9A%84%E5%A3%93%E7%B8%AE%E8%88%87%E8%A7%A3%E5%A3%93%E7%B8%AE+%28Compress+string+and+Decompress+string%29
     /// </summary>
     public static class UnityUtility
     {
+        public string GZipCompressString(string rawString)
+        {
+            if (string.IsNullOrEmpty(rawString) || rawString.Length == 0)
+            {
+                return "";
+            }
+            else
+            {
+                byte[] rawData = System.Text.Encoding.UTF8.GetBytes(rawString.ToString());
+                MemoryStream ms = new MemoryStream();
+                GZipStream compressedzipStream = new GZipStream(ms, CompressionMode.Compress, true);
+                compressedzipStream.Write(rawData, 0, rawData.Length);
+                compressedzipStream.Close();
+                byte[] zippedData = ms.ToArray();
+                return (string)(Convert.ToBase64String(zippedData));
+            }
+        }
+
+        public string GZipDecompressString(string zippedString)
+        {
+            if (string.IsNullOrEmpty(zippedString) || zippedString.Length == 0)
+            {
+                return "";
+            }
+            else
+            {
+                byte[] zippedData = Convert.FromBase64String(zippedString.ToString());
+
+                MemoryStream ms = new MemoryStream(zippedData);
+                GZipStream compressedzipStream = new GZipStream(ms, CompressionMode.Decompress);
+                MemoryStream outBuffer = new MemoryStream();
+                byte[] block = new byte[1024];
+                while (true)
+                {
+                    int bytesRead = compressedzipStream.Read(block, 0, block.Length);
+                    if (bytesRead <= 0)
+                        break;
+                    else
+                        outBuffer.Write(block, 0, bytesRead);
+                }
+                compressedzipStream.Close();
+                return (string)(System.Text.Encoding.UTF8.GetString(outBuffer.ToArray()));
+            }
+        }
+
         public static string Substring(string origStr, int maxLength)
         {
             if (origStr.Length <= maxLength)
