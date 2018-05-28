@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,15 +18,20 @@ namespace UnityToolbox
     /// </summary>
     public static class UnityUtility
     {
-        public string GZipCompressString(string rawString)
+        public static string GZipCompressString(string rawString)
         {
-            if (string.IsNullOrEmpty(rawString) || rawString.Length == 0)
+            return GZipCompressString(rawString, Encoding.UTF8);
+        }
+        
+        public static string GZipCompressString(string rawString, Encoding encoding)
+        {
+            if (string.IsNullOrEmpty(rawString))
             {
                 return "";
             }
             else
             {
-                byte[] rawData = System.Text.Encoding.UTF8.GetBytes(rawString.ToString());
+                byte[] rawData = encoding.GetBytes(rawString);
                 MemoryStream ms = new MemoryStream();
                 GZipStream compressedzipStream = new GZipStream(ms, CompressionMode.Compress, true);
                 compressedzipStream.Write(rawData, 0, rawData.Length);
@@ -35,15 +41,20 @@ namespace UnityToolbox
             }
         }
 
-        public string GZipDecompressString(string zippedString)
+        public static string GZipDecompressString(string zippedString)
         {
-            if (string.IsNullOrEmpty(zippedString) || zippedString.Length == 0)
+            return GZipDecompressString(zippedString, Encoding.UTF8);
+        }
+
+        public static string GZipDecompressString(string zippedString, Encoding encoding)
+        {
+            if (string.IsNullOrEmpty(zippedString))
             {
                 return "";
             }
             else
             {
-                byte[] zippedData = Convert.FromBase64String(zippedString.ToString());
+                byte[] zippedData = Convert.FromBase64String(zippedString);
 
                 MemoryStream ms = new MemoryStream(zippedData);
                 GZipStream compressedzipStream = new GZipStream(ms, CompressionMode.Decompress);
@@ -58,7 +69,7 @@ namespace UnityToolbox
                         outBuffer.Write(block, 0, bytesRead);
                 }
                 compressedzipStream.Close();
-                return (string)(System.Text.Encoding.UTF8.GetString(outBuffer.ToArray()));
+                return (string)(encoding.GetString(outBuffer.ToArray()));
             }
         }
 
@@ -78,7 +89,7 @@ namespace UnityToolbox
             }
             return camera.WorldToScreenPoint(rect.position);
         }
-        
+
         public static Rect GetSpaceRect(Canvas canvas, RectTransform rect, Camera camera)
         {
             Rect spaceRect = rect.rect;
@@ -92,7 +103,7 @@ namespace UnityToolbox
         }
 
         /// <summary>
-		/// Check a point is in the rect transform area or not.
+        /// Check a point is in the rect transform area or not.
         /// </summary>
         /// <returns><c>true</c>, if contains screen point was rected, <c>false</c> otherwise.</returns>
         /// <param name="point">The point you want to check. ex: Input.mousePosition.</param>
@@ -253,13 +264,13 @@ namespace UnityToolbox
                 return "";
 
             char[] chars = new char[]
-            {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                {
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            };
+                    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                };
             char[] pickChars = new char[length];
             for (int i = 0; i < length; i++)
             {
