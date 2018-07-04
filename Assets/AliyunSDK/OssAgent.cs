@@ -30,7 +30,7 @@ namespace AliyunSDK
         public string accessKeySecret = "12345678901234567890";
         public string bucketName = "abcdefg";
 
-        public delegate void PutObjectDoneHandler(string url);
+        public delegate void PutObjectDoneHandler(OssAgent sender, string urlOrEtag);
         public event PutObjectDoneHandler onPutObjectDone;
 
         OssClient client = null;
@@ -109,13 +109,13 @@ namespace AliyunSDK
 
                     string url = string.Format("https://{0}.{1}/{2}", bucketName, endpoint, key);
                     if (onPutObjectDone != null)
-                        onPutObjectDone(url);
+                        onPutObjectDone(this, url);
                     return;
                 }
                 else
                 {
                     if (onPutObjectDone != null)
-                        onPutObjectDone(result.ETag);
+                        onPutObjectDone(this, result.ETag);
                     return;
                 }
             }
@@ -124,7 +124,7 @@ namespace AliyunSDK
                 Debug.LogException(ex);
 
                 if (onPutObjectDone != null)
-                    onPutObjectDone("");
+                    onPutObjectDone(this, "");
             }
             finally
             {
