@@ -3,7 +3,11 @@ using UnityEngine.UI;
 using System;
 using System.Text;
 using System.IO;
+#if UNITY_EDITOR
 using System.IO.Compression;
+#else
+using Unity.IO.Compression;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 
