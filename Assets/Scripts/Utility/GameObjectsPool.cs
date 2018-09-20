@@ -25,7 +25,6 @@ namespace UnityToolbox
             if (itemsPool.Count <= 0)
             {
                 GameObject newItem = GameObject.Instantiate(itemSource);
-                itemsPool.Enqueue(newItem);
                 return newItem;
             }
 
