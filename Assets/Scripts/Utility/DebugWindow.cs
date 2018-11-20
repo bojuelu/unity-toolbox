@@ -37,7 +37,7 @@ namespace UnityToolbox
             if (printConsole)
                 Debug.LogWarning(log);
 
-            log = "[Warning] " + log;
+            log = "<color=yellow>" + log + "</color>";
 
             __Log(log);
         }
@@ -47,14 +47,14 @@ namespace UnityToolbox
             if (printConsole)
                 Debug.LogError(log);
 
-            log = "[Error] " + log;
+            log = "<color=red>" + log + "</color>";
 
             __Log(log);
         }
 
-        public void LogWithTag(string tag, string log, bool printConsole = false)
+        public void LogWithTag(string tag, string log, bool printConsole = false, string color = "cyan")
         {
-            log = "[" + tag + "] " + log;
+            log = string.Format("<color={0}>[{1}] {2}</color>", color, tag, log);
 
             if (printConsole)
                 Debug.Log(log);
