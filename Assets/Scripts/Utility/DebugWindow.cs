@@ -29,13 +29,7 @@ namespace UnityToolbox
             if (printConsole)
                 Debug.Log(log);
 
-            string[] logs = SplitBy(log, delimiterStrings);
-            for (int i = 0; i < logs.Length; i++)
-            {
-                GUIContent c = new GUIContent(logs[i]);
-                logList.Add(c);
-            }
-            ScrollToBottom();
+            __Log(log);
         }
 
         public void LogWarning(string log, bool printConsole = false)
@@ -43,13 +37,9 @@ namespace UnityToolbox
             if (printConsole)
                 Debug.LogWarning(log);
 
-            string[] logs = SplitBy(log, delimiterStrings);
-            for (int i = 0; i < logs.Length; i++)
-            {
-                GUIContent c = new GUIContent(logs[i]);
-                logList.Add(c);
-            }
-            ScrollToBottom();
+            log = "[Warning] " + log;
+
+            __Log(log);
         }
 
         public void LogError(string log, bool printConsole = false)
@@ -57,27 +47,19 @@ namespace UnityToolbox
             if (printConsole)
                 Debug.LogError(log);
 
-            string[] logs = SplitBy(log, delimiterStrings);
-            for (int i = 0; i < logs.Length; i++)
-            {
-                GUIContent c = new GUIContent(logs[i]);
-                logList.Add(c);
-            }
-            ScrollToBottom();
+            log = "[Error] " + log;
+
+            __Log(log);
         }
 
         public void LogWithTag(string tag, string log, bool printConsole = false)
         {
-            if (printConsole)
-                Debug.Log(tag + log);
+            log = "[" + tag + "] " + log;
 
-            string[] logs = SplitBy(log, delimiterStrings);
-            for (int i = 0; i < logs.Length; i++)
-            {
-                GUIContent c = new GUIContent(logs[i]);
-                logList.Add(c);
-            }
-            ScrollToBottom();
+            if (printConsole)
+                Debug.Log(log);
+
+            __Log(log);
         }
 
         public void ClearLog()
@@ -93,6 +75,17 @@ namespace UnityToolbox
                 log[i] = logList[i].text;
             }
             return log;
+        }
+
+        private void __Log(string log)
+        {
+            string[] logs = SplitBy(log, delimiterStrings);
+            for (int i = 0; i < logs.Length; i++)
+            {
+                GUIContent c = new GUIContent(logs[i]);
+                logList.Add(c);
+            }
+            ScrollToBottom();
         }
 
         private string[] SplitBy(string origString, string[] delimiterStrs)
