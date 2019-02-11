@@ -106,7 +106,6 @@ namespace UnityToolbox
         {
             thisRectTransform = this.gameObject.GetComponent<RectTransform>();
             SetAnchorToLeftTop(thisRectTransform);
-            thisRectTransform.anchoredPosition = Vector2.zero;
         }
 
         private void Update()
